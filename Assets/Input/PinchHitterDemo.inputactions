@@ -807,7 +807,7 @@
                 },
                 {
                     "name": "MouseWheel",
-                    "type": "Value",
+                    "type": "Button",
                     "id": "4c823821-2fd5-490f-9e9d-a2143e1bd491",
                     "expectedControlType": "",
                     "processors": "",
@@ -862,6 +862,17 @@
                     "name": "",
                     "id": "c7e33cb2-2fff-4343-ad97-f7bbca990fcd",
                     "path": "<Mouse>/leftButton",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "Move",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "5ed204c1-f399-48bb-aaa6-1f35649560e8",
+                    "path": "<Touchscreen>/touch0",
                     "interactions": "",
                     "processors": "",
                     "groups": "",

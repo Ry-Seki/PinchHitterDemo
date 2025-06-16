@@ -11,6 +11,7 @@ public class PartTitle : PartBase {
         await MenuManager.instance.Get<MenuTitle>("Prefabs/Menu/CanvasTitle").Initialize();
     }
     public override async UniTask Execute() {
+        Camera.main.GetComponent<CameraController>().Initialize();
         //タイトルメニューの表示
         await MenuManager.instance.Get<MenuTitle>().Open();
         //メインパートへ遷移

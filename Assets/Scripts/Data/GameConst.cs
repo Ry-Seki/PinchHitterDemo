@@ -4,6 +4,6 @@ using UnityEngine;
 
 public class GameConst {
     //ƒJƒƒ‰‚ÌŠgk“x
-    public static readonly float MAX_EXPANSION = 1.0f;
-    public static readonly float MIN_EXPANSION = 30.0f;
+    public static readonly float MAX_EXPANSION = 3.0f;
+    public static readonly float MIN_EXPANSION = 200.0f;
 }
