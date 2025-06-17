@@ -1,3 +1,4 @@
+using Cysharp.Threading.Tasks;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -7,56 +8,65 @@ using UnityEngine.InputSystem.LowLevel;
 using static GameConst;
 
 public class CameraController : MonoBehaviour {
-    private Camera mainCamera;
-    const float MOVE_MAX = 100.0f;
-    Vector2 previousPos, currentPos;
+    //カメラ
+    private Camera mainCamera = null;
+    //InputAction
+    private PinchHitterDemo cameraInput = null;
+    Vector2 startMousePos = Vector2.zero;
+    Vector2 goalMousePos = Vector2.zero;
+
     // ２本指のタッチ情報
     private TouchState _touchState0;
     private TouchState _touchState1;
 
-    private PinchHitterDemo cameraInput;
-
-    // Start is called before the first frame update
-    void Start() {
-    }
-
     public void Initialize() {
         mainCamera = Camera.main;
-
+        //InputActionを取得
         cameraInput = InputSystemManager.instance.input;
-
+        //InputActionの登録
         cameraInput.Camera.MouseWheel.started += OnMouseWheel;
-        cameraInput.Camera.Move.started += OnStartMove;
-        cameraInput.Camera.Move.performed += OnCameraMove;
+
         cameraInput.Enable();
+    }
+    public async UniTask Setup(float duration) {
+        float elapsedTime = 0.0f;
+        while (elapsedTime < duration) {
+            elapsedTime += Time.deltaTime;
+            float t = elapsedTime / duration;
+            float animationTime = Mathf.Lerp(MAX_EXPANSION, MIN_EXPANSION, t);
+            mainCamera.orthographicSize = animationTime;
+            await UniTask.DelayFrame(1);
+        }
+        await UniTask.CompletedTask;
     }
 
     // Update is called once per frame
     void Update() {
-        
-    }
-    public void OnStartMove(InputAction.CallbackContext context) {
-        previousPos = Input.mousePosition;
-    }
-    public void OnCameraMove(InputAction.CallbackContext context) {
-        // スワイプによる移動距離を取得
-        currentPos = Input.mousePosition;
 
-        // 次のローカルx座標を設定 ※道の外にでないように
-        float newX = Input.GetAxis("Mouse X") * 0.1f;
-        float newY = Input.GetAxis("Mouse Y") * 0.1f;
-        transform.position -= new Vector3(newX, newY, 0.0f);
     }
+    /// <summary>
+    /// マウスのスタート座標を取得
+    /// </summary>
+    /// <param name="context"></param>
+    public void OnSetStartPosition(InputAction.CallbackContext context) {
+        startMousePos = Input.mousePosition;
+    }
+    /// <summary>
+    /// マウスの移動
+    /// </summary>
+    /// <param name="context"></param>
+    public void OnMouseMove(InputAction.CallbackContext context) {
 
+    }
     public void OnMouseWheel(InputAction.CallbackContext context) {
         //ホイールを取得して、均しのためにtime.deltaTimeをかけておく
-        float scroll = Input.mouseScrollDelta.y * 10;
+        float scroll = Input.mouseScrollDelta.y * 5;
         //Debug.Log(scroll);
         //最大拡大率を設定
         if (mainCamera.orthographicSize + scroll < MAX_EXPANSION) {
             scroll = MAX_EXPANSION;
             mainCamera.orthographicSize = scroll;
-        } else if(mainCamera.orthographicSize + scroll > MIN_EXPANSION){ 
+        } else if (mainCamera.orthographicSize + scroll > MIN_EXPANSION) {
             scroll = MIN_EXPANSION;
             mainCamera.orthographicSize = scroll;
         } else {
@@ -104,6 +114,6 @@ public class CameraController : MonoBehaviour {
     }
 
     public bool IsHitter() {
-        return mainCamera.orthographicSize <= 13;
+        return mainCamera.orthographicSize <= 5;
     }
 }

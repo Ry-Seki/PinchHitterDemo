@@ -3,21 +3,18 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
-public class DebugDamage : MonoBehaviour
-{
+public class DebugDamage : MonoBehaviour {
     [SerializeField]
     private Slider HPSlider;
 
     // Start is called before the first frame update
-    void Start()
-    {
-        
+    void Start() {
+
     }
 
     // Update is called once per frame
-    void Update()
-    {
-        
+    void Update() {
+
     }
     private void OnWillRenderObject() {
 #if UNITY_EDITOR
@@ -25,8 +22,12 @@ public class DebugDamage : MonoBehaviour
         if (Camera.current.name != "SceneCamera" && Camera.current.name != "Preview Camera")
 
 #endif
-            if (Camera.main.GetComponent<CameraController>().IsHitter()) {
-            HPSlider.value -= 0.001f;
-        }
+            if (PartMainGame.isStart && Camera.main.GetComponent<CameraController>().IsHitter()) {
+                HPSlider.value -= 0.001f;
+                if (HPSlider.value <= 0) {
+                    HPSlider.value = 0;
+                    Destroy(gameObject);
+                }
+            }
     }
 }
