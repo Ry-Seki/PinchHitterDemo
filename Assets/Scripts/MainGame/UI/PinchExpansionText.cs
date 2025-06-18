@@ -11,25 +11,33 @@ public class PinchExpansionText : MonoBehaviour {
 
     private static float pinchExpansion = -1;
 
+    public bool isPinchTextFade = false;
+
     private const float DEFAULT_APPEARANCE_TIME = 1.0f;
 
     public void VisiblePinchExpansion(float setExpansion, float duration = DEFAULT_APPEARANCE_TIME) {
         pinchExpansion = setExpansion;
         pinchText.text = pinchExpansion.ToString("F1") + "%";
-        PinchTextFade(duration);
+        isPinchTextFade = true;
+        UniTask task = PinchTextFade(duration);
     }
-    private void PinchTextFade(float duration) {
-        float elapseTime = 0.0f;
-        float startAlpha = pinchText.color.a;
-        float targetAlpha = 1.0f;
+    private async UniTask PinchTextFade(float duration) {
         Color targetColor = pinchText.color;
+        float elapseTime = 0.0f;
+        float startAlpha = 1.0f;
+        float targetAlpha = 0.0f;
+
+        targetColor.a = startAlpha;
+        pinchText.color = targetColor;
 
         while (elapseTime < duration) {
+            if(!isPinchTextFade) break;
             elapseTime += Time.deltaTime;
             //補完した府透明度をフェード画像に設定
             float t = elapseTime / duration;
             targetColor.a = Mathf.Lerp(startAlpha, targetAlpha, t);
             pinchText.color = targetColor;
+            await UniTask.DelayFrame(1);
         }
         targetColor.a = targetAlpha;
         pinchText.color = targetColor;

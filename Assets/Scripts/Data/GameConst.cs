@@ -6,4 +6,7 @@ public class GameConst {
     //ƒJƒƒ‰‚ÌŠgk“x
     public static readonly float MAX_EXPANSION = 2.0f;
     public static readonly float MIN_EXPANSION = 102.0f;
+
+    //Å‘å•S•ª—¦
+    public static readonly float MAX_PERCENTAGE = 100.0f;
 }

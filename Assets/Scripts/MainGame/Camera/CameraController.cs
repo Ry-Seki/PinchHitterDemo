@@ -39,14 +39,16 @@ public class CameraController : MonoBehaviour {
     }
     public async UniTask Setup(float duration) {
         pinchExpansion = 5;
-        pinchPercentage = 100;
+        pinchPercentage = MAX_PERCENTAGE;
         float elapsedTime = 0.0f;
+        //カメラの演出
         while (elapsedTime < duration) {
             elapsedTime += Time.deltaTime;
             float t = elapsedTime / duration;
             float animationTime = Mathf.Lerp(MAX_EXPANSION, MIN_EXPANSION, t);
-            pinchPercentage = Mathf.Lerp(100, 0, t);
             mainCamera.orthographicSize = animationTime;
+            pinchPercentage = Mathf.Lerp(MAX_PERCENTAGE, 0, t);
+            pinchText.isPinchTextFade = false;
             pinchText.VisiblePinchExpansion(pinchPercentage);
             await UniTask.DelayFrame(1);
         }
@@ -55,6 +57,7 @@ public class CameraController : MonoBehaviour {
     private void Update() {
         if(!PartMainGame.isStart || !isMove) return;
 
+        //マウスドラッグでのカメラ移動
         float cameraX = Input.GetAxis("Mouse X") * 0.5f;
         float cameraY = Input.GetAxis("Mouse Y") * 0.5f;
         transform.position -= new Vector3(cameraX, cameraY, 0.0f);
@@ -67,33 +70,42 @@ public class CameraController : MonoBehaviour {
         startMousePos = Input.mousePosition;
     }
     /// <summary>
-    /// マウスの移動
+    /// マウス移動開始
     /// </summary>
     /// <param name="context"></param>
     public void OnCameraMove(InputAction.CallbackContext context) {
         isMove = true;
     }
-
+    /// <summary>
+    /// マウス移動終了
+    /// </summary>
+    /// <param name="context"></param>
     public void EndCameraMove(InputAction.CallbackContext context) {
         isMove = false;
     }
     public void OnMouseWheel(InputAction.CallbackContext context) {
-        //ホイールを取得して、均しのためにtime.deltaTimeをかけておく
+        //カメラの拡縮を取得
+        float cameraScale = mainCamera.orthographicSize;
+        //ホイールを取得して、代入
         float scroll = Input.mouseScrollDelta.y * pinchExpansion;
-        //Debug.Log(scroll);
-        //最大拡大率を設定
-        if (mainCamera.orthographicSize + scroll < MAX_EXPANSION) {
+        //最大拡大率の判定
+        if (cameraScale + scroll < MAX_EXPANSION) {
             scroll = MAX_EXPANSION;
             pinchPercentage = 100;
-            mainCamera.orthographicSize = scroll;
-        } else if (mainCamera.orthographicSize + scroll > MIN_EXPANSION) {
+            cameraScale = scroll;
+        //最小拡大率の判定
+        } else if (cameraScale + scroll > MIN_EXPANSION) {
             scroll = MIN_EXPANSION;
             pinchPercentage = 0;
-            mainCamera.orthographicSize = scroll;
+            cameraScale = scroll;
+        //残りは値を足す
         } else {
-            pinchPercentage -= scroll;
-            mainCamera.orthographicSize += scroll;
+            cameraScale += scroll;
+            pinchPercentage = ScalingPercentage(cameraScale);
         }
+        //カメラに拡縮を反映
+        mainCamera.orthographicSize = cameraScale;
+        //テキストスクリプトに値を渡す
         pinchText.VisiblePinchExpansion(pinchPercentage);
     }
 
@@ -137,6 +149,14 @@ public class CameraController : MonoBehaviour {
     }
 
     public bool IsHitter() {
-        return mainCamera.orthographicSize <= 5;
+        return pinchPercentage >= 90.0f;
+    }
+    /// <summary>
+    /// 百分率のスケーリング
+    /// </summary>
+    /// <param name="setValue">符号関係なしの値が欲しいため、絶対値で計算</param>
+    /// <returns></returns>
+    private float ScalingPercentage(float setValue) {
+        return ((MIN_EXPANSION - Mathf.Abs(setValue)) / (MIN_EXPANSION - MAX_EXPANSION)) * 100;
     }
 }
