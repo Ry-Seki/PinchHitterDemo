@@ -19,6 +19,7 @@ public class PinchExpansionText : MonoBehaviour {
         pinchExpansion = setExpansion;
         pinchText.text = pinchExpansion.ToString("F1") + "%";
         isPinchTextFade = true;
+        ResetColorAlpha();
         UniTask task = PinchTextFade(duration);
     }
     private async UniTask PinchTextFade(float duration) {
@@ -26,9 +27,6 @@ public class PinchExpansionText : MonoBehaviour {
         float elapseTime = 0.0f;
         float startAlpha = 1.0f;
         float targetAlpha = 0.0f;
-
-        targetColor.a = startAlpha;
-        pinchText.color = targetColor;
 
         while (elapseTime < duration) {
             if(!isPinchTextFade) break;
@@ -41,5 +39,12 @@ public class PinchExpansionText : MonoBehaviour {
         }
         targetColor.a = targetAlpha;
         pinchText.color = targetColor;
+    }
+
+    private void ResetColorAlpha() {
+        isPinchTextFade = false;
+        Color textColor = pinchText.color;
+        textColor.a = 1.0f;
+        pinchText.color = textColor;
     }
 }
