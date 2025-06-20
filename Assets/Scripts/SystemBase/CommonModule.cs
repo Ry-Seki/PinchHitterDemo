@@ -3,6 +3,8 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
+using static GameConst;
+
 public class CommonModule {
     /// <summary>
     /// 配列が空か判定
@@ -90,5 +92,19 @@ public class CommonModule {
 
             await UniTask.DelayFrame(1);
         }
+    }
+    /// <summary>
+    /// 百分率に変換（数値が小さいほど百分率が大きくなる）
+    /// </summary>
+    /// <param name="setValue"></param>
+    /// <param name="minValue"></param>
+    /// <param name="maxValue"></param>
+    /// <returns></returns>
+    public static float ReversePercentageScaling(float setValue, float minValue, float maxValue) {
+        return ((minValue - Mathf.Abs(setValue)) / (minValue - maxValue)) * MAX_PERCENTAGE;
+    }
+
+    public static float ReverseNormScaling(float setValue, float minValue, float maxValue) {
+        return MIN_NORM + ((minValue - Mathf.Abs(setValue)) / (minValue - maxValue)) * (MAX_NORM - MIN_NORM);
     }
 }

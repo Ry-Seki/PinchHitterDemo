@@ -8,6 +8,9 @@ public class SystemManager : MonoBehaviour {
     private SystemObject[] _systemObjectList = null;
 
     private void Start() {
+        //フレームレートの設定
+        Application.targetFrameRate = 60;
+        //初期化
         UniTask task = Initialize();
     }
 

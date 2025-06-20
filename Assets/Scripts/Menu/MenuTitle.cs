@@ -10,7 +10,7 @@ public class MenuTitle : MenuBase {
         await base.Open();
         //SpaceƒL[‚ª‰Ÿ‚³‚ê‚é‚Ü‚Å‘Ò‚Â
         while (true) {
-            if(Input.GetKeyDown(KeyCode.Space)) break;
+            if(Input.GetKeyDown(KeyCode.Space) || Input.GetMouseButtonDown(0)) break;
 
             await UniTask.DelayFrame(1);
         }

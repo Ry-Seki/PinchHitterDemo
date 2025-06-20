@@ -627,7 +627,7 @@ public partial class @PinchHitterDemo: IInputActionCollection2, IDisposable
                 },
                 {
                     ""name"": ""MouseWheel"",
-                    ""type"": ""Button"",
+                    ""type"": ""Value"",
                     ""id"": ""4c823821-2fd5-490f-9e9d-a2143e1bd491"",
                     ""expectedControlType"": """",
                     ""processors"": """",
@@ -675,17 +675,6 @@ public partial class @PinchHitterDemo: IInputActionCollection2, IDisposable
                     ""processors"": """",
                     ""groups"": """",
                     ""action"": ""MouseWheel"",
-                    ""isComposite"": false,
-                    ""isPartOfComposite"": false
-                },
-                {
-                    ""name"": """",
-                    ""id"": ""c7e33cb2-2fff-4343-ad97-f7bbca990fcd"",
-                    ""path"": ""<Mouse>/leftButton"",
-                    ""interactions"": """",
-                    ""processors"": """",
-                    ""groups"": """",
-                    ""action"": ""Move"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
                 },

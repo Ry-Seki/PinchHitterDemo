@@ -6,6 +6,8 @@ using UnityEngine.InputSystem;
 using UnityEngine.InputSystem.LowLevel;
 
 using static GameConst;
+using static CommonModule;
+using UnityEngine.UIElements;
 
 public class CameraController : MonoBehaviour {
     [SerializeField]
@@ -15,8 +17,7 @@ public class CameraController : MonoBehaviour {
     //InputAction
     private PinchHitterDemo cameraInput = null;
     private bool isMove = false;
-    Vector2 startMousePos = Vector2.zero;
-    Vector2 goalMousePos = Vector2.zero;
+    Vector2 swipeDelta = Vector2.zero;
     private int pinchExpansion = -1;
     private float pinchPercentage = -1;
 
@@ -29,10 +30,10 @@ public class CameraController : MonoBehaviour {
         //InputActionを取得
         cameraInput = InputSystemManager.instance.input;
         //InputActionの登録
-        cameraInput.Camera.MouseWheel.started += OnMouseWheel;
-        cameraInput.Camera.Move.started += OnStartPosition;
-        cameraInput.Camera.Move.performed += OnCameraMove;
-        cameraInput.Camera.Move.canceled += EndCameraMove;
+        cameraInput.Camera.MouseWheel.performed += OnMouseWheel;
+        cameraInput.Camera.MouseWheel.canceled += EndMouseWheel;
+        cameraInput.Camera.Touch_0.performed += OnTouch0;
+        cameraInput.Camera.Touch_1.performed += OnTouch1;
 
         cameraInput.Enable();
         await UniTask.CompletedTask;
@@ -48,115 +49,125 @@ public class CameraController : MonoBehaviour {
             float animationTime = Mathf.Lerp(MAX_EXPANSION, MIN_EXPANSION, t);
             mainCamera.orthographicSize = animationTime;
             pinchPercentage = Mathf.Lerp(MAX_PERCENTAGE, 0, t);
-            pinchText.isPinchTextFade = false;
             pinchText.VisiblePinchExpansion(pinchPercentage);
             await UniTask.DelayFrame(1);
         }
-        await UniTask.CompletedTask;
+        await pinchText.PinchTextFade();
     }
     private void Update() {
-        if(!PartMainGame.isStart || !isMove) return;
+        if(!PartMainGame.isStart || !Input.GetMouseButton(0)) return;
 
         //マウスドラッグでのカメラ移動
-        float cameraX = Input.GetAxis("Mouse X") * 0.5f;
-        float cameraY = Input.GetAxis("Mouse Y") * 0.5f;
+        float cameraX = Input.GetAxis("Mouse X") * ReverseNormScaling(pinchPercentage, 100, 0);
+        float cameraY = Input.GetAxis("Mouse Y") * ReverseNormScaling(pinchPercentage, 100, 0);
         transform.position -= new Vector3(cameraX, cameraY, 0.0f);
     }
-    /// <summary>
-    /// マウスのスタート座標を取得
-    /// </summary>
-    /// <param name="context"></param>
-    public void OnStartPosition(InputAction.CallbackContext context) {
-        startMousePos = Input.mousePosition;
-    }
-    /// <summary>
-    /// マウス移動開始
-    /// </summary>
-    /// <param name="context"></param>
-    public void OnCameraMove(InputAction.CallbackContext context) {
-        isMove = true;
-    }
-    /// <summary>
-    /// マウス移動終了
-    /// </summary>
-    /// <param name="context"></param>
-    public void EndCameraMove(InputAction.CallbackContext context) {
-        isMove = false;
-    }
-    public void OnMouseWheel(InputAction.CallbackContext context) {
-        //カメラの拡縮を取得
-        float cameraScale = mainCamera.orthographicSize;
-        //ホイールを取得して、代入
-        float scroll = Input.mouseScrollDelta.y * pinchExpansion;
-        //最大拡大率の判定
-        if (cameraScale + scroll < MAX_EXPANSION) {
-            scroll = MAX_EXPANSION;
-            pinchPercentage = 100;
-            cameraScale = scroll;
-        //最小拡大率の判定
-        } else if (cameraScale + scroll > MIN_EXPANSION) {
-            scroll = MIN_EXPANSION;
-            pinchPercentage = 0;
-            cameraScale = scroll;
-        //残りは値を足す
-        } else {
-            cameraScale += scroll;
-            pinchPercentage = ScalingPercentage(cameraScale);
-        }
-        //カメラに拡縮を反映
-        mainCamera.orthographicSize = cameraScale;
-        //テキストスクリプトに値を渡す
-        pinchText.VisiblePinchExpansion(pinchPercentage);
-    }
-
-    // Touch #0 入力
     public void OnTouch0(InputAction.CallbackContext context) {
         _touchState0 = context.ReadValue<TouchState>();
 
+        //もし、マルチタップでなければスワイプ移動
+        if (!_touchState1.isInProgress) {
+            SwipeCameraMove(_touchState0);
+            return;
+        }
+        //ピンチイン、アウトの実行
         OnPinch();
     }
-
-    // Touch #1 入力
     public void OnTouch1(InputAction.CallbackContext context) {
         _touchState1 = context.ReadValue<TouchState>();
 
+        //もし、マルチタップでなければスワイプ移動
+        if (!_touchState0.isInProgress) {
+            SwipeCameraMove(_touchState1);
+            return;
+        }
+        //ピンチイン、アウトの実行
         OnPinch();
     }
+    /// <summary>
+    /// カメラ視点移動
+    /// </summary>
+    public void SwipeCameraMove(TouchState setTouch) {
+        //タッチ位置
+        Vector2 currentPos = setTouch.position;
+        //移動量
+        Vector2 delta = setTouch.delta;
+        //移動前の位置
+        Vector2 prevPos = currentPos - delta;
 
-    // ピンチ判定処理
+        float distance = Vector3.Distance(currentPos, prevPos);
+        transform.position -= new Vector3(currentPos.x + distance, currentPos.y + distance, 0.0f); 
+    }
+    /// <summary>
+    /// ピンチ判定処理
+    /// </summary>
     private void OnPinch() {
-        // ２本指が移動していなかれば操作なしと判断
-        if (!_touchState0.isInProgress || !_touchState1.isInProgress)
-            return;
-
         // タッチ位置（スクリーン座標）
-        Vector2 pos0 = _touchState0.position;
-        Vector2 pos1 = _touchState1.position;
+        Vector2 currentPos0 = _touchState0.position;
+        Vector2 currentPos1 = _touchState1.position;
 
         // 移動量（スクリーン座標）
         Vector2 delta0 = _touchState0.delta;
         Vector2 delta1 = _touchState1.delta;
 
         // 移動前の位置（スクリーン座標）
-        Vector2 prevPos0 = pos0 - delta0;
-        Vector2 prevPos1 = pos1 - delta1;
+        Vector2 prevPos0 = currentPos0 - delta0;
+        Vector2 prevPos1 = currentPos1 - delta1;
 
         // 距離の変化量を求める
-        float pinchDelta = Vector3.Distance(pos0, pos1) - Vector3.Distance(prevPos0, prevPos1);
+        float pinchDelta = Vector3.Distance(currentPos0, currentPos1) - Vector3.Distance(prevPos0, prevPos1) * pinchExpansion;
 
+        //カメラの拡縮に反映
+        SetCameraGraphicSize(pinchDelta);
         // 距離の変化量をログ出力
         Debug.Log($"ピンチ操作量 : {pinchDelta}");
     }
-
-    public bool IsHitter() {
-        return pinchPercentage >= 90.0f;
+    /// <summary>
+    /// ホイール操作
+    /// </summary>
+    /// <param name="context"></param>
+    public void OnMouseWheel(InputAction.CallbackContext context) {
+        //ホイールを取得して、代入
+        float scroll = Input.mouseScrollDelta.y * pinchExpansion;
+        //カメラの拡縮に反映
+        SetCameraGraphicSize(scroll);
+    }
+    public void EndMouseWheel(InputAction.CallbackContext context) {
+        UniTask task = pinchText.PinchTextFade();
     }
     /// <summary>
-    /// 百分率のスケーリング
+    /// カメラの拡縮率の変更
     /// </summary>
-    /// <param name="setValue">符号関係なしの値が欲しいため、絶対値で計算</param>
+    /// <param name="setSize"></param>
+    private void SetCameraGraphicSize(float setSize) {
+        //カメラの拡縮を取得
+        float cameraScale = mainCamera.orthographicSize;
+        float scroll = setSize;
+        //最大拡大率の判定
+        if (cameraScale + scroll < MAX_EXPANSION) {
+            scroll = MAX_EXPANSION;
+            pinchPercentage = 100;
+            cameraScale = scroll;
+            //最小拡大率の判定
+        } else if (cameraScale + scroll > MIN_EXPANSION) {
+            scroll = MIN_EXPANSION;
+            pinchPercentage = 0;
+            cameraScale = scroll;
+            //残りは値を足す
+        } else {
+            cameraScale += scroll;
+            pinchPercentage = ReversePercentageScaling(cameraScale, MIN_EXPANSION, MAX_EXPANSION);
+        }
+        //カメラに拡縮を反映
+        mainCamera.orthographicSize = cameraScale;
+        //テキストスクリプトに値を渡す
+        pinchText.VisiblePinchExpansion(pinchPercentage);
+    }
+    /// <summary>
+    /// 特定の拡縮率かの判定
+    /// </summary>
     /// <returns></returns>
-    private float ScalingPercentage(float setValue) {
-        return ((MIN_EXPANSION - Mathf.Abs(setValue)) / (MIN_EXPANSION - MAX_EXPANSION)) * 100;
+    public bool IsHitter() {
+        return pinchPercentage >= 90.0f;
     }
 }

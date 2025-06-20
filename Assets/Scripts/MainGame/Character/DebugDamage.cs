@@ -23,7 +23,7 @@ public class DebugDamage : MonoBehaviour {
 
 #endif
             if (PartMainGame.isStart && Camera.main.GetComponent<CameraController>().IsHitter()) {
-                HPSlider.value -= 0.001f;
+                HPSlider.value -= 0.01f;
                 if (HPSlider.value <= 0) {
                     HPSlider.value = 0;
                     Destroy(gameObject);
