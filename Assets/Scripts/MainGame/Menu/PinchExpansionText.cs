@@ -5,14 +5,23 @@ using TMPro;
 using Unity.IO.LowLevel.Unsafe;
 using UnityEngine;
 
-public class PinchExpansionText : MonoBehaviour {
+using static GameConst;
+
+public class PinchExpansionText : MenuBase {
     [SerializeField]
-    private TextMeshProUGUI pinchText;
+    private TextMeshProUGUI pinchText = null;
 
     private static float pinchExpansion = -1;
 
     private bool isFadeText = false;
     private const float DEFAULT_APPEARANCE_TIME = 1.0f;
+
+    public override async UniTask Initialize() {
+        await base.Initialize();
+        isFadeText = false;
+        pinchExpansion = MAX_PERCENTAGE;
+        gameObject.SetActive(false);
+    }
 
     /// <summary>
     /// 文字の可視化
@@ -29,6 +38,8 @@ public class PinchExpansionText : MonoBehaviour {
     /// <param name="duration"></param>
     /// <returns></returns>
     public async UniTask PinchTextFade(float duration = DEFAULT_APPEARANCE_TIME) {
+        if(pinchText.color.a < 1.0) return;
+
         isFadeText = true;
         Color targetColor = pinchText.color;
         float elapseTime = 0.0f;
@@ -51,7 +62,7 @@ public class PinchExpansionText : MonoBehaviour {
     /// <summary>
     /// テキストの色のリセット
     /// </summary>
-    private void ResetColorAlpha() {
+    public void ResetColorAlpha() {
         isFadeText = false;
         Color textColor = pinchText.color;
         textColor.a = 1.0f;

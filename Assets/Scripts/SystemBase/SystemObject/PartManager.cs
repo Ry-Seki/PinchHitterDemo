@@ -39,8 +39,7 @@ public class PartManager : SystemObject {
     /// <returns></returns>
     public async UniTask TransitionPart(eGamePart nextPart) {
         //現在のパートの片付け
-        if (currentPart != null)
-            await currentPart.Teardown();
+        if (currentPart != null) await currentPart.Teardown();
 
         //パートの切り替え
         currentPart = _partList[(int)nextPart];

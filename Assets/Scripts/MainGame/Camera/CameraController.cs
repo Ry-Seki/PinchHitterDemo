@@ -10,36 +10,52 @@ using static CommonModule;
 using UnityEngine.UIElements;
 
 public class CameraController : MonoBehaviour {
-    [SerializeField]
+    //Šgk—¦‚ğ•\‚·ƒeƒLƒXƒg
     private PinchExpansionText pinchText = null;
     //ƒJƒƒ‰
     private Camera mainCamera = null;
     //InputAction
     private PinchHitterDemo cameraInput = null;
-    private bool isMove = false;
-    Vector2 swipeDelta = Vector2.zero;
-    private int pinchExpansion = -1;
-    private float pinchPercentage = -1;
-
+    private float mousePinchExpansion = -1;
+    private float touchPinchExpansion = -1;
+    public static float pinchPercentage { get; private set; } = -1;
+    //UŒ‚—Í
+    private int rawAttack = -1;
+    //‰ŠúUŒ‚—Í
+    private const int INIT_RAW_ATTACK = 10;
+    //‘z’è‚³‚ê‚éÅ‘å‚ÌUŒ‚—Í
+    private const int MAX_RAW_ATTACK = 1000000;
+    //‘f‚ÌUŒ‚ŠÔŠu
+    private float attackIntervalSec = -1;
+    //‰ŠúUŒ‚ŠÔŠu
+    private const float INIT_ATTACK_INTERVAL_SEC = 0.5f;
+    //UŒ‚ƒtƒ‰ƒO
+    public bool isEnableAttack { get; private set; } = false;
     // ‚Q–{w‚Ìƒ^ƒbƒ`î•ñ
     private TouchState _touchState0;
     private TouchState _touchState1;
 
     public async UniTask Initialize() {
+        //ƒJƒƒ‰‚ÌƒLƒƒƒXƒg
         mainCamera = Camera.main;
+        //‰ŠúUŒ‚—Íİ’è
+        SetRawAttack(INIT_RAW_ATTACK);
+        //‰ŠúUŒ‚ŠÔŠuİ’è
+        SetRawAttackInterval(INIT_ATTACK_INTERVAL_SEC);
         //InputAction‚ğæ“¾
         cameraInput = InputSystemManager.instance.input;
-        //InputAction‚Ì“o˜^
+        //CameraInputAction‚Ì“o˜^
         cameraInput.Camera.MouseWheel.performed += OnMouseWheel;
         cameraInput.Camera.MouseWheel.canceled += EndMouseWheel;
         cameraInput.Camera.Touch_0.performed += OnTouch0;
         cameraInput.Camera.Touch_1.performed += OnTouch1;
 
-        cameraInput.Enable();
+        pinchText.gameObject.SetActive(true);
         await UniTask.CompletedTask;
     }
     public async UniTask Setup(float duration) {
-        pinchExpansion = 5;
+        mousePinchExpansion = 5.0f;
+        touchPinchExpansion = 0.2f;
         pinchPercentage = MAX_PERCENTAGE;
         float elapsedTime = 0.0f;
         //ƒJƒƒ‰‚Ì‰‰o
@@ -53,6 +69,10 @@ public class CameraController : MonoBehaviour {
             await UniTask.DelayFrame(1);
         }
         await pinchText.PinchTextFade();
+        //InputAction‚Ì—LŒø‰»
+        cameraInput.Enable();
+        //UŒ‚ƒtƒ‰ƒOOn
+        isEnableAttack = true;
     }
     private void Update() {
         if(!PartMainGame.isStart || !Input.GetMouseButton(0)) return;
@@ -60,7 +80,7 @@ public class CameraController : MonoBehaviour {
         //ƒ}ƒEƒXƒhƒ‰ƒbƒO‚Å‚ÌƒJƒƒ‰ˆÚ“®
         float cameraX = Input.GetAxis("Mouse X") * ReverseNormScaling(pinchPercentage, 100, 0);
         float cameraY = Input.GetAxis("Mouse Y") * ReverseNormScaling(pinchPercentage, 100, 0);
-        transform.position -= new Vector3(cameraX, cameraY, 0.0f);
+        mainCamera.transform.position -= new Vector3(cameraX, cameraY, 0.0f);
     }
     public void OnTouch0(InputAction.CallbackContext context) {
         _touchState0 = context.ReadValue<TouchState>();
@@ -88,15 +108,11 @@ public class CameraController : MonoBehaviour {
     /// ƒJƒƒ‰‹“_ˆÚ“®
     /// </summary>
     public void SwipeCameraMove(TouchState setTouch) {
-        //ƒ^ƒbƒ`ˆÊ’u
-        Vector2 currentPos = setTouch.position;
+        UniTask task = pinchText.PinchTextFade();
         //ˆÚ“®—Ê
-        Vector2 delta = setTouch.delta;
-        //ˆÚ“®‘O‚ÌˆÊ’u
-        Vector2 prevPos = currentPos - delta;
+        Vector2 delta = setTouch.delta * ReverseNormScaling(pinchPercentage, MAX_PERCENTAGE, 0.0f);
 
-        float distance = Vector3.Distance(currentPos, prevPos);
-        transform.position -= new Vector3(currentPos.x + distance, currentPos.y + distance, 0.0f); 
+        mainCamera.transform.position -= new Vector3(delta.x, delta.y, 0.0f); 
     }
     /// <summary>
     /// ƒsƒ“ƒ`”»’èˆ—
@@ -115,12 +131,18 @@ public class CameraController : MonoBehaviour {
         Vector2 prevPos1 = currentPos1 - delta1;
 
         // ‹——£‚Ì•Ï‰»—Ê‚ğ‹‚ß‚é
-        float pinchDelta = Vector3.Distance(currentPos0, currentPos1) - Vector3.Distance(prevPos0, prevPos1) * pinchExpansion;
+        float pinchDelta = Vector3.Distance(currentPos0, currentPos1) - Vector3.Distance(prevPos0, prevPos1);
 
-        //ƒJƒƒ‰‚ÌŠgk‚É”½‰f
-        SetCameraGraphicSize(pinchDelta);
         // ‹——£‚Ì•Ï‰»—Ê‚ğƒƒOo—Í
         Debug.Log($"ƒsƒ“ƒ`‘€ì—Ê : {pinchDelta}");
+
+        //ƒJƒƒ‰‚ÌŠgk‚É”½‰f
+        SetCameraGraphicSize(-pinchDelta);
+
+        //ˆê’è‚Ì‘€ì—Ê‚ÌƒtƒF[ƒhÀs
+        if( pinchDelta < 0.1f) return;
+
+        UniTask task = pinchText.PinchTextFade();
     }
     /// <summary>
     /// ƒzƒC[ƒ‹‘€ì
@@ -128,7 +150,7 @@ public class CameraController : MonoBehaviour {
     /// <param name="context"></param>
     public void OnMouseWheel(InputAction.CallbackContext context) {
         //ƒzƒC[ƒ‹‚ğæ“¾‚µ‚ÄA‘ã“ü
-        float scroll = Input.mouseScrollDelta.y * pinchExpansion;
+        float scroll = Input.mouseScrollDelta.y * mousePinchExpansion;
         //ƒJƒƒ‰‚ÌŠgk‚É”½‰f
         SetCameraGraphicSize(scroll);
     }
@@ -155,7 +177,7 @@ public class CameraController : MonoBehaviour {
             cameraScale = scroll;
             //c‚è‚Í’l‚ğ‘«‚·
         } else {
-            cameraScale += scroll;
+            cameraScale += scroll * touchPinchExpansion;
             pinchPercentage = ReversePercentageScaling(cameraScale, MIN_EXPANSION, MAX_EXPANSION);
         }
         //ƒJƒƒ‰‚ÉŠgk‚ğ”½‰f
@@ -164,10 +186,67 @@ public class CameraController : MonoBehaviour {
         pinchText.VisiblePinchExpansion(pinchPercentage);
     }
     /// <summary>
+    /// ‘f‚ÌUŒ‚—Í‚Ìæ“¾
+    /// </summary>
+    /// <returns></returns>
+    public int GetRawAttack() {
+        return rawAttack;
+    }
+    /// <summary>
+    /// ‘f‚ÌUŒ‚ŠÔŠu‚Ìæ“¾
+    /// </summary>
+    /// <returns></returns>
+    public float GetRawAttackInterval() {
+        return attackIntervalSec;
+    }
+    /// <summary>
+    /// ‘f‚ÌUŒ‚ŠÔŠu‚Ìİ’è
+    /// </summary>
+    /// <param name="setValue"></param>
+    public void SetRawAttackInterval(float setValue) {
+        attackIntervalSec = Mathf.Clamp(setValue, 0.1f, 2.0f);
+    }
+    /// <summary>
+    /// ‘f‚ÌUŒ‚ŠÔŠu‚Ì’Zk
+    /// </summary>
+    /// <param name="setValue"></param>
+    public void FasterRawAttackInterval(float setValue) {
+        SetRawAttackInterval(attackIntervalSec + setValue);
+    }
+    /// <summary>
+    /// ‘f‚ÌUŒ‚—Í‚Ìİ’è
+    /// </summary>
+    /// <param name="setValue"></param>
+    /// <returns></returns>
+    public void SetRawAttack(int setValue) {
+        rawAttack = Mathf.Clamp(setValue, 0, MAX_RAW_ATTACK);
+    }
+    /// <summary>
+    /// ‘f‚ÌUŒ‚—Í‘‰Á
+    /// </summary>
+    /// <param name="setValue"></param>
+    public void AddRawAttack(int setValue) {
+        SetRawAttack(rawAttack + setValue);
+    }
+    /// <summary>
     /// “Á’è‚ÌŠgk—¦‚©‚Ì”»’è
     /// </summary>
     /// <returns></returns>
     public bool IsHitter() {
         return pinchPercentage >= 90.0f;
+    }
+    /// <summary>
+    /// Šgk—¦ƒeƒLƒXƒg‚Ìİ’è
+    /// </summary>
+    /// <param name="setPinchText"></param>
+    public void SetPinchText(PinchExpansionText setPinchText) {
+        pinchText = setPinchText;
+    }
+    public void Teardown() {
+        cameraInput.Disable();
+        mainCamera.transform.position = new Vector3(0, 0, -10);
+        mainCamera.orthographicSize = MAX_EXPANSION;
+        pinchPercentage = MAX_PERCENTAGE;
+        pinchText.VisiblePinchExpansion(pinchPercentage);
     }
 }
