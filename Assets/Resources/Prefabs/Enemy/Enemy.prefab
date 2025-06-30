@@ -120,10 +120,9 @@ GameObject:
   m_Component:
   - component: {fileID: 8206689453745303419}
   - component: {fileID: 1667268451071933948}
-  - component: {fileID: 2382927264044715890}
   - component: {fileID: 4388157650029897181}
   m_Layer: 0
-  m_Name: DemoEnemy
+  m_Name: Enemy
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -186,7 +185,7 @@ SpriteRenderer:
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: 0
-  m_Sprite: {fileID: -2413806693520163455, guid: a86470a33a6bf42c4b3595704624658b, type: 3}
+  m_Sprite: {fileID: 0}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
   m_FlipY: 0
@@ -194,22 +193,9 @@ SpriteRenderer:
   m_Size: {x: 1, y: 1}
   m_AdaptiveModeThreshold: 0.5
   m_SpriteTileMode: 0
-  m_WasSpriteAssigned: 1
+  m_WasSpriteAssigned: 0
   m_MaskInteraction: 0
   m_SpriteSortPoint: 0
---- !u!114 &2382927264044715890
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 3158147223485581281}
-  m_Enabled: 0
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 228cc17234d4995469410fd22846c98a, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  HPSlider: {fileID: 5582146571176701859}
 --- !u!114 &4388157650029897181
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -222,6 +208,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8d4ec1addc45f1841938576a846c850a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  enemySprite: {fileID: 1667268451071933948}
   enemyHPSlider: {fileID: 5582146571176701859}
 --- !u!1 &5517416539690786699
 GameObject:
@@ -517,7 +504,7 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls: []
   m_Sprite: {fileID: 0}
-  m_Type: 1
+  m_Type: 0
   m_PreserveAspect: 0
   m_FillCenter: 1
   m_FillMethod: 4

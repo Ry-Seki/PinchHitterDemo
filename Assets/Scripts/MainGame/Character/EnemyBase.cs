@@ -1,10 +1,24 @@
 using Cysharp.Threading.Tasks;
 using System.Collections;
 using System.Collections.Generic;
+using System.Text;
 using UnityEngine;
 using UnityEngine.UI;
 
+using static CommonModule;
+
 public abstract class EnemyBase : MonoBehaviour {
+    protected static StringBuilder spriteNameBuilder = new StringBuilder();
+
+    [SerializeField]
+    protected SpriteRenderer enemySprite = null;
+    [SerializeField]
+    protected Sprite[][] animSpriteList = null;
+    protected int animIndex = -1;
+    protected eEnemyAnimation currentAnim = eEnemyAnimation.Invalid;
+    protected UniTask animTask;
+    private static readonly int _ANIMATION_DELAY_MILLI_SEC = 150;
+
     [SerializeField]
     protected Slider enemyHPSlider = null;
     public int maxHP { get; protected set; } = -1;
@@ -75,4 +89,48 @@ public abstract class EnemyBase : MonoBehaviour {
         }
         damageCoolTime = false;
     }
+    /// <summary>
+    /// アニメーション用の画像切り替えタスク
+    /// </summary>
+    /// <returns></returns>
+    protected async UniTask PlayAnimationTask() {
+        while (true) {
+            //現在のアニメーション取得
+            int currentAnimIndex = (int)currentAnim;
+            if (!IsEnableIndex(animSpriteList, currentAnimIndex)) {
+                //無効なアニメーションなら終了
+                await UniTask.DelayFrame(1);
+                return;
+            }
+            Sprite[] currentAnimSpriteList = animSpriteList[currentAnimIndex];
+            //ループ判定、処理
+            if (!IsEnableIndex(currentAnimSpriteList, animIndex))
+                AnimationLoopProcess();
+            //画像の設定
+            enemySprite.sprite = currentAnimSpriteList[animIndex];
+            //規定ミリ秒待ち、インデックス増加
+            await UniTask.Delay(_ANIMATION_DELAY_MILLI_SEC);
+            animIndex++;
+        }
+    }
+    /// <summary>
+    /// アニメーションのループ処理
+    /// </summary>
+    private void AnimationLoopProcess() {
+        //待機と歩行は_animIndexを0にする
+        animIndex = 0;
+    }
+
+    /// <summary>
+    /// アニメーションの再生
+    /// </summary>
+    /// <param name="setAnim"></param>
+    public void SetAnimation(eEnemyAnimation setAnim) {
+        //現在と同じアニメーションなら処理しない
+        if (currentAnim == setAnim) return;
+
+        currentAnim = setAnim;
+        animIndex = 0;
+    }
+
 }

@@ -41,3 +41,9 @@ public enum eFadeState {
     FadeOut = 1,
     FadeIn = 0,
 }
+
+public enum eEnemyAnimation {
+    Invalid = -1,
+    Wait,
+    Max,
+}
