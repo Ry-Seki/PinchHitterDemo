@@ -4,7 +4,6 @@ using System.Collections.Generic;
 using System.Text;
 using UnityEngine;
 
-using static EnemyUtility;
 
 public class NormalEnemy : EnemyBase {
     private const int RAW_ENEMY_HP = 100;
@@ -12,6 +11,8 @@ public class NormalEnemy : EnemyBase {
     private static readonly string ENEMY_SPRITE_PATH = "Design/Sprites/";
     private static readonly string[] ANIMATION_SPRITE_NAME =
         new string[] {"NPC"};
+    private const float DEFAULT_MOVE_TIME = 10.0f;
+    private bool isMove = false;
 
     public override void Setup() {
         base.Setup();
@@ -49,22 +50,27 @@ public class NormalEnemy : EnemyBase {
     protected override async UniTask Damage() {
         //ヒットSEの再生
         UniTask task = AudioManager.instance.PlaySE(0);
-        //ダメージの取得
-        float damage = mainCamera.GetRawAttack() * (float)DamageNormScaling(CameraController.pinchPercentage);
-        HP -= (int)damage;
-        enemyHPSlider.value = (float)HP / (float)maxHP;
-        if (enemyHPSlider.value <= 0) {
-            enemyHPSlider.value = 0;
-            MenuManager.instance.Get<ScoreText>().AddScore(ADD_SCORE);
-            //未使用状態にする
-            UnuseEnemy(this);
-            if (GetEnemyCount() <= 0) {
-                await FadeManager.instance.FadeOut();
-                UniTask partTask = PartManager.instance.TransitionPart(eGamePart.Ending);
-            }
-        } else {
-            //クールタイム発動
-            await DamageCoolTime();
+        await base.Damage();
+        if (isMove) return;
+
+        await EnemyMoveDirection();
+    }
+    public override async UniTask EnemyMoveDirection() {
+        isMove = true;
+        float elapseTime = 0.0f;
+        float duration = Random.Range(5.0f, 10.0f);
+        Vector3 startPos = transform.position;
+        Vector3 goalPos = new Vector3(Random.Range(-50, 51), Random.Range(-50, 51), 0.0f);
+        Vector3 direction = (startPos - goalPos).normalized;
+
+        while (elapseTime < duration) {
+            elapseTime += Time.deltaTime;
+            float t = elapseTime / DEFAULT_MOVE_TIME;
+            Vector3 setPos = Vector3.Lerp(startPos, goalPos, t);
+            transform.position = setPos;
+            await UniTask.DelayFrame(1);
         }
+        isMove = false;
+        await UniTask.CompletedTask;
     }
 }

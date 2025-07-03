@@ -6,6 +6,7 @@ using UnityEngine;
 using UnityEngine.UI;
 
 using static CommonModule;
+using static EnemyUtility;
 
 public abstract class EnemyBase : MonoBehaviour {
     protected static StringBuilder spriteNameBuilder = new StringBuilder();
@@ -63,7 +64,25 @@ public abstract class EnemyBase : MonoBehaviour {
     /// <summary>
     /// 死亡判定付きのダメージ付与
     /// </summary>
-    protected abstract UniTask Damage();
+    protected virtual async UniTask Damage() {
+        //ダメージの取得
+        float damage = mainCamera.GetRawAttack() * (float)DamageNormScaling(CameraController.pinchPercentage);
+        HP -= (int)damage;
+        enemyHPSlider.value = (float)HP / (float)maxHP;
+        if (enemyHPSlider.value <= 0) {
+            enemyHPSlider.value = 0;
+            MenuManager.instance.Get<ScoreText>().AddScore(ADD_SCORE);
+            //未使用状態にする
+            UnuseEnemy(this);
+        } else {
+            //クールタイム発動
+            await DamageCoolTime();
+        }
+        if (GetEnemyCount() <= 0) {
+            await FadeManager.instance.FadeOut();
+            UniTask partTask = PartManager.instance.TransitionPart(eGamePart.Ending);
+        }
+    }
     /// <summary>
     /// ダメージ正規補正
     /// </summary>
@@ -133,4 +152,7 @@ public abstract class EnemyBase : MonoBehaviour {
         animIndex = 0;
     }
 
+    public virtual async UniTask EnemyMoveDirection() {
+        await UniTask.CompletedTask;
+    }
 }

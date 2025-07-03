@@ -29,6 +29,9 @@ public class CameraController : MonoBehaviour {
     private float attackIntervalSec = -1;
     //初期攻撃間隔
     private const float INIT_ATTACK_INTERVAL_SEC = 0.5f;
+    //初期ピンチ倍率
+    private const float INIT_TOUCH_PINCH_EXPANSION = 0.2f;
+    //
     //攻撃フラグ
     public bool isEnableAttack { get; private set; } = false;
     // ２本指のタッチ情報
@@ -38,6 +41,7 @@ public class CameraController : MonoBehaviour {
     public async UniTask Initialize() {
         //カメラのキャスト
         mainCamera = Camera.main;
+        mainCamera.orthographicSize = MAX_EXPANSION;
         //初期攻撃力設定
         SetRawAttack(INIT_RAW_ATTACK);
         //初期攻撃間隔設定
@@ -55,7 +59,7 @@ public class CameraController : MonoBehaviour {
     }
     public async UniTask Setup(float duration) {
         mousePinchExpansion = 5.0f;
-        touchPinchExpansion = 0.2f;
+        touchPinchExpansion = INIT_TOUCH_PINCH_EXPANSION;
         pinchPercentage = MAX_PERCENTAGE;
         float elapsedTime = 0.0f;
         //カメラの演出
@@ -110,9 +114,11 @@ public class CameraController : MonoBehaviour {
     public void SwipeCameraMove(TouchState setTouch) {
         UniTask task = pinchText.PinchTextFade();
         //移動量
-        Vector2 delta = setTouch.delta * ReverseNormScaling(pinchPercentage, MAX_PERCENTAGE, 0.0f);
-
-        mainCamera.transform.position -= new Vector3(delta.x, delta.y, 0.0f); 
+        Vector3 delta = setTouch.delta * ReverseNormScaling(pinchPercentage, MAX_PERCENTAGE, 0.0f);
+        mainCamera.transform.position -= new Vector3(delta.x, delta.y, 0.0f);
+        Vector3 goalPos = transform.position - delta;
+        goalPos.z = -10.0f;
+        //mainCamera.transform.position = Vector3.Lerp(transform.position, goalPos, Time.deltaTime / 10.0f); 
     }
     /// <summary>
     /// ピンチ判定処理
