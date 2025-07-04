@@ -7,6 +7,7 @@ using UnityEngine.UI;
 
 using static CommonModule;
 using static EnemyUtility;
+using static PlayerStatusUtility;
 
 public abstract class EnemyBase : MonoBehaviour {
     protected static StringBuilder spriteNameBuilder = new StringBuilder();
@@ -66,7 +67,7 @@ public abstract class EnemyBase : MonoBehaviour {
     /// </summary>
     protected virtual async UniTask Damage() {
         //É_ÉÅÅ[ÉWÇÃéÊìæ
-        float damage = mainCamera.GetRawAttack() * (float)DamageNormScaling(CameraController.pinchPercentage);
+        float damage = GetRawAttack() * (float)DamageNormScaling(CameraController.pinchPercentage);
         HP -= (int)damage;
         enemyHPSlider.value = (float)HP / (float)maxHP;
         if (enemyHPSlider.value <= 0) {
@@ -100,7 +101,7 @@ public abstract class EnemyBase : MonoBehaviour {
     public async UniTask DamageCoolTime() {
         damageCoolTime = true;
         float elapsedTime = 0.0f;
-        float duration = mainCamera.GetRawAttackInterval();
+        float duration = GetRawInterval();
 
         while (elapsedTime < duration) {
             elapsedTime += Time.deltaTime;

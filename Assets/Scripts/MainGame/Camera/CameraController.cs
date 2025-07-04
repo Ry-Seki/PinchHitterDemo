@@ -7,7 +7,7 @@ using UnityEngine.InputSystem.LowLevel;
 
 using static GameConst;
 using static CommonModule;
-using UnityEngine.UIElements;
+using static PlayerStatusUtility;
 
 public class CameraController : MonoBehaviour {
     //Šgk—¦‚ğ•\‚·ƒeƒLƒXƒg
@@ -19,16 +19,6 @@ public class CameraController : MonoBehaviour {
     private float mousePinchExpansion = -1;
     private float touchPinchExpansion = -1;
     public static float pinchPercentage { get; private set; } = -1;
-    //UŒ‚—Í
-    private int rawAttack = -1;
-    //‰ŠúUŒ‚—Í
-    private const int INIT_RAW_ATTACK = 10;
-    //‘z’è‚³‚ê‚éÅ‘å‚ÌUŒ‚—Í
-    private const int MAX_RAW_ATTACK = 1000000;
-    //‘f‚ÌUŒ‚ŠÔŠu
-    private float attackIntervalSec = -1;
-    //‰ŠúUŒ‚ŠÔŠu
-    private const float INIT_ATTACK_INTERVAL_SEC = 0.5f;
     //‰Šúƒsƒ“ƒ`”{—¦
     private const float INIT_TOUCH_PINCH_EXPANSION = 0.2f;
     //
@@ -42,10 +32,6 @@ public class CameraController : MonoBehaviour {
         //ƒJƒƒ‰‚ÌƒLƒƒƒXƒg
         mainCamera = Camera.main;
         mainCamera.orthographicSize = MAX_EXPANSION;
-        //‰ŠúUŒ‚—Íİ’è
-        SetRawAttack(INIT_RAW_ATTACK);
-        //‰ŠúUŒ‚ŠÔŠuİ’è
-        SetRawAttackInterval(INIT_ATTACK_INTERVAL_SEC);
         //InputAction‚ğæ“¾
         cameraInput = InputSystemManager.instance.input;
         //CameraInputAction‚Ì“o˜^
@@ -53,7 +39,6 @@ public class CameraController : MonoBehaviour {
         cameraInput.Camera.MouseWheel.canceled += EndMouseWheel;
         cameraInput.Camera.Touch_0.performed += OnTouch0;
         cameraInput.Camera.Touch_1.performed += OnTouch1;
-
         pinchText.gameObject.SetActive(true);
         await UniTask.CompletedTask;
     }
@@ -79,6 +64,12 @@ public class CameraController : MonoBehaviour {
         isEnableAttack = true;
     }
     private void Update() {
+        if (Input.GetKeyDown(KeyCode.Escape)) {
+            EnhanceAttack(1);
+            ShortInterval(1);
+            ExpansionPercentage(1);
+        }
+
         if(!PartMainGame.isStart || !Input.GetMouseButton(0)) return;
 
         //ƒ}ƒEƒXƒhƒ‰ƒbƒO‚Å‚ÌƒJƒƒ‰ˆÚ“®
@@ -192,54 +183,11 @@ public class CameraController : MonoBehaviour {
         pinchText.VisiblePinchExpansion(pinchPercentage);
     }
     /// <summary>
-    /// ‘f‚ÌUŒ‚—Í‚Ìæ“¾
-    /// </summary>
-    /// <returns></returns>
-    public int GetRawAttack() {
-        return rawAttack;
-    }
-    /// <summary>
-    /// ‘f‚ÌUŒ‚ŠÔŠu‚Ìæ“¾
-    /// </summary>
-    /// <returns></returns>
-    public float GetRawAttackInterval() {
-        return attackIntervalSec;
-    }
-    /// <summary>
-    /// ‘f‚ÌUŒ‚ŠÔŠu‚Ìİ’è
-    /// </summary>
-    /// <param name="setValue"></param>
-    public void SetRawAttackInterval(float setValue) {
-        attackIntervalSec = Mathf.Clamp(setValue, 0.1f, 2.0f);
-    }
-    /// <summary>
-    /// ‘f‚ÌUŒ‚ŠÔŠu‚Ì’Zk
-    /// </summary>
-    /// <param name="setValue"></param>
-    public void FasterRawAttackInterval(float setValue) {
-        SetRawAttackInterval(attackIntervalSec + setValue);
-    }
-    /// <summary>
-    /// ‘f‚ÌUŒ‚—Í‚Ìİ’è
-    /// </summary>
-    /// <param name="setValue"></param>
-    /// <returns></returns>
-    public void SetRawAttack(int setValue) {
-        rawAttack = Mathf.Clamp(setValue, 0, MAX_RAW_ATTACK);
-    }
-    /// <summary>
-    /// ‘f‚ÌUŒ‚—Í‘‰Á
-    /// </summary>
-    /// <param name="setValue"></param>
-    public void AddRawAttack(int setValue) {
-        SetRawAttack(rawAttack + setValue);
-    }
-    /// <summary>
     /// “Á’è‚ÌŠgk—¦‚©‚Ì”»’è
     /// </summary>
     /// <returns></returns>
     public bool IsHitter() {
-        return pinchPercentage >= 90.0f;
+        return pinchPercentage >= GetRawPercentage();
     }
     /// <summary>
     /// Šgk—¦ƒeƒLƒXƒg‚Ìİ’è

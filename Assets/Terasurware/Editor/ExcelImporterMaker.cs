@@ -59,7 +59,7 @@ public class ExcelImporterMaker : EditorWindow
 			}
 
 			//特定セル名のカラムを無視
-			if(cell.name == "comment") {
+			if(cell.name == "comment" || cell.name == "select") {
 				cell.isEnable = false;
 				continue;
 			}

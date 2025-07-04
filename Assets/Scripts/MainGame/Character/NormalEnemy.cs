@@ -2,6 +2,8 @@ using Cysharp.Threading.Tasks;
 using System.Collections;
 using System.Collections.Generic;
 using System.Text;
+using System.Threading;
+using Unity.VisualScripting.Antlr3.Runtime;
 using UnityEngine;
 
 
@@ -13,6 +15,8 @@ public class NormalEnemy : EnemyBase {
         new string[] {"NPC"};
     private const float DEFAULT_MOVE_TIME = 10.0f;
     private bool isMove = false;
+    //移動のタスクを中断するためのトークン
+    private CancellationToken token;
 
     public override void Setup() {
         base.Setup();
@@ -56,11 +60,12 @@ public class NormalEnemy : EnemyBase {
         await EnemyMoveDirection();
     }
     public override async UniTask EnemyMoveDirection() {
+        token = this.GetCancellationTokenOnDestroy();
         isMove = true;
         float elapseTime = 0.0f;
         float duration = Random.Range(5.0f, 10.0f);
         Vector3 startPos = transform.position;
-        Vector3 goalPos = new Vector3(Random.Range(-50, 51), Random.Range(-50, 51), 0.0f);
+        Vector3 goalPos = new Vector3(Random.Range(-100, 101), Random.Range(-100, 101), 0.0f);
         Vector3 direction = (startPos - goalPos).normalized;
 
         while (elapseTime < duration) {
@@ -68,7 +73,7 @@ public class NormalEnemy : EnemyBase {
             float t = elapseTime / DEFAULT_MOVE_TIME;
             Vector3 setPos = Vector3.Lerp(startPos, goalPos, t);
             transform.position = setPos;
-            await UniTask.DelayFrame(1);
+            await UniTask.DelayFrame(1, PlayerLoopTiming.Update, token);
         }
         isMove = false;
         await UniTask.CompletedTask;

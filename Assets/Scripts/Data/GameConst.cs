@@ -18,4 +18,7 @@ public class GameConst {
     public static readonly int INIT_FLOOR_ENEMY = 16;
     //想定される敵の最大数
     public static readonly int MAX_FLOOR_ENEMY = 128;
+
+    //最大ステータスレベル
+    public static readonly int MAX_STATUS_LEVEL = 50;
 }
