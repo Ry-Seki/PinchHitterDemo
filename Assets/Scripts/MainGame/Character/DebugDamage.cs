@@ -31,7 +31,7 @@ public class DebugDamage : MonoBehaviour {
                 HPSlider.value -= damage;
                 if (HPSlider.value <= 0) {
                     HPSlider.value = 0;
-                    MenuManager.instance.Get<ScoreText>().AddScore(ADD_SCORE);
+                    MenuManager.instance.Get<ScoreTextManager>().AddScore(ADD_SCORE);
                     Destroy(gameObject);
                 }
             }

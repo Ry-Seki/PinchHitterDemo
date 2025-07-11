@@ -6,16 +6,18 @@ using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.SocialPlatforms.Impl;
 
-public class ScoreText : MenuBase {
+public class ScoreTextManager : MenuBase {
     [SerializeField]
     private TextMeshProUGUI scoreText = null;
     public static int score { get; private set; } = -1;
+    public static int highScore { get; private set; } = -1;
     private const string SCORE_TEXT = "Score : ";
     private const int MAX_SCORE_NUM = 1000000;
 
     public override async UniTask Initialize() {
         await base.Initialize();
         gameObject.SetActive(false);
+        highScore = SaveDataManager.instance.saveData.highScore;
         score = 0;
     }
 
@@ -26,6 +28,7 @@ public class ScoreText : MenuBase {
 
     public override async UniTask Close() {
         await base.Close();
+        if(score > highScore) highScore = score;
         score = 0;
     }
     /// <summary>

@@ -21,7 +21,7 @@ public class PartMainGame : PartBase {
         await pinchText.Initialize();
         //カメラの拡縮率のテキストにセット
         mainCamera.SetPinchText(pinchText);
-        await MenuManager.instance.Get<ScoreText>("Prefabs/Menu/ScoreText").Initialize();
+        await MenuManager.instance.Get<ScoreTextManager>("Prefabs/Menu/ScoreText").Initialize();
         enemyManager?.Initialize();
     }
 
@@ -37,10 +37,10 @@ public class PartMainGame : PartBase {
         //カメラの演出
         await mainCamera.Setup(1.0f);
         //スコアテキストの表示
-        ScoreText scoreText = MenuManager.instance.Get<ScoreText>();
+        ScoreTextManager scoreText = MenuManager.instance.Get<ScoreTextManager>();
         UniTask scoreTextTask = scoreText.Open();
         //BGM再生
-        AudioManager.instance.PlayBGM(0);
+        AudioManager.instance.PlayBGM(1);
         //スタートフラグの変更
         isStart = true;
     }
@@ -51,7 +51,7 @@ public class PartMainGame : PartBase {
         AudioManager.instance.StopBGM();
         //スタートフラグの変更
         isStart = false;
-        ScoreText scoreText = MenuManager.instance.Get<ScoreText>();
+        ScoreTextManager scoreText = MenuManager.instance.Get<ScoreTextManager>();
         UniTask scoreTextTask = scoreText.Close();
         PinchExpansionText pinchText = MenuManager.instance.Get<PinchExpansionText>();
         UniTask pinchTextTask = pinchText.Close();

@@ -2,6 +2,8 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
+using static SaveDataUtility;
+
 public class PlayerStatusUtility : MonoBehaviour {
     /// <summary>
     /// UŒ‚—Íæ“¾
@@ -72,5 +74,6 @@ public class PlayerStatusUtility : MonoBehaviour {
 
     public static void InitStatus() {
         PlayerStatusManager.instance.InitStatus();
+        SaveDataManager.instance.InitLevel();
     }
 }

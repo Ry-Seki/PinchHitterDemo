@@ -13,4 +13,5 @@ MonoBehaviour:
   m_Name: BGMAssign
   m_EditorClassIdentifier: 
   bgmArray:
+  - {fileID: 8300000, guid: 0c0cc80e4f2f56741b33471bae767a5d, type: 3}
   - {fileID: 8300000, guid: 6867be6ed4b77ac4ab2fb53ab26ad86e, type: 3}

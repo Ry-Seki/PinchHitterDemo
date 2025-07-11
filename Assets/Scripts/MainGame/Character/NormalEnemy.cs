@@ -53,7 +53,7 @@ public class NormalEnemy : EnemyBase {
     /// </summary>
     protected override async UniTask Damage() {
         //ÉqÉbÉgSEÇÃçƒê∂
-        UniTask task = AudioManager.instance.PlaySE(0);
+        await AudioManager.instance.PlaySE(0);
         await base.Damage();
         if (isMove) return;
 
@@ -68,7 +68,7 @@ public class NormalEnemy : EnemyBase {
         Vector3 goalPos = new Vector3(Random.Range(-100, 101), Random.Range(-100, 101), 0.0f);
         Vector3 direction = (startPos - goalPos).normalized;
 
-        while (elapseTime < duration) {
+        while (gameObject.activeSelf && elapseTime < duration) {
             elapseTime += Time.deltaTime;
             float t = elapseTime / DEFAULT_MOVE_TIME;
             Vector3 setPos = Vector3.Lerp(startPos, goalPos, t);

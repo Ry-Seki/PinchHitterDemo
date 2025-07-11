@@ -64,12 +64,6 @@ public class CameraController : MonoBehaviour {
         isEnableAttack = true;
     }
     private void Update() {
-        if (Input.GetKeyDown(KeyCode.Escape)) {
-            EnhanceAttack(1);
-            ShortInterval(1);
-            ExpansionPercentage(1);
-        }
-
         if(!PartMainGame.isStart || !Input.GetMouseButton(0)) return;
 
         //マウスドラッグでのカメラ移動
@@ -109,7 +103,6 @@ public class CameraController : MonoBehaviour {
         mainCamera.transform.position -= new Vector3(delta.x, delta.y, 0.0f);
         Vector3 goalPos = transform.position - delta;
         goalPos.z = -10.0f;
-        //mainCamera.transform.position = Vector3.Lerp(transform.position, goalPos, Time.deltaTime / 10.0f); 
     }
     /// <summary>
     /// ピンチ判定処理
@@ -129,9 +122,6 @@ public class CameraController : MonoBehaviour {
 
         // 距離の変化量を求める
         float pinchDelta = Vector3.Distance(currentPos0, currentPos1) - Vector3.Distance(prevPos0, prevPos1);
-
-        // 距離の変化量をログ出力
-        Debug.Log($"ピンチ操作量 : {pinchDelta}");
 
         //カメラの拡縮に反映
         SetCameraGraphicSize(-pinchDelta);

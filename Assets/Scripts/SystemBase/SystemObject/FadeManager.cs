@@ -40,6 +40,7 @@ public class FadeManager : SystemObject {
     /// <param name="duration"></param>
     /// <returns></returns>
     private async UniTask FadeTargetAlfha(eFadeState fadeState, float duration) {
+        fadeImage.gameObject.SetActive(true);
         float elapseTime = 0.0f;
         float startAlpha = fadeImage.color.a;
         float targetAlpha = (float)fadeState;
@@ -56,5 +57,6 @@ public class FadeManager : SystemObject {
         }
         targetColor.a = targetAlpha;
         fadeImage.color = targetColor;
+        fadeImage.gameObject.SetActive(false);
     }
 }

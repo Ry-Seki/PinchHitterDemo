@@ -29,11 +29,11 @@ public abstract class EnemyBase : MonoBehaviour {
     protected bool damageCoolTime = false;
     protected const float MIN_DAMAGE_NORM = 1.0f;
     protected const float MAX_DAMAGE_NORM = 2.0f;
-    protected const float MIN_DAMAGE_PERCENTAGE = 90.0f;
     protected const float MAX_DAMAGE_PERCENTAGE = 100.0f;
     protected readonly int ADD_SCORE = 200;
     protected static CameraController mainCamera { get; private set; } = null;
 
+    private static bool isOnce = false;
     public static void Initialize() {
         if(mainCamera != null) return;
 
@@ -41,6 +41,7 @@ public abstract class EnemyBase : MonoBehaviour {
         mainCamera = Camera.main.GetComponent<CameraController>();
     }
     public virtual void Setup() {
+        isOnce = false; 
         gameObject.SetActive(true);
         //HPゲージの初期化
         enemyHPSlider.value = 1.0f;
@@ -72,14 +73,15 @@ public abstract class EnemyBase : MonoBehaviour {
         enemyHPSlider.value = (float)HP / (float)maxHP;
         if (enemyHPSlider.value <= 0) {
             enemyHPSlider.value = 0;
-            MenuManager.instance.Get<ScoreText>().AddScore(ADD_SCORE);
+            MenuManager.instance.Get<ScoreTextManager>().AddScore(ADD_SCORE);
             //未使用状態にする
             UnuseEnemy(this);
         } else {
             //クールタイム発動
             await DamageCoolTime();
         }
-        if (GetEnemyCount() <= 0) {
+        if (!isOnce && GetEnemyCount() <= 0) {
+            isOnce = true;
             await FadeManager.instance.FadeOut();
             UniTask partTask = PartManager.instance.TransitionPart(eGamePart.Ending);
         }
@@ -91,7 +93,7 @@ public abstract class EnemyBase : MonoBehaviour {
     /// <returns></returns>
     protected float DamageNormScaling(float setValue) {
         return MIN_DAMAGE_NORM + 
-            ((setValue - MIN_DAMAGE_PERCENTAGE) / (MAX_DAMAGE_PERCENTAGE - MIN_DAMAGE_PERCENTAGE)) * 
+            ((setValue - GetRawPercentage()) / (MAX_DAMAGE_PERCENTAGE - GetRawPercentage())) * 
             (MAX_DAMAGE_NORM - MIN_DAMAGE_NORM);
     }
     /// <summary>

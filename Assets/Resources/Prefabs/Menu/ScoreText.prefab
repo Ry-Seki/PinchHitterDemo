@@ -12,7 +12,7 @@ GameObject:
   - component: {fileID: 9218675733720133494}
   - component: {fileID: 2623714585595438737}
   - component: {fileID: 4576409084418289161}
-  - component: {fileID: 1368965595984638651}
+  - component: {fileID: 8695619342629108650}
   m_Layer: 5
   m_Name: ScoreText
   m_TagString: Untagged
@@ -103,7 +103,7 @@ MonoBehaviour:
   m_BlockingMask:
     serializedVersion: 2
     m_Bits: 4294967295
---- !u!114 &1368965595984638651
+--- !u!114 &8695619342629108650
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -112,7 +112,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 5366756405381386710}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 4ad54d1797466154fa8a5d08b8f5a427, type: 3}
+  m_Script: {fileID: 11500000, guid: eff8c0ac580c2a346ac54a00b58841e7, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   _menuRoot: {fileID: 5366756405381386710}

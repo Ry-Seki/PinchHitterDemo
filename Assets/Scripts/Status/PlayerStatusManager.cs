@@ -10,15 +10,19 @@ public class PlayerStatusManager : SystemObject{
 
     //‹­‰»€–Ú
     private int rawAttack = -1;
-    private float rawInterval = -1.0f;
+    private float rawInterval = -1;
     private float rawPercentage = -1;
+    //‰ŠúƒXƒe[ƒ^ƒX
+    private const int INIT_ATTACK = 10;
+    private const float INIT_INTERVAL = 1.0f;
+    private const float INIT_PERCENTAGE = 90.0f;
 
     //’è”
     private const int MAX_RAW_ATTACK = 1000000;
     private const float MIN_RAW_INTERVAL = 0.01f;
     private const float MIN_RAW_PERCENTAGE = 10.0f;
     private const int ENHANCE_ATTACK_NUM = 5;
-    private const float SHOWTEN_INTERVAL = 0.1f;
+    private const float SHOWTEN_INTERVAL = 0.05f;
     private const float EXPANSION_ATTACK_AREA = 1.5f;
 
     public override async UniTask Initialize() {
@@ -35,7 +39,7 @@ public class PlayerStatusManager : SystemObject{
         InitStatus();
         EnhanceAttack(setData.rawAttackLv);
         ShortInterval(setData.rawAtkIntervalLv);
-        ExpansionPercentage(setData.rawAtkIntervalLv);
+        ExpansionPercentage(setData.rawAtkPercentageLv);
     }
     /// <summary>
     /// UŒ‚—Íæ“¾
@@ -53,11 +57,11 @@ public class PlayerStatusManager : SystemObject{
         rawAttack = Mathf.Clamp(setValue, 0, MAX_RAW_ATTACK);
     }
     /// <summary>
-    /// UŒ‚—Í‘‰Á
+    /// ƒŒƒxƒ‹w’è‚ÌUŒ‚—Í‘‰Á
     /// </summary>
     /// <param name="setLevel"></param>
     public void EnhanceAttack(int setLevel) {
-        SetRawAttack(rawAttack + ENHANCE_ATTACK_NUM * setLevel);
+        SetRawAttack(INIT_ATTACK + ENHANCE_ATTACK_NUM * setLevel);
     }
     /// <summary>
     /// UŒ‚ŠÔŠuæ“¾
@@ -74,11 +78,11 @@ public class PlayerStatusManager : SystemObject{
         rawInterval = Mathf.Clamp(setValue, MIN_RAW_INTERVAL, 1.0f);
     }
     /// <summary>
-    /// UŒ‚ŠÔŠu’Zk
+    /// ƒŒƒxƒ‹w’è‚ÌUŒ‚ŠÔŠu’Zk
     /// </summary>
     /// <param name="setLevel"></param>
     public void ShortInterval(int setLevel) {
-        SetRawInterval(rawInterval - SHOWTEN_INTERVAL * setLevel);
+        SetRawInterval(INIT_INTERVAL - SHOWTEN_INTERVAL * setLevel);
     }
     /// <summary>
     /// UŒ‚‰Â”\Šgk—¦æ“¾
@@ -95,15 +99,15 @@ public class PlayerStatusManager : SystemObject{
         rawPercentage = Mathf.Clamp(setValue, MIN_RAW_PERCENTAGE, MAX_PERCENTAGE);
     }
     /// <summary>
-    /// UŒ‚‰Â”\Šgk—¦‚ÌŠg‘å
+    /// ƒŒƒxƒ‹w’è‚ÌUŒ‚‰Â”\Šgk—¦‚ÌŠg‘å
     /// </summary>
     /// <param name="setLevel"></param>
     public void ExpansionPercentage(int setLevel) { 
-        SetRawPercentage(rawPercentage - EXPANSION_ATTACK_AREA  * setLevel);
+        SetRawPercentage(INIT_PERCENTAGE - EXPANSION_ATTACK_AREA  * setLevel);
     }
     public void InitStatus() {
-        rawAttack = 10;
-        rawInterval = 1.0f;
-        rawPercentage = 90.0f;
+        rawAttack = INIT_ATTACK;
+        rawInterval = INIT_INTERVAL;
+        rawPercentage = INIT_PERCENTAGE;
     }
 }

@@ -2,6 +2,7 @@ using Cysharp.Threading.Tasks;
 using System.Collections;
 using System.Collections.Generic;
 using System.Runtime.InteropServices;
+using System.Threading;
 using UnityEngine;
 
 using static CommonModule;
@@ -19,6 +20,8 @@ public class AudioManager : SystemObject {
     private BGMAssign bgmAssign = null;
     [SerializeField]
     private SEAssign seAssign = null;
+    //移動のタスクを中断するためのトークン
+    private CancellationToken token;
 
     public override async UniTask Initialize() {
         instance = this;
@@ -46,6 +49,7 @@ public class AudioManager : SystemObject {
     /// </summary>
     /// <param name="seID"></param>
     public async UniTask PlaySE(int seID) {
+        token = this.GetCancellationTokenOnDestroy();
         if (!IsEnableIndex(seAssign.seArray, seID)) return;
         //再生中でないオーディオソースを探してそれで再生
         for (int i = 0, max = seAudioSource.Length; i < max; i++) {
@@ -55,7 +59,7 @@ public class AudioManager : SystemObject {
             audioSource.clip = seAssign.seArray[seID];
             audioSource.Play();
             //SEの終了待ち
-            while (audioSource.isPlaying) await UniTask.DelayFrame(1);
+            while (audioSource.isPlaying) await UniTask.DelayFrame(1, PlayerLoopTiming.Update, token);
 
             return;
         }

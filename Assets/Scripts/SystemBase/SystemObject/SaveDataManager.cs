@@ -5,6 +5,7 @@ using System.IO;
 using System.IO.Pipes;
 using System.Runtime.Serialization.Formatters.Binary;
 using System.Text;
+using Unity.VisualScripting;
 using UnityEngine;
 
 using static PlayerStatusUtility;
@@ -29,8 +30,7 @@ public class SaveDataManager : SystemObject {
     }
 
     public void SaveData() {
-        if(ScoreText.score > saveData.highScore) 
-            saveData.highScore = ScoreText.score;
+        saveData.highScore = ScoreTextManager.highScore;
 
         Debug.Log("Save");
         SaveDataToFile(saveData);
@@ -38,8 +38,12 @@ public class SaveDataManager : SystemObject {
 
     public void LoadData() {
         saveData = LoadDataFromFile();
+        
         //デバッグ用
         Debug.Log("saveData.highScore : " + saveData.highScore);
+        Debug.Log("saveData.attackLv : " + saveData.rawAttackLv);
+        Debug.Log("saveData.intervalLv : " + saveData.rawAtkIntervalLv);
+        Debug.Log("saveData.percentage : " + saveData.rawAtkPercentageLv);
     }
     /// <summary>
     /// セーブデータをファイルに渡す
@@ -116,5 +120,13 @@ public class SaveDataManager : SystemObject {
         saveData.rawAtkIntervalLv = 0;
         saveData.rawAtkPercentageLv = 0;
         saveData.statusPoint = 0;
+    }
+    /// <summary>
+    /// レベルデータの初期化
+    /// </summary>
+    public void InitLevel() {
+        saveData.rawAttackLv = 0;
+        saveData.rawAtkIntervalLv = 0;
+        saveData.rawAtkPercentageLv = 0;
     }
 }
