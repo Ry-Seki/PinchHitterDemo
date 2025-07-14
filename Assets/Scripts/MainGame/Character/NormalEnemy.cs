@@ -43,7 +43,7 @@ public class NormalEnemy : EnemyBase {
     }
     protected override void OnWillRenderObject() {
         base.OnWillRenderObject();
-        if(!isCameraHit) return;
+        if(!isCameraHit || damageCoolTime) return;
 
         //ダメージを与える
         UniTask task = Damage();
@@ -53,7 +53,8 @@ public class NormalEnemy : EnemyBase {
     /// </summary>
     protected override async UniTask Damage() {
         //ヒットSEの再生
-        await AudioManager.instance.PlaySE(0);
+        UniTask task = AudioManager.instance.PlaySE(0);
+
         await base.Damage();
         if (isMove) return;
 
