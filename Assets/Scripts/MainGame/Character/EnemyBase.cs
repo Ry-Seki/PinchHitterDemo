@@ -25,6 +25,7 @@ public abstract class EnemyBase : MonoBehaviour {
     protected Slider enemyHPSlider = null;
     public int maxHP { get; protected set; } = -1;
     public int HP { get; protected set; } = -1;
+    protected bool isDead = false;
     protected bool isCameraHit = false;
     protected bool damageCoolTime = false;
     protected const float MIN_DAMAGE_NORM = 1.0f;
@@ -45,6 +46,8 @@ public abstract class EnemyBase : MonoBehaviour {
         gameObject.SetActive(true);
         //HPゲージの初期化
         enemyHPSlider.value = 1.0f;
+        //死亡判定の初期化
+        isDead = false;
     }
     public virtual void Teardown() {
         gameObject.SetActive(false);
@@ -71,7 +74,8 @@ public abstract class EnemyBase : MonoBehaviour {
         float damage = GetRawAttack() * (float)DamageNormScaling(CameraController.pinchPercentage);
         HP -= (int)damage;
         enemyHPSlider.value = (float)HP / (float)maxHP;
-        if (enemyHPSlider.value <= 0) {
+        if (!isDead && enemyHPSlider.value <= 0) {
+            isDead = true;
             enemyHPSlider.value = 0;
             MenuManager.instance.Get<ScoreTextManager>().AddScore(ADD_SCORE);
             //未使用状態にする
