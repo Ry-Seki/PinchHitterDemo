@@ -12,4 +12,7 @@ public class SaveDataUtility : MonoBehaviour {
     public static void SetPercentageLv(int setLv) {
         SaveDataManager.instance.SetPercentageLv(setLv);
     }
+    public static void SetStatusPointData(int setValue) {
+        SaveDataManager.instance.SetStatusPoint(setValue);
+    }
 }

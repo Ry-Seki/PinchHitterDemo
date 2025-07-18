@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using UnityEngine;
 
 using static GameConst;
+using static PlayerMasterUtility;
 
 public class PlayerStatusManager : SystemObject{
     public static PlayerStatusManager instance { get; private set; } = null;
@@ -13,23 +14,34 @@ public class PlayerStatusManager : SystemObject{
     private float rawInterval = -1;
     private float rawPercentage = -1;
     //初期ステータス
-    private const int INIT_ATTACK = 10;
-    private const float INIT_INTERVAL = 1.0f;
-    private const float INIT_PERCENTAGE = 90.0f;
+    private int initAttack = -1;
+    private float initInterval = -1;
+    private float initPercentage = -1;
+    //レベルアップ時の上昇幅
+    private int addAttackNum = 5;
+    private float shortenInterval = 0.05f;
+    private float expansionPercentage = 1.5f;
 
     //定数
     private const int MAX_RAW_ATTACK = 1000000;
     private const float MIN_RAW_INTERVAL = 0.01f;
     private const float MIN_RAW_PERCENTAGE = 10.0f;
-    private const int ENHANCE_ATTACK_NUM = 5;
-    private const float SHOWTEN_INTERVAL = 0.05f;
-    private const float EXPANSION_ATTACK_AREA = 1.5f;
 
     public override async UniTask Initialize() {
         instance = this;
         SaveData data = SaveDataManager.instance.saveData;
+        SetupMaster();
         SetupData(data);
         await UniTask.CompletedTask;
+    }
+    private void SetupMaster() {
+        var playerMaster = GetPlayerMaster();
+        initAttack = playerMaster.rawAttack;
+        initInterval = playerMaster.attackInterval;
+        initPercentage = playerMaster.attackPinchPer;
+        addAttackNum = playerMaster.AddAttackValue;
+        shortenInterval = playerMaster.ShortenIntervalValue;
+        expansionPercentage = playerMaster.ExpansionAttackArea;
     }
     /// <summary>
     /// ステータスの準備
@@ -61,7 +73,7 @@ public class PlayerStatusManager : SystemObject{
     /// </summary>
     /// <param name="setLevel"></param>
     public void EnhanceAttack(int setLevel) {
-        SetRawAttack(INIT_ATTACK + ENHANCE_ATTACK_NUM * setLevel);
+        SetRawAttack(initAttack + addAttackNum * setLevel);
     }
     /// <summary>
     /// 攻撃間隔取得
@@ -82,7 +94,7 @@ public class PlayerStatusManager : SystemObject{
     /// </summary>
     /// <param name="setLevel"></param>
     public void ShortInterval(int setLevel) {
-        SetRawInterval(INIT_INTERVAL - SHOWTEN_INTERVAL * setLevel);
+        SetRawInterval(initInterval - shortenInterval * setLevel);
     }
     /// <summary>
     /// 攻撃可能拡縮率取得
@@ -103,11 +115,11 @@ public class PlayerStatusManager : SystemObject{
     /// </summary>
     /// <param name="setLevel"></param>
     public void ExpansionPercentage(int setLevel) { 
-        SetRawPercentage(INIT_PERCENTAGE - EXPANSION_ATTACK_AREA  * setLevel);
+        SetRawPercentage(initPercentage - expansionPercentage  * setLevel);
     }
     public void InitStatus() {
-        rawAttack = INIT_ATTACK;
-        rawInterval = INIT_INTERVAL;
-        rawPercentage = INIT_PERCENTAGE;
+        rawAttack = initAttack;
+        rawInterval = initInterval;
+        rawPercentage = initPercentage;
     }
 }

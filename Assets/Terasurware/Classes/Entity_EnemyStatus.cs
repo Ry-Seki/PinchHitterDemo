@@ -2,7 +2,7 @@ using UnityEngine;
 using System.Collections;
 using System.Collections.Generic;
 
-public class Entity_PlayerStatus : ScriptableObject
+public class Entity_EnemyStatus : ScriptableObject
 {	
 	public List<Sheet> sheets = new List<Sheet> ();
 
@@ -17,12 +17,10 @@ public class Entity_PlayerStatus : ScriptableObject
 	public class Param
 	{
 		
-		public int rawAttack;
-		public float attackInterval;
-		public int attackPinchPer;
-		public int AddAttackValue;
-		public float ShortenIntervalValue;
-		public float ExpansionAttackArea;
+		public int ID;
+		public string spritePass;
+		public int HP;
+		public int ScorePoint;
 	}
 }
 

@@ -8,8 +8,6 @@ using System.Text;
 using Unity.VisualScripting;
 using UnityEngine;
 
-using static PlayerStatusUtility;
-
 public class SaveDataManager : SystemObject {
     public static SaveDataManager instance { get; private set; } = null;
     public SaveData saveData { get; private set; } = null;
@@ -38,9 +36,10 @@ public class SaveDataManager : SystemObject {
 
     public void LoadData() {
         saveData = LoadDataFromFile();
-        
+
         //デバッグ用
         Debug.Log("saveData.highScore : " + saveData.highScore);
+        Debug.Log("saveData.statusPoint : " + saveData.statusPoint);
         Debug.Log("saveData.attackLv : " + saveData.rawAttackLv);
         Debug.Log("saveData.intervalLv : " + saveData.rawAtkIntervalLv);
         Debug.Log("saveData.percentage : " + saveData.rawAtkPercentageLv);

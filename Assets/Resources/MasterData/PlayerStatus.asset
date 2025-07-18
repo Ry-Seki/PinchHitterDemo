@@ -15,6 +15,9 @@ MonoBehaviour:
   sheets:
   - name: PlayerStatus
     list:
-    - rawAttack: 14
-      attackInterval: 0.3
-      attackPinchPer: 86
+    - rawAttack: 10
+      attackInterval: 1
+      attackPinchPer: 90
+      AddAttackValue: 2
+      ShortenIntervalValue: 0.05
+      ExpansionAttackArea: 1.5

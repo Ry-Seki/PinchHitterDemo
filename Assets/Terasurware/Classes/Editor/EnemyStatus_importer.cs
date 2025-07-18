@@ -7,10 +7,10 @@ using NPOI.HSSF.UserModel;
 using NPOI.XSSF.UserModel;
 using NPOI.SS.UserModel;
 
-public class PlayerStatus_importer : AssetPostprocessor {
-	private static readonly string filePath = "Assets/Resources/MasterData/PlayerStatus.xlsx";
-	private static readonly string exportPath = "Assets/Resources/MasterData/PlayerStatus.asset";
-	private static readonly string[] sheetNames = { "PlayerStatus", };
+public class EnemyStatus_importer : AssetPostprocessor {
+	private static readonly string filePath = "Assets/Resources/MasterData/EnemyStatus.xlsx";
+	private static readonly string exportPath = "Assets/Resources/MasterData/EnemyStatus.asset";
+	private static readonly string[] sheetNames = { "EnemyStatus", };
 	
 	static void OnPostprocessAllAssets (string[] importedAssets, string[] deletedAssets, string[] movedAssets, string[] movedFromAssetPaths)
 	{
@@ -18,9 +18,9 @@ public class PlayerStatus_importer : AssetPostprocessor {
 			if (!filePath.Equals (asset))
 				continue;
 				
-			Entity_PlayerStatus data = (Entity_PlayerStatus)AssetDatabase.LoadAssetAtPath (exportPath, typeof(Entity_PlayerStatus));
+			Entity_EnemyStatus data = (Entity_EnemyStatus)AssetDatabase.LoadAssetAtPath (exportPath, typeof(Entity_EnemyStatus));
 			if (data == null) {
-				data = ScriptableObject.CreateInstance<Entity_PlayerStatus> ();
+				data = ScriptableObject.CreateInstance<Entity_EnemyStatus> ();
 				AssetDatabase.CreateAsset ((ScriptableObject)data, exportPath);
 				data.hideFlags = HideFlags.NotEditable;
 			}
@@ -41,21 +41,19 @@ public class PlayerStatus_importer : AssetPostprocessor {
 						continue;
 					}
 
-					Entity_PlayerStatus.Sheet s = new Entity_PlayerStatus.Sheet ();
+					Entity_EnemyStatus.Sheet s = new Entity_EnemyStatus.Sheet ();
 					s.name = sheetName;
 				
 					for (int i=1; i<= sheet.LastRowNum; i++) {
 						IRow row = sheet.GetRow (i);
 						ICell cell = null;
 						
-						Entity_PlayerStatus.Param p = new Entity_PlayerStatus.Param ();
+						Entity_EnemyStatus.Param p = new Entity_EnemyStatus.Param ();
 						
-					cell = row.GetCell(0); p.rawAttack = (int)(cell == null ? 0 : cell.NumericCellValue);
-					cell = row.GetCell(1); p.attackInterval = (float)(cell == null ? 0 : cell.NumericCellValue);
-					cell = row.GetCell(2); p.attackPinchPer = (int)(cell == null ? 0 : cell.NumericCellValue);
-					cell = row.GetCell(3); p.AddAttackValue = (int)(cell == null ? 0 : cell.NumericCellValue);
-					cell = row.GetCell(4); p.ShortenIntervalValue = (float)(cell == null ? 0 : cell.NumericCellValue);
-					cell = row.GetCell(5); p.ExpansionAttackArea = (float)(cell == null ? 0 : cell.NumericCellValue);
+					cell = row.GetCell(0); p.ID = (int)(cell == null ? 0 : cell.NumericCellValue);
+					cell = row.GetCell(2); p.spritePass = (cell == null ? "" : cell.StringCellValue);
+					cell = row.GetCell(3); p.HP = (int)(cell == null ? 0 : cell.NumericCellValue);
+					cell = row.GetCell(4); p.ScorePoint = (int)(cell == null ? 0 : cell.NumericCellValue);
 						s.list.Add (p);
 					}
 					data.sheets.Add(s);

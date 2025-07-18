@@ -11,25 +11,27 @@ public class ScoreTextManager : MenuBase {
     private TextMeshProUGUI scoreText = null;
     public static int score { get; private set; } = -1;
     public static int highScore { get; private set; } = -1;
+    public static bool IsHighScore { get { return score > highScore; } }
     private const string SCORE_TEXT = "Score : ";
     private const int MAX_SCORE_NUM = 1000000;
 
     public override async UniTask Initialize() {
         await base.Initialize();
         gameObject.SetActive(false);
-        highScore = SaveDataManager.instance.saveData.highScore;
         score = 0;
+        if(highScore > 0) highScore = SaveDataManager.instance.saveData.highScore;
+        else highScore = 0;
     }
 
     public override async UniTask Open() {
         await base.Open();
+        score = 0;
         ShowScoreText();
     }
 
     public override async UniTask Close() {
         await base.Close();
-        if(score > highScore) highScore = score;
-        score = 0;
+        if(IsHighScore) highScore = score;
     }
     /// <summary>
     /// テキストの表示

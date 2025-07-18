@@ -40,7 +40,8 @@ public class EnemyManager : MonoBehaviour {
     /// <summary>
     /// 敵を使用状態にする
     /// </summary>
-    public void UseEnemy() {
+    /// <param name="setPhase"></param>
+    public void UseEnemy(int setPhase) {
         EnemyBase enemy;
         //未使用リストが空なら新たに生成
         if(IsEmpty(unuseEnemyList)) {
@@ -53,7 +54,7 @@ public class EnemyManager : MonoBehaviour {
         }
         //敵の準備
         useEnemyList.Add(enemy);
-        enemy.Setup();
+        enemy.Setup(setPhase);
     }
     /// <summary>
     /// 敵を未使用状態にする
@@ -70,12 +71,22 @@ public class EnemyManager : MonoBehaviour {
         //親オブジェクトの移動
         unuseEnemy.transform.SetParent(unuseObjectRoot);
     }
-    public void SpawnEnemy(int spawnCount) {
+    /// <summary>
+    /// 敵の生成処理
+    /// </summary>
+    /// <param name="spawnCount"></param>
+    /// <param name="setPhase"></param>
+    public void SpawnEnemy(int spawnCount, int setPhase) {
         //敵の生成数の制御
         if(spawnCount >= MAX_FLOOR_ENEMY) spawnCount = MAX_FLOOR_ENEMY;
         //敵の生成
         for (int i = 0; i < spawnCount; i++) {
-            UseEnemy();
+            UseEnemy(setPhase);
+        }
+    }
+    public void UnuseAllEnemy() {
+        for (int i = useEnemyList.Count - 1; i > 0; i--) {
+            UnuseEnemy(useEnemyList[i]);
         }
     }
     public int GetEnemyCount() {

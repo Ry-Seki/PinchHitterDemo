@@ -5,12 +5,14 @@ using System.Collections.Generic;
 using UnityEngine;
 
 using static GameConst;
+using static EnemyUtility;
 
 public class PartMainGame : PartBase {
     [SerializeField]
     private EnemyManager enemyManager = null;
     public static bool isStart { get; private set; } = false;
     private CameraController mainCamera = null;
+    private EndlessGame endless = null;
 
     public override async UniTask Initialize() {
         await base.Initialize();
@@ -23,6 +25,8 @@ public class PartMainGame : PartBase {
         mainCamera.SetPinchText(pinchText);
         await MenuManager.instance.Get<ScoreTextManager>("Prefabs/Menu/ScoreText").Initialize();
         enemyManager?.Initialize();
+        endless = new EndlessGame();
+        await endless.Initialize();
     }
 
     public override async UniTask Setup() {
@@ -31,26 +35,31 @@ public class PartMainGame : PartBase {
     }
     public override async UniTask Execute() {
         //敵の生成
-        enemyManager.SpawnEnemy(INIT_FLOOR_ENEMY);
+        SpawnEnemy(INIT_FLOOR_ENEMY, 0);
         //フェードイン
         await FadeManager.instance.FadeIn();
         //カメラの演出
         await mainCamera.Setup(1.0f);
         //スコアテキストの表示
-        ScoreTextManager scoreText = MenuManager.instance.Get<ScoreTextManager>();
-        UniTask scoreTextTask = scoreText.Open();
+        UniTask scoreTask = MenuManager.instance.Get<ScoreTextManager>().Open();
         //BGM再生
         AudioManager.instance.PlayBGM(1);
         //スタートフラグの変更
         isStart = true;
+        //敵の生成
+        bool limitTime = await endless.Execute();
+        //BGM停止
+        AudioManager.instance.StopBGM();
+        isStart = false;
+        if (limitTime) {
+            await FadeManager.instance.FadeOut();
+            UniTask task = PartManager.instance.TransitionPart(eGamePart.Ending);
+        }
     }
 
     public override async UniTask Teardown() {
         await base.Teardown();
-        //BGM停止
-        AudioManager.instance.StopBGM();
         //スタートフラグの変更
-        isStart = false;
         ScoreTextManager scoreText = MenuManager.instance.Get<ScoreTextManager>();
         UniTask scoreTextTask = scoreText.Close();
         PinchExpansionText pinchText = MenuManager.instance.Get<PinchExpansionText>();

@@ -7,10 +7,8 @@ public class MasterDataManager{
     //マスターデータのファイルパス
     private static readonly string _DATA_PATH = "MasterData/";
     //読み込んだマスターデータ：シート数、行数
-    public static List<List<Entity_DebugSheet.Param>> debugData = null;
     public static List<List<Entity_PlayerStatus.Param>> playerStatusData = null;
     public static void LoadAllData() {
-        debugData = Load<Entity_DebugSheet, Entity_DebugSheet.Sheet, Entity_DebugSheet.Param>("DebugSheet");
         playerStatusData = Load<Entity_PlayerStatus, Entity_PlayerStatus.Sheet, Entity_PlayerStatus.Param>("PlayerStatus");
     }
     private static List<List<T3>> Load<T1, T2, T3>(string dataName) where T1 : ScriptableObject {

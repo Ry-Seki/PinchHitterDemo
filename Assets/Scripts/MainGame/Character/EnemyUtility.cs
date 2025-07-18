@@ -6,8 +6,9 @@ public class EnemyUtility : MonoBehaviour {
     /// <summary>
     /// “G‚ğg—pó‘Ô‚É‚·‚é
     /// </summary>
-    public static void UseEnemy() {
-        EnemyManager.instance.UseEnemy();
+    /// <param name="setPhase"></param>
+    public static void UseEnemy(int setPhase) {
+        EnemyManager.instance.UseEnemy(setPhase);
     }
     /// <summary>
     /// “G‚ğ–¢g—pó‘Ô‚É‚·‚é
@@ -20,8 +21,15 @@ public class EnemyUtility : MonoBehaviour {
     /// “G‚Ì¶¬
     /// </summary>
     /// <param name="spawnCount"></param>
-    public static void SpawnEnemy(int spawnCount) {
-        EnemyManager.instance.SpawnEnemy(spawnCount);
+    /// <param name="setPhase"></param>
+    public static void SpawnEnemy(int spawnCount, int setPhase) {
+        EnemyManager.instance.SpawnEnemy(spawnCount, setPhase);
+    }
+    /// <summary>
+    /// ‘S‚Ä‚Ì“G‚ğ”ñ•\¦‚É‚·‚é
+    /// </summary>
+    public static void UnuseAllEnemy() {
+        EnemyManager.instance.UnuseAllEnemy();
     }
     /// <summary>
     /// ‘¶İ‚·‚é“G‚Ì”‚Ìæ“¾

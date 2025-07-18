@@ -34,19 +34,16 @@ public abstract class EnemyBase : MonoBehaviour {
     protected readonly int ADD_SCORE = 200;
     protected static CameraController mainCamera { get; private set; } = null;
 
-    private static bool isOnce = false;
     public static void Initialize() {
         if(mainCamera != null) return;
 
         //メインカメラの登録
         mainCamera = Camera.main.GetComponent<CameraController>();
     }
-    public virtual void Setup() {
-        isOnce = false; 
+    public virtual void Setup(int setPhase) {
         gameObject.SetActive(true);
         //HPゲージの初期化
         enemyHPSlider.value = 1.0f;
-        //死亡判定の初期化
         isDead = false;
     }
     public virtual void Teardown() {
@@ -78,16 +75,15 @@ public abstract class EnemyBase : MonoBehaviour {
             isDead = true;
             enemyHPSlider.value = 0;
             MenuManager.instance.Get<ScoreTextManager>().AddScore(ADD_SCORE);
+            TimeManager.AddLimitTime(ADD_SCORE);
             //未使用状態にする
             UnuseEnemy(this);
+            if(GetEnemyCount() <= 0) {
+                EndlessGame.EnemyEmpty();
+            }
         } else {
             //クールタイム発動
             await DamageCoolTime();
-        }
-        if (!isOnce && GetEnemyCount() <= 0) {
-            isOnce = true;
-            await FadeManager.instance.FadeOut();
-            UniTask partTask = PartManager.instance.TransitionPart(eGamePart.Ending);
         }
     }
     /// <summary>
@@ -161,5 +157,12 @@ public abstract class EnemyBase : MonoBehaviour {
 
     public virtual async UniTask EnemyMoveDirection() {
         await UniTask.CompletedTask;
+    }
+    /// <summary>
+    /// フェーズが進むごとに敵のステータスが上がる
+    /// </summary>
+    /// <param name="setPhase"></param>
+    public virtual void EnemyPhaseStatusUp(int setPhase) {
+
     }
 }
