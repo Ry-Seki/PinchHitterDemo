@@ -11,6 +11,12 @@ using static SaveDataUtility;
 public class MenuStatusEnhance : MenuBase {
     [SerializeField]
     private TextMeshProUGUI statusPointText = null;
+    [SerializeField]
+    private TextMeshProUGUI attackLvText = null;
+    [SerializeField]
+    private TextMeshProUGUI intervalLvText = null;
+    [SerializeField]
+    private TextMeshProUGUI percentageLvText = null;
     private int statusPoint = -1;
     private int attackLv = -1;
     private int intervalLv = -1;
@@ -25,15 +31,10 @@ public class MenuStatusEnhance : MenuBase {
     }
     public void Setup() {
         SaveData data = SaveDataManager.instance.saveData;
-        statusPoint = data.statusPoint;
-        attackLv = data.rawAttackLv;
-        intervalLv = data.rawAtkIntervalLv;
-        percentageLv = data.rawAtkPercentageLv;
-        Debug.Log(statusPoint);
-        Debug.Log(attackLv);
-        Debug.Log(intervalLv);
-        Debug.Log(percentageLv);
-        SetStatusPoint(statusPoint);
+        SetStatusPoint(data.statusPoint);
+        SetAttackLv(data.rawAttackLv);
+        SetIntervalLv(data.rawAtkIntervalLv);
+        SetPercentageLv(data.rawAtkPercentageLv);
     }
 
     public override async UniTask Open() {
@@ -60,7 +61,7 @@ public class MenuStatusEnhance : MenuBase {
         attackLv++;
         ReduceStatusPoint(attackLv);
         EnhanceAttack(attackLv);
-        Debug.Log(attackLv);
+        attackLvText.text = "Lv : " + attackLv;
     }
     public void IntervalLvUp() {
         if(intervalLv >= 50) return;
@@ -69,7 +70,7 @@ public class MenuStatusEnhance : MenuBase {
         intervalLv++;
         ReduceStatusPoint(attackLv);
         ShortInterval(intervalLv);
-        Debug.Log(intervalLv);
+        intervalLvText.text = "Lv : " + intervalLv;
     }
     public void PercentageLvUp() {
         if(percentageLv >= 50) return;
@@ -79,24 +80,50 @@ public class MenuStatusEnhance : MenuBase {
         percentageLv++;
         ReduceStatusPoint(percentageLv);
         ExpansionPercentage(percentageLv);
-        Debug.Log(percentageLv);
+        percentageLvText.text = "Lv : " + percentageLv;
     }
     public void ResetLevel() {
-        attackLv = 0;
-        intervalLv = 0;
-        percentageLv = 0;
+        SetAttackLv(0);
+        SetIntervalLv(0);
+        SetPercentageLv(0);
         InitStatus();
     }
     public void CloseScreen() {
         isClose = true;
     }
-
+    /// <summary>
+    /// ステータスポイントの設定
+    /// </summary>
+    /// <param name="setValue"></param>
     private void SetStatusPoint(int setValue) {
         statusPoint = Mathf.Clamp(setValue, 0, MAX_POINT);
         SetStatusPointData(statusPoint);
         statusPointText.text = "statusPoint : " + statusPoint;
     }
-
+    /// <summary>
+    /// 攻撃レベルの設定
+    /// </summary>
+    /// <param name="setValue"></param>
+    private void SetAttackLv(int setValue) {
+        attackLv = setValue;
+        attackLvText.text = "Lv : " + attackLv;
+    }
+    /// <summary>
+    /// 間隔レベルの設定
+    /// </summary>
+    /// <param name="setValue"></param>
+    private void SetIntervalLv(int setValue) {
+        intervalLv = setValue;
+        intervalLvText.text = "Lv : " + intervalLv;
+    }
+    /// <summary>
+    /// 拡縮率レベルの設定
+    /// </summary>
+    /// <param name="setValue"></param>
+    private void SetPercentageLv(int setValue) {
+        percentageLv = setValue;
+        percentageLvText.text = "Lv : " + percentageLv;
+    }
     private void ReduceStatusPoint(int setValue) {
         SetStatusPoint(statusPoint - setValue);
     }

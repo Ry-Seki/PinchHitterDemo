@@ -8,8 +8,8 @@ public class GameConst {
     public static readonly float MIN_EXPANSION = 105.0f;
 
     //³‹K‰»‚Ì”{—¦
-    public static readonly float MAX_NORM = 0.8f;
-    public static readonly float MIN_NORM = 0.02f;
+    public static readonly float MAX_NORM = 0.5f;
+    public static readonly float MIN_NORM = 0.01f;
 
     //Å‘å•S•ª—¦
     public static readonly float MAX_PERCENTAGE = 100.0f;

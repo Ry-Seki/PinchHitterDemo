@@ -19,8 +19,9 @@ public class ScoreTextManager : MenuBase {
         await base.Initialize();
         gameObject.SetActive(false);
         score = 0;
-        if(highScore > 0) highScore = SaveDataManager.instance.saveData.highScore;
-        else highScore = 0;
+        if (highScore < 0) highScore = 0;
+
+        highScore = SaveDataManager.instance.saveData.highScore;
     }
 
     public override async UniTask Open() {

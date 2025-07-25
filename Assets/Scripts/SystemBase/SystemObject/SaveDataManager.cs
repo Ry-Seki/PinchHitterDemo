@@ -36,13 +36,6 @@ public class SaveDataManager : SystemObject {
 
     public void LoadData() {
         saveData = LoadDataFromFile();
-
-        //デバッグ用
-        Debug.Log("saveData.highScore : " + saveData.highScore);
-        Debug.Log("saveData.statusPoint : " + saveData.statusPoint);
-        Debug.Log("saveData.attackLv : " + saveData.rawAttackLv);
-        Debug.Log("saveData.intervalLv : " + saveData.rawAtkIntervalLv);
-        Debug.Log("saveData.percentage : " + saveData.rawAtkPercentageLv);
     }
     /// <summary>
     /// セーブデータをファイルに渡す
@@ -75,7 +68,6 @@ public class SaveDataManager : SystemObject {
         } else {
             Debug.Log("Save file not found.");
             SaveData data = new SaveData();
-            InitSaveStatus();
             return data;
         }
     }
@@ -109,6 +101,9 @@ public class SaveDataManager : SystemObject {
     /// <param name="setValue"></param>
     public void SetStatusPoint(int setValue) {
         saveData.statusPoint = setValue;
+    }
+    public void AddStatusPoint(int setValue) {
+        saveData.statusPoint += setValue;
     }
     /// <summary>
     /// セーブデータの初期化

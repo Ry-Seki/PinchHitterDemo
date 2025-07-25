@@ -25,8 +25,12 @@ public class PartMainGame : PartBase {
         mainCamera.SetPinchText(pinchText);
         await MenuManager.instance.Get<ScoreTextManager>("Prefabs/Menu/ScoreText").Initialize();
         enemyManager?.Initialize();
+        //タイムテキストの初期化
+        TimeManager timer = MenuManager.instance.Get<TimeManager>("Prefabs/Menu/CanvasTimer");
+        await timer.Initialize();
+        //モードの初期化
         endless = new EndlessGame();
-        await endless.Initialize();
+        await endless.Initialize(timer);
     }
 
     public override async UniTask Setup() {
@@ -50,11 +54,11 @@ public class PartMainGame : PartBase {
         bool limitTime = await endless.Execute();
         //BGM停止
         AudioManager.instance.StopBGM();
-        isStart = false;
         if (limitTime) {
             await FadeManager.instance.FadeOut();
             UniTask task = PartManager.instance.TransitionPart(eGamePart.Ending);
         }
+        isStart = false;
     }
 
     public override async UniTask Teardown() {

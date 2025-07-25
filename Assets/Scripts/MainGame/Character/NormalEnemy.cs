@@ -22,6 +22,7 @@ public class NormalEnemy : EnemyBase {
 
     public override void Setup(int setPhase) {
         base.Setup(setPhase);
+        isMove = false;
         //アニメーションスプライトの読み込み
         int animMax = (int)eEnemyAnimation.Max;
         animSpriteList = new Sprite[animMax][];
@@ -84,7 +85,7 @@ public class NormalEnemy : EnemyBase {
         Vector3 direction = (startPos - goalPos).normalized;
 
         while (elapseTime < duration) {
-            if(isDead) return;
+            if (isDead) break;
             elapseTime += Time.deltaTime;
             float t = elapseTime / DEFAULT_MOVE_TIME;
             Vector3 setPos = Vector3.Lerp(startPos, goalPos, t);

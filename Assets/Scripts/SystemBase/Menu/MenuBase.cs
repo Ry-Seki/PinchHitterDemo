@@ -5,7 +5,7 @@ using UnityEngine;
 
 public class MenuBase : MonoBehaviour {
     [SerializeField]
-    private GameObject _menuRoot = null;
+    protected GameObject _menuRoot = null;
 
     public virtual async UniTask Initialize() {
         await UniTask.CompletedTask;

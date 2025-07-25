@@ -16,22 +16,23 @@ public class EndlessGame {
     private const int BORDER_SCORE = 500;
     private static bool isEmptyEnemy = false;
 
-    public async UniTask Initialize() {
-        timeManager = new TimeManager();
+    public async UniTask Initialize(TimeManager setTimeManager) {
+        timeManager = setTimeManager;
         await UniTask.CompletedTask;
     }
 
     public async UniTask<bool> Execute() {
         phaseNum = 0;
         //制限時間の管理
-        UniTask task = timeManager.Execute();
+        UniTask task = timeManager.Open();
         //フェーズ処理
         while (limitTimerPer > 0) {
             await AddPhase();
             await UniTask.DelayFrame(1);
         }
-        EarnStatusPoint();
+        await timeManager.Close();
         UnuseAllEnemy();
+        EarnStatusPoint();
         return true;
     }
     /// <summary>
@@ -66,11 +67,10 @@ public class EndlessGame {
         if(score < 0) return;
 
         int point = score / BORDER_SCORE;
-        int addPoint = 0;
         //前回のハイスコアを上回った場合ボーナスポイント獲得
-        if(score > highScore) addPoint = (score - highScore) / BORDER_SCORE;
+        if(score > highScore) point += (score - highScore) / BORDER_SCORE;
         //セーブデータに設定する
-        SetStatusPointData(point + addPoint);
+        AddStatusPointData(point);
     }
     /// <summary>
     /// シーン上の敵がいないことを知らせるフラグの変更

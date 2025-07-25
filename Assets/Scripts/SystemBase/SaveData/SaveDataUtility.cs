@@ -15,4 +15,7 @@ public class SaveDataUtility : MonoBehaviour {
     public static void SetStatusPointData(int setValue) {
         SaveDataManager.instance.SetStatusPoint(setValue);
     }
+    public static void AddStatusPointData(int setValue) {
+        SaveDataManager.instance.AddStatusPoint(setValue);
+    }
 }
