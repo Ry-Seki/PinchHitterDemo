@@ -4,18 +4,18 @@ using UnityEngine;
 
 public class SaveDataUtility : MonoBehaviour {
     public static void SetAttackLv(int setLv) {
-        SaveDataManager.instance.SetAttackLv(setLv);
+        PlayerStatusDataManager.instance.SetAttackLv(setLv);
     }
     public static void SetIntervalLv(int setLv) {
-        SaveDataManager.instance.SetIntervalLv(setLv);
+        PlayerStatusDataManager.instance.SetIntervalLv(setLv);
     }
     public static void SetPercentageLv(int setLv) {
-        SaveDataManager.instance.SetPercentageLv(setLv);
+        PlayerStatusDataManager.instance.SetPercentageLv(setLv);
     }
     public static void SetStatusPointData(int setValue) {
-        SaveDataManager.instance.SetStatusPoint(setValue);
+        PlayerStatusDataManager.instance.SetStatusPoint(setValue);
     }
     public static void AddStatusPointData(int setValue) {
-        SaveDataManager.instance.AddStatusPoint(setValue);
+        PlayerStatusDataManager.instance.AddStatusPoint(setValue);
     }
 }

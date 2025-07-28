@@ -4,10 +4,11 @@ using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
 
+using static PlayerStatusUtility;
+
 public class TimeManager : MenuBase{
     public static int limitTimerPer { get; private set; } = -1;
     private static int storeScore = -1;
-    private const int INIT_LIMIT_TIME = 120;
     private const int BORDER_SCORE = 200;
     [SerializeField]
     private TextMeshProUGUI timeText = null;
@@ -19,7 +20,7 @@ public class TimeManager : MenuBase{
     public override async UniTask Open() {
         await base.Open();
         storeScore = 0;
-        limitTimerPer = INIT_LIMIT_TIME;
+        SetLimitTimePer(GetRawLimitTime());
         float delta = 0.0f;
         while (limitTimerPer > 0) {
             delta += Time.deltaTime;
@@ -30,6 +31,13 @@ public class TimeManager : MenuBase{
             }
             await UniTask.DelayFrame(1);
         }
+    }
+    /// <summary>
+    /// §ŒÀŠÔ‚Ìİ’è
+    /// </summary>
+    public void SetLimitTimePer(int setTime) {
+        limitTimerPer = setTime;
+        timeText.text = "Time : " + limitTimerPer;
     }
     /// <summary>
     /// Šl“¾‚µ‚½ƒXƒRƒA‚É‰‚¶‚Ä§ŒÀŠÔ‚ğ‰„’·‚·‚é

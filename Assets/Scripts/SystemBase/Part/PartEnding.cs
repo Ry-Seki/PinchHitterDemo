@@ -16,6 +16,6 @@ public class PartEnding : PartBase {
     }
     public override async UniTask Teardown() {
         await base.Teardown();
-        SaveDataManager.instance.SaveData();
+        PlayerStatusDataManager.instance.SaveData();
     }
 }

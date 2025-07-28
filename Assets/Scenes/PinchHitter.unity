@@ -167,13 +167,13 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _systemObjectList:
-  - {fileID: 3471222548416046833, guid: e6b68998b7d3d8e4f8c8847db94cd030, type: 3}
+  - {fileID: 337795146202282758, guid: 5dbc08f5ca683e04c94f5100c6396c76, type: 3}
   - {fileID: 255444661826007272, guid: efecdbbc66f56f3418ac019d2938442e, type: 3}
+  - {fileID: 4278656575503660185, guid: 3fea2bead8d89eb4a9699e2e6783027a, type: 3}
   - {fileID: 8622722087653909253, guid: 9517db9e2f905ae46a3d75c79b06e2a7, type: 3}
   - {fileID: 2607454190690258434, guid: b1df11f172662db4495ab7425aeda756, type: 3}
   - {fileID: 6331375288782654941, guid: f1647d63c40e20a4ead2f2c573aa5774, type: 3}
   - {fileID: 5057222903325106827, guid: cf7fd499a271e4e43bb442ce98ed2afc, type: 3}
-  - {fileID: 4278656575503660185, guid: 3fea2bead8d89eb4a9699e2e6783027a, type: 3}
 --- !u!1 &519420028
 GameObject:
   m_ObjectHideFlags: 0
@@ -338,7 +338,7 @@ SpriteRenderer:
   m_SortingLayer: 0
   m_SortingOrder: -1
   m_Sprite: {fileID: 21300000, guid: 664940397c217354db8cd2615ce54075, type: 3}
-  m_Color: {r: 1, g: 1, b: 1, a: 1}
+  m_Color: {r: 0.9098039, g: 0.91764706, b: 0.9254902, a: 1}
   m_FlipX: 0
   m_FlipY: 0
   m_DrawMode: 0

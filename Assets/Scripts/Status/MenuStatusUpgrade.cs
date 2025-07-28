@@ -8,7 +8,7 @@ using UnityEngine;
 using static PlayerStatusUtility;
 using static SaveDataUtility;
 
-public class MenuStatusEnhance : MenuBase {
+public class MenuStatusUpgrade : MenuBase {
     [SerializeField]
     private TextMeshProUGUI statusPointText = null;
     [SerializeField]
@@ -17,24 +17,28 @@ public class MenuStatusEnhance : MenuBase {
     private TextMeshProUGUI intervalLvText = null;
     [SerializeField]
     private TextMeshProUGUI percentageLvText = null;
+    [SerializeField]
+    private TextMeshProUGUI limitTimeLvText = null;
     private int statusPoint = -1;
     private int attackLv = -1;
     private int intervalLv = -1;
     private int percentageLv = -1;
+    private int limitTimeLv = -1;
     private bool isClose = false;
     private const int MAX_POINT = 10000;
 
     public override async UniTask Initialize() {
         await base.Initialize();
         gameObject.SetActive(false);
-        SaveData data = SaveDataManager.instance.saveData;
+        PlayerStatusData data = PlayerStatusDataManager.instance.saveData;
     }
     public void Setup() {
-        SaveData data = SaveDataManager.instance.saveData;
+        PlayerStatusData data = PlayerStatusDataManager.instance.saveData;
         SetStatusPoint(data.statusPoint);
-        SetAttackLv(data.rawAttackLv);
-        SetIntervalLv(data.rawAtkIntervalLv);
-        SetPercentageLv(data.rawAtkPercentageLv);
+        SetAttackLv(data.attackLv);
+        SetIntervalLv(data.atkIntervalLv);
+        SetPercentageLv(data.atkPercentageLv);
+        SetLimitTimeLv(data.limitTimeLv);
     }
 
     public override async UniTask Open() {
@@ -60,7 +64,7 @@ public class MenuStatusEnhance : MenuBase {
 
         attackLv++;
         ReduceStatusPoint(attackLv);
-        EnhanceAttack(attackLv);
+        SetAttackStatusLv(attackLv);
         attackLvText.text = "Lv : " + attackLv;
     }
     public void IntervalLvUp() {
@@ -68,8 +72,8 @@ public class MenuStatusEnhance : MenuBase {
 
         if(statusPoint - (intervalLv + 1) < 0 ) return;
         intervalLv++;
-        ReduceStatusPoint(attackLv);
-        ShortInterval(intervalLv);
+        ReduceStatusPoint(intervalLv);
+        SetIntervalStatusLv(intervalLv);
         intervalLvText.text = "Lv : " + intervalLv;
     }
     public void PercentageLvUp() {
@@ -79,13 +83,25 @@ public class MenuStatusEnhance : MenuBase {
 
         percentageLv++;
         ReduceStatusPoint(percentageLv);
-        ExpansionPercentage(percentageLv);
+        SetPercentageStatusLv(percentageLv);
         percentageLvText.text = "Lv : " + percentageLv;
+    }
+
+    public void LimitTimeLvUp() {
+        if(limitTimeLv >= 50) return;
+
+        if (statusPoint - (limitTimeLv + 1) < 0) return;
+
+        limitTimeLv++;
+        ReduceStatusPoint(limitTimeLv);
+        SetLimitTimeStatusLv(limitTimeLv);
+        limitTimeLvText.text = "Lv : " + limitTimeLv;
     }
     public void ResetLevel() {
         SetAttackLv(0);
         SetIntervalLv(0);
         SetPercentageLv(0);
+        SetLimitTimeLv(0);
         InitStatus();
     }
     public void CloseScreen() {
@@ -124,6 +140,18 @@ public class MenuStatusEnhance : MenuBase {
         percentageLv = setValue;
         percentageLvText.text = "Lv : " + percentageLv;
     }
+    /// <summary>
+    /// 制限時間レベルの設定
+    /// </summary>
+    /// <param name="setValue"></param>
+    private void SetLimitTimeLv(int setValue) {
+        limitTimeLv = setValue;
+        limitTimeLvText.text = "Lv : " + limitTimeLv;
+    }
+    /// <summary>
+    /// ステータスポイント減少
+    /// </summary>
+    /// <param name="setValue"></param>
     private void ReduceStatusPoint(int setValue) {
         SetStatusPoint(statusPoint - setValue);
     }

@@ -13,23 +13,27 @@ public class PlayerStatusManager : SystemObject{
     private int rawAttack = -1;
     private float rawInterval = -1;
     private float rawPercentage = -1;
+    private int rawLimitTime = -1;
     //初期ステータス
     private int initAttack = -1;
     private float initInterval = -1;
     private float initPercentage = -1;
+    private int initLimitTime = -1;
     //レベルアップ時の上昇幅
-    private int addAttackNum = 5;
-    private float shortenInterval = 0.05f;
-    private float expansionPercentage = 1.5f;
+    private int addAttackNum = -1;
+    private float shortenInterval = -1;
+    private float expansionPercentage = -1;
+    private int extentedTime = -1;
 
     //定数
     private const int MAX_RAW_ATTACK = 1000000;
     private const float MIN_RAW_INTERVAL = 0.01f;
     private const float MIN_RAW_PERCENTAGE = 10.0f;
+    private const int MAX_RAW_LIMIT_TIME = 1000000;
 
     public override async UniTask Initialize() {
         instance = this;
-        SaveData data = SaveDataManager.instance.saveData;
+        PlayerStatusData data = PlayerStatusDataManager.instance.saveData;
         SetupMaster();
         SetupData(data);
         await UniTask.CompletedTask;
@@ -39,19 +43,22 @@ public class PlayerStatusManager : SystemObject{
         initAttack = playerMaster.rawAttack;
         initInterval = playerMaster.attackInterval;
         initPercentage = playerMaster.attackPinchPer;
+        initLimitTime = playerMaster.rawLimitTime;
         addAttackNum = playerMaster.AddAttackValue;
         shortenInterval = playerMaster.ShortenIntervalValue;
         expansionPercentage = playerMaster.ExpansionAttackArea;
+        extentedTime = playerMaster.ExtentedTime;
     }
     /// <summary>
     /// ステータスの準備
     /// </summary>
     /// <param name="setData"></param>
-    public void SetupData(SaveData setData) {
+    public void SetupData(PlayerStatusData setData) {
         InitStatus();
-        EnhanceAttack(setData.rawAttackLv);
-        ShortInterval(setData.rawAtkIntervalLv);
-        ExpansionPercentage(setData.rawAtkPercentageLv);
+        SetAttackStatusLv(setData.attackLv);
+        SetIntervalStatusLv(setData.atkIntervalLv);
+        SetPercentageStatusLv(setData.atkPercentageLv);
+        SetLimitTimeStatusLv(setData.limitTimeLv);
     }
     /// <summary>
     /// 攻撃力取得
@@ -69,10 +76,10 @@ public class PlayerStatusManager : SystemObject{
         rawAttack = Mathf.Clamp(setValue, 0, MAX_RAW_ATTACK);
     }
     /// <summary>
-    /// レベル指定の攻撃力増加
+    /// レベル指定の攻撃力設定
     /// </summary>
     /// <param name="setLevel"></param>
-    public void EnhanceAttack(int setLevel) {
+    public void SetAttackStatusLv(int setLevel) {
         SetRawAttack(initAttack + addAttackNum * setLevel);
     }
     /// <summary>
@@ -90,10 +97,10 @@ public class PlayerStatusManager : SystemObject{
         rawInterval = Mathf.Clamp(setValue, MIN_RAW_INTERVAL, 1.0f);
     }
     /// <summary>
-    /// レベル指定の攻撃間隔短縮
+    /// レベル指定の攻撃間隔設定
     /// </summary>
     /// <param name="setLevel"></param>
-    public void ShortInterval(int setLevel) {
+    public void SetIntervalStatusLv(int setLevel) {
         SetRawInterval(initInterval - shortenInterval * setLevel);
     }
     /// <summary>
@@ -111,12 +118,36 @@ public class PlayerStatusManager : SystemObject{
         rawPercentage = Mathf.Clamp(setValue, MIN_RAW_PERCENTAGE, MAX_PERCENTAGE);
     }
     /// <summary>
-    /// レベル指定の攻撃可能拡縮率の拡大
+    /// レベル指定の攻撃可能拡縮率の設定
     /// </summary>
     /// <param name="setLevel"></param>
-    public void ExpansionPercentage(int setLevel) { 
+    public void SetPercentageStatusLv(int setLevel) { 
         SetRawPercentage(initPercentage - expansionPercentage  * setLevel);
     }
+    /// <summary>
+    /// 制限時間取得
+    /// </summary>
+    /// <returns></returns>
+    public int GetRawLimitTime() {
+        return rawLimitTime;
+    }
+    /// <summary>
+    /// 制限時間設定
+    /// </summary>
+    /// <param name="setValue"></param>
+    public void SetRawLimitTme(int setValue) {
+        rawLimitTime = Mathf.Clamp(setValue, 0, MAX_RAW_LIMIT_TIME);
+    }
+    /// <summary>
+    /// レベル指定の制限時間の設定
+    /// </summary>
+    /// <param name="setLevel"></param>
+    public void SetLimitTimeStatusLv(int setLevel) {
+        SetRawLimitTme(initLimitTime + extentedTime * setLevel);
+    }
+    /// <summary>
+    /// ステータスの初期化
+    /// </summary>
     public void InitStatus() {
         rawAttack = initAttack;
         rawInterval = initInterval;

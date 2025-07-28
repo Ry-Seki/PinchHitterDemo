@@ -20,9 +20,11 @@ public class Entity_PlayerStatus : ScriptableObject
 		public int rawAttack;
 		public float attackInterval;
 		public int attackPinchPer;
+		public int rawLimitTime;
 		public int AddAttackValue;
 		public float ShortenIntervalValue;
 		public float ExpansionAttackArea;
+		public int ExtentedTime;
 	}
 }
 

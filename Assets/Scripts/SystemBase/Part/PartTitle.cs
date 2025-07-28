@@ -8,13 +8,13 @@ public class PartTitle : PartBase {
     public override async UniTask Initialize() {
         await base.Initialize();
         //タイトルメニューの初期化
-        await MenuManager.instance.Get<MenuStatusEnhance>("Prefabs/Menu/CanvasEnhance").Initialize();
+        await MenuManager.instance.Get<MenuStatusUpgrade>("Prefabs/Menu/CanvasUpgrade").Initialize();
         await MenuManager.instance.Get<MenuTitle>("Prefabs/Menu/CanvasTitle").Initialize();
     }
 
     public override async UniTask Setup() {
         await base.Setup();
-        MenuManager.instance.Get<MenuStatusEnhance>().Setup();
+        MenuManager.instance.Get<MenuStatusUpgrade>().Setup();
     }
     public override async UniTask Execute() {
         //BGMの再生

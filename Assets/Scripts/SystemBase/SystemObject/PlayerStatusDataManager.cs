@@ -8,16 +8,16 @@ using System.Text;
 using Unity.VisualScripting;
 using UnityEngine;
 
-public class SaveDataManager : SystemObject {
-    public static SaveDataManager instance { get; private set; } = null;
-    public SaveData saveData { get; private set; } = null;
+public class PlayerStatusDataManager : SystemObject {
+    public static PlayerStatusDataManager instance { get; private set; } = null;
+    public PlayerStatusData saveData { get; private set; } = null;
     private string saveFileName = "/Data.S";
     private string filePath = null;
 
     public override async UniTask Initialize() {
         instance = this;
         //セーブデータの宣言
-        saveData = new SaveData();
+        saveData = new PlayerStatusData();
         //StringBuilderの宣言
         StringBuilder fileNameBuilder = new StringBuilder();
         //StringBuilderを使った文字列連結
@@ -28,21 +28,20 @@ public class SaveDataManager : SystemObject {
     }
 
     public void SaveData() {
-        saveData.highScore = ScoreTextManager.highScore;
-
         Debug.Log("Save");
         SaveDataToFile(saveData);
     }
 
     public void LoadData() {
         saveData = LoadDataFromFile();
+        Debug.Log(saveData.highScore);
     }
     /// <summary>
     /// セーブデータをファイルに渡す
     /// </summary>
     /// <param name="setData"></param>
     /// <param name="fileName"></param>
-    private void SaveDataToFile(SaveData setData) {
+    private void SaveDataToFile(PlayerStatusData setData) {
         //FileSteamの宣言
         FileStream fileStream = new FileStream(filePath, FileMode.Create);
         //BinaryFormatterの宣言
@@ -55,45 +54,58 @@ public class SaveDataManager : SystemObject {
     /// ファイルの中身をセーブデータに渡す
     /// </summary>
     /// <returns></returns>
-    private SaveData LoadDataFromFile() {
+    private PlayerStatusData LoadDataFromFile() {
         if (File.Exists(filePath)) {
             //FileSteamの宣言
             FileStream fileStream = new FileStream(filePath, FileMode.Open);
             //BinaryFormatterの宣言
             BinaryFormatter bf = new BinaryFormatter();
-            SaveData data = (SaveData)bf.Deserialize(fileStream);
+            PlayerStatusData data = (PlayerStatusData)bf.Deserialize(fileStream);
             fileStream.Close();
             Debug.Log("Save data loaded from " + filePath);
             return data;
         } else {
             Debug.Log("Save file not found.");
-            SaveData data = new SaveData();
+            PlayerStatusData data = new PlayerStatusData();
             return data;
         }
     }
+    /// <summary>
+    /// Unityが終了した時に呼び出される処理
+    /// </summary>
     private void OnApplicationQuit() {
+        //スコアの処理
+        ScoreTextManager.SetHighScore();
+        //セーブ
         SaveData();
     }
     /// <summary>
     /// 攻撃レベル設定
     /// </summary>
-    /// <param name="setValue"></param>
-    public void SetAttackLv(int setValue) {
-        saveData.rawAttackLv = setValue;
+    /// <param name="setLevel"></param>
+    public void SetAttackLv(int setLevel) {
+        saveData.attackLv = setLevel;
     }
     /// <summary>
     /// 攻撃間隔レベル設定
     /// </summary>
-    /// <param name="setValue"></param>
-    public void SetIntervalLv(int setValue) {
-        saveData.rawAtkIntervalLv = setValue;
+    /// <param name="setLevel"></param>
+    public void SetIntervalLv(int setLevel) {
+        saveData.atkIntervalLv = setLevel;
     }
     /// <summary>
     /// 攻撃可能拡縮率レベル設定
     /// </summary>
-    /// <param name="setValue"></param>
-    public void SetPercentageLv(int setValue) {
-        saveData.rawAtkPercentageLv = setValue;
+    /// <param name="setLevel"></param>
+    public void SetPercentageLv(int setLevel) {
+        saveData.atkPercentageLv = setLevel;
+    }
+    /// <summary>
+    /// 制限時間レベルの設定
+    /// </summary>
+    /// <param name="setLevel"></param>
+    public void SetLimitTimeLv(int setLevel) {
+        saveData.limitTimeLv = setLevel;
     }
     /// <summary>
     /// ステータスポイント設定
@@ -102,6 +114,10 @@ public class SaveDataManager : SystemObject {
     public void SetStatusPoint(int setValue) {
         saveData.statusPoint = setValue;
     }
+    /// <summary>
+    /// ステータスポイント加算
+    /// </summary>
+    /// <param name="setValue"></param>
     public void AddStatusPoint(int setValue) {
         saveData.statusPoint += setValue;
     }
@@ -110,17 +126,16 @@ public class SaveDataManager : SystemObject {
     /// </summary>
     public void InitSaveStatus() {
         saveData.highScore = 0;
-        saveData.rawAttackLv = 0;
-        saveData.rawAtkIntervalLv = 0;
-        saveData.rawAtkPercentageLv = 0;
         saveData.statusPoint = 0;
+        InitLevel();
     }
     /// <summary>
     /// レベルデータの初期化
     /// </summary>
     public void InitLevel() {
-        saveData.rawAttackLv = 0;
-        saveData.rawAtkIntervalLv = 0;
-        saveData.rawAtkPercentageLv = 0;
+        saveData.attackLv = 0;
+        saveData.atkIntervalLv = 0;
+        saveData.atkPercentageLv = 0;
+        saveData.limitTimeLv = 0;
     }
 }

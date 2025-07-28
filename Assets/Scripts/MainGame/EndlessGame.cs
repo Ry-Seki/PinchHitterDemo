@@ -7,13 +7,13 @@ using static EnemyUtility;
 using static GameConst;
 using static TimeManager;
 using static SaveDataUtility;
-using Unity.VisualScripting;
 
 public class EndlessGame {
     public int phaseNum { get; private set; } = -1;
+    public static bool isGameEnd { get; private set; } = false;
     private TimeManager timeManager = null;
     private const int ADD_ENEMY_NUM = 3;
-    private const int BORDER_SCORE = 500;
+    private const int BORDER_SCORE = 200;
     private static bool isEmptyEnemy = false;
 
     public async UniTask Initialize(TimeManager setTimeManager) {
@@ -22,6 +22,9 @@ public class EndlessGame {
     }
 
     public async UniTask<bool> Execute() {
+        //ゲームモードの初期化
+        isGameEnd = false;
+        //フェーズの初期化
         phaseNum = 0;
         //制限時間の管理
         UniTask task = timeManager.Open();
@@ -33,7 +36,8 @@ public class EndlessGame {
         await timeManager.Close();
         UnuseAllEnemy();
         EarnStatusPoint();
-        return true;
+        isGameEnd = true;
+        return isGameEnd;
     }
     /// <summary>
     /// ゲーム内の敵が居なくなるとフェーズを更新させる処理

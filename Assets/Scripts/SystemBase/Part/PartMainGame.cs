@@ -38,7 +38,7 @@ public class PartMainGame : PartBase {
         await mainCamera.Initialize();
     }
     public override async UniTask Execute() {
-        //敵の生成
+        //敵の生成(初回のみ)
         SpawnEnemy(INIT_FLOOR_ENEMY, 0);
         //フェードイン
         await FadeManager.instance.FadeIn();

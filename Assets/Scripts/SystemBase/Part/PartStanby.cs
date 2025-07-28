@@ -9,8 +9,8 @@ public class PartStanby : PartBase {
         //マスターデータの読み込み
         MasterDataManager.LoadAllData();
         //セーブデータの読み込み
-        SaveDataManager.instance.LoadData();
-        //SaveDataManager.instance.InitSaveStatus();
+        PlayerStatusDataManager.instance.LoadData();
+        //PlayerStatusDataManager.instance.InitSaveStatus();
     }
     public override async UniTask Execute() {
         //フェードアウト

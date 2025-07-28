@@ -3,15 +3,17 @@ using System.Collections.Generic;
 using UnityEngine;
 
 [System.Serializable]
-public class SaveData{
+public class PlayerStatusData{
     //Å‚‹L˜^
     public int highScore = 0;
     //UŒ‚—ÍƒŒƒxƒ‹
-    public int rawAttackLv = 0;
+    public int attackLv = 0;
     //UŒ‚ŠÔŠuƒŒƒxƒ‹
-    public int rawAtkIntervalLv = 0;
+    public int atkIntervalLv = 0;
     //UŒ‚‰Â”\Šgk—¦ƒŒƒxƒ‹
-    public int rawAtkPercentageLv = 0;
+    public int atkPercentageLv = 0;
+    //ŠÔ‰„’·
+    public int limitTimeLv = 0;
     //U‚è•ª‚¯ƒ|ƒCƒ“ƒg
     public int statusPoint = 0;
 }

@@ -85,7 +85,7 @@ public class EnemyManager : MonoBehaviour {
         }
     }
     public void UnuseAllEnemy() {
-        for (int i = useEnemyList.Count - 1; i > 0; i--) {
+        for (int i = useEnemyList.Count - 1; i >= 0; i--) {
             UnuseEnemy(useEnemyList[i]);
         }
     }

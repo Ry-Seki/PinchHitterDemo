@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using TMPro;
 using Unity.VisualScripting;
+using UnityEditor.PackageManager;
 using UnityEngine;
 using UnityEngine.SocialPlatforms.Impl;
 
@@ -12,7 +13,7 @@ public class ScoreTextManager : MenuBase {
     public static int score { get; private set; } = -1;
     public static int highScore { get; private set; } = -1;
     public static bool IsHighScore { get { return score > highScore; } }
-    private const string SCORE_TEXT = "Score : ";
+    private const string SCORE_TEXT = "Score : {0}";
     private const int MAX_SCORE_NUM = 1000000;
 
     public override async UniTask Initialize() {
@@ -21,7 +22,7 @@ public class ScoreTextManager : MenuBase {
         score = 0;
         if (highScore < 0) highScore = 0;
 
-        highScore = SaveDataManager.instance.saveData.highScore;
+        highScore = PlayerStatusDataManager.instance.saveData.highScore;
     }
 
     public override async UniTask Open() {
@@ -32,13 +33,13 @@ public class ScoreTextManager : MenuBase {
 
     public override async UniTask Close() {
         await base.Close();
-        if(IsHighScore) highScore = score;
+        SetHighScore();
     }
     /// <summary>
     /// テキストの表示
     /// </summary>
     private void ShowScoreText() {
-        scoreText.text = string.Format("Score : {0}", score);
+        scoreText.text = string.Format(SCORE_TEXT, score);
         Debug.Log(score);
     }
     /// <summary>
@@ -63,5 +64,11 @@ public class ScoreTextManager : MenuBase {
     /// <param name="setValue"></param>
     public void RemoveScore(int setValue) {
         SetScore(score - setValue);
+    }
+
+    public static void SetHighScore() {
+        if(!EndlessGame.isGameEnd || !IsHighScore) return;
+
+        highScore = score;
     }
 }

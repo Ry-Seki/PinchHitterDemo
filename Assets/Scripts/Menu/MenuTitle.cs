@@ -8,11 +8,11 @@ public class MenuTitle : MenuBase {
     public eTitleMenu titleMenu { get; private set; } = eTitleMenu.Invalid;
     [SerializeField]
     private Transform buttonRoot = null;
-    private MenuStatusEnhance statusEnhance = null;
+    private MenuStatusUpgrade statusUpgrade = null;
 
     public override async UniTask Initialize() {
         await base.Initialize();
-        statusEnhance = MenuManager.instance.Get<MenuStatusEnhance>();
+        statusUpgrade = MenuManager.instance.Get<MenuStatusUpgrade>();
     }
     public override async UniTask Open() {
         await base.Open();
@@ -21,7 +21,7 @@ public class MenuTitle : MenuBase {
         while (true) {
             if(titleMenu == eTitleMenu.StartGame) break;
 
-            if (titleMenu == eTitleMenu.Enhance) await OpenEnhanceScreen();
+            if (titleMenu == eTitleMenu.Enhance) await OpenUpgradeScreen();
 
             await UniTask.DelayFrame(1);
         }
@@ -33,10 +33,10 @@ public class MenuTitle : MenuBase {
         titleMenu = eTitleMenu.Invalid;
     }
 
-    private async UniTask OpenEnhanceScreen() {
+    private async UniTask OpenUpgradeScreen() {
         await FadeManager.instance.FadeOut();
         buttonRoot.gameObject.SetActive(false);
-        await statusEnhance.Open();
+        await statusUpgrade.Open();
     }
     public void StartInputGame() {
         titleMenu = eTitleMenu.StartGame;

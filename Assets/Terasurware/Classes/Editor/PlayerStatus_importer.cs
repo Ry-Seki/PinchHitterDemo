@@ -53,9 +53,11 @@ public class PlayerStatus_importer : AssetPostprocessor {
 					cell = row.GetCell(0); p.rawAttack = (int)(cell == null ? 0 : cell.NumericCellValue);
 					cell = row.GetCell(1); p.attackInterval = (float)(cell == null ? 0 : cell.NumericCellValue);
 					cell = row.GetCell(2); p.attackPinchPer = (int)(cell == null ? 0 : cell.NumericCellValue);
-					cell = row.GetCell(3); p.AddAttackValue = (int)(cell == null ? 0 : cell.NumericCellValue);
-					cell = row.GetCell(4); p.ShortenIntervalValue = (float)(cell == null ? 0 : cell.NumericCellValue);
-					cell = row.GetCell(5); p.ExpansionAttackArea = (float)(cell == null ? 0 : cell.NumericCellValue);
+					cell = row.GetCell(3); p.rawLimitTime = (int)(cell == null ? 0 : cell.NumericCellValue);
+					cell = row.GetCell(4); p.AddAttackValue = (int)(cell == null ? 0 : cell.NumericCellValue);
+					cell = row.GetCell(5); p.ShortenIntervalValue = (float)(cell == null ? 0 : cell.NumericCellValue);
+					cell = row.GetCell(6); p.ExpansionAttackArea = (float)(cell == null ? 0 : cell.NumericCellValue);
+					cell = row.GetCell(7); p.ExtentedTime = (int)(cell == null ? 0 : cell.NumericCellValue);
 						s.list.Add (p);
 					}
 					data.sheets.Add(s);
