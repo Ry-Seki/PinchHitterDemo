@@ -23,6 +23,7 @@ public class PlayerStatusDataManager : SystemObject {
         //StringBuilderを使った文字列連結
         fileNameBuilder.Append(Application.persistentDataPath);
         fileNameBuilder.Append(saveFileName);
+        //連結したファイルパスを渡す
         filePath = fileNameBuilder.ToString();
         await UniTask.CompletedTask;
     }
@@ -42,7 +43,7 @@ public class PlayerStatusDataManager : SystemObject {
     /// <param name="setData"></param>
     /// <param name="fileName"></param>
     private void SaveDataToFile(PlayerStatusData setData) {
-        //FileSteamの宣言
+        //FileStreamの宣言
         FileStream fileStream = new FileStream(filePath, FileMode.Create);
         //BinaryFormatterの宣言
         BinaryFormatter bf = new BinaryFormatter();
@@ -61,6 +62,7 @@ public class PlayerStatusDataManager : SystemObject {
             //BinaryFormatterの宣言
             BinaryFormatter bf = new BinaryFormatter();
             PlayerStatusData data = (PlayerStatusData)bf.Deserialize(fileStream);
+            //ファイルを閉じる
             fileStream.Close();
             Debug.Log("Save data loaded from " + filePath);
             return data;
