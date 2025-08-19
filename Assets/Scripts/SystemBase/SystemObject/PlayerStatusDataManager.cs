@@ -1,4 +1,5 @@
 using Cysharp.Threading.Tasks;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.IO;
@@ -16,8 +17,6 @@ public class PlayerStatusDataManager : SystemObject {
 
     public override async UniTask Initialize() {
         instance = this;
-        //セーブデータの宣言
-        saveData = new PlayerStatusData();
         //StringBuilderの宣言
         StringBuilder fileNameBuilder = new StringBuilder();
         //StringBuilderを使った文字列連結
@@ -25,17 +24,17 @@ public class PlayerStatusDataManager : SystemObject {
         fileNameBuilder.Append(saveFileName);
         //連結したファイルパスを渡す
         filePath = fileNameBuilder.ToString();
+        //セーブデータの宣言
+        LoadData();
         await UniTask.CompletedTask;
     }
 
     public void SaveData() {
-        Debug.Log("Save");
         SaveDataToFile(saveData);
     }
 
     public void LoadData() {
         saveData = LoadDataFromFile();
-        Debug.Log(saveData.highScore);
     }
     /// <summary>
     /// セーブデータをファイルに渡す
@@ -57,19 +56,23 @@ public class PlayerStatusDataManager : SystemObject {
     /// <returns></returns>
     private PlayerStatusData LoadDataFromFile() {
         if (File.Exists(filePath)) {
-            //FileSteamの宣言
-            FileStream fileStream = new FileStream(filePath, FileMode.Open);
-            //BinaryFormatterの宣言
-            BinaryFormatter bf = new BinaryFormatter();
-            PlayerStatusData data = (PlayerStatusData)bf.Deserialize(fileStream);
-            //ファイルを閉じる
-            fileStream.Close();
-            Debug.Log("Save data loaded from " + filePath);
-            return data;
+            FileInfo fileInfo = new FileInfo(filePath);
+            if (fileInfo.Length == 0) {
+                Debug.LogWarning("ファイルは存在しますが中身が空です。");
+                return new PlayerStatusData(); // デフォルトデータを返す
+            }
+            try {
+                using (FileStream fileStream = new FileStream(filePath, FileMode.Open)) {
+                    BinaryFormatter bf = new BinaryFormatter();
+                    return (PlayerStatusData)bf.Deserialize(fileStream);
+                }
+            } catch (Exception exeption) {
+                Debug.LogError("デシリアライズ中に例外が発生しました: " + exeption.Message);
+                return new PlayerStatusData(); // デフォルトデータでリカバリ
+            }
         } else {
-            Debug.Log("Save file not found.");
-            PlayerStatusData data = new PlayerStatusData();
-            return data;
+            Debug.Log("セーブデータが見つからないので、新規作成します。");
+            return new PlayerStatusData();
         }
     }
     /// <summary>
