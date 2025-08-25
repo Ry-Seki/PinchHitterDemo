@@ -36,7 +36,6 @@ public class DebugDamage : MonoBehaviour {
                 }
             }
     }
-
     private float DamageNormScaling(float setValue) {
         return MIN_DAMAGE_NORM + ((setValue - MIN_DAMAGE_PERCENTAGE) / (MAX_DAMAGE_PERCENTAGE - MIN_DAMAGE_PERCENTAGE)) * (MAX_DAMAGE_NORM - MIN_DAMAGE_NORM);
     }

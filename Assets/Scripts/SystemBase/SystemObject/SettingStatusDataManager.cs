@@ -67,8 +67,6 @@ public class SettingStatusDataManager : SystemObject {
         } else {
             Debug.Log("Save file not found.");
             SettingStatusData data = new SettingStatusData();
-            //SetBGMVolume();
-            //SetSEVolume();
             return data;
         }
     }

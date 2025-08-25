@@ -15,6 +15,7 @@ public abstract class EnemyBase : MonoBehaviour {
     [SerializeField]
     protected SpriteRenderer enemySprite = null;
     [SerializeField]
+    protected EnemyDeadEffect enemyEffect = null;
     protected Sprite[][] animSpriteList = null;
     protected int animIndex = -1;
     protected eEnemyAnimation currentAnim = eEnemyAnimation.Invalid;
@@ -44,6 +45,7 @@ public abstract class EnemyBase : MonoBehaviour {
         gameObject.SetActive(true);
         //HPゲージの初期化
         enemyHPSlider.value = 1.0f;
+        enemyEffect.Setup();
         isDead = false;
     }
     public virtual void Teardown() {
@@ -74,6 +76,8 @@ public abstract class EnemyBase : MonoBehaviour {
         if (!isDead && enemyHPSlider.value <= 0) {
             isDead = true;
             enemyHPSlider.value = 0;
+            enemySprite.sprite = null;
+            await enemyEffect.PlayEffectAnimation();
             MenuManager.instance.Get<ScoreTextManager>().AddScore(ADD_SCORE);
             TimeManager.AddLimitTime(ADD_SCORE);
             //未使用状態にする
@@ -155,7 +159,7 @@ public abstract class EnemyBase : MonoBehaviour {
         animIndex = 0;
     }
 
-    public virtual async UniTask EnemyMoveDirection() {
+    protected virtual async UniTask EnemyMoveDirection() {
         await UniTask.CompletedTask;
     }
     /// <summary>
@@ -164,5 +168,9 @@ public abstract class EnemyBase : MonoBehaviour {
     /// <param name="setPhase"></param>
     public virtual void EnemyPhaseStatusUp(int setPhase) {
 
+    }
+
+    protected virtual async UniTask EnemyDamageEffect() {
+        await UniTask.CompletedTask;
     }
 }

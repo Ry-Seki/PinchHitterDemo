@@ -35,6 +35,8 @@ public class EndlessGame {
         }
         await timeManager.Close();
         UnuseAllEnemy();
+        //ƒXƒRƒA‚Ìˆ—
+        ScoreTextManager.SetHighScore();
         EarnStatusPoint();
         isGameEnd = true;
         return isGameEnd;

@@ -35,6 +35,8 @@ public class PlayerStatusDataManager : SystemObject {
 
     public void LoadData() {
         saveData = LoadDataFromFile();
+        //マスターデータの読み込み
+        MasterDataManager.LoadAllData();
     }
     /// <summary>
     /// セーブデータをファイルに渡す
@@ -79,8 +81,6 @@ public class PlayerStatusDataManager : SystemObject {
     /// Unityが終了した時に呼び出される処理
     /// </summary>
     private void OnApplicationQuit() {
-        //スコアの処理
-        ScoreTextManager.SetHighScore();
         //セーブ
         SaveData();
     }

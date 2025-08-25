@@ -19,6 +19,7 @@ public class MenuStatusUpgrade : MenuBase {
     private TextMeshProUGUI percentageLvText = null;
     [SerializeField]
     private TextMeshProUGUI limitTimeLvText = null;
+    private PlayerStatusData playerData = null;
     private int statusPoint = -1;
     private int attackLv = -1;
     private int intervalLv = -1;
@@ -30,19 +31,20 @@ public class MenuStatusUpgrade : MenuBase {
     public override async UniTask Initialize() {
         await base.Initialize();
         gameObject.SetActive(false);
-        PlayerStatusData data = PlayerStatusDataManager.instance.saveData;
+        playerData = PlayerStatusDataManager.instance.saveData;
+        SetStatusPoint(playerData.statusPoint);
+        SetAttackLv(playerData.attackLv);
+        SetIntervalLv(playerData.atkIntervalLv);
+        SetPercentageLv(playerData.atkPercentageLv);
+        SetLimitTimeLv(playerData.limitTimeLv);
     }
     public void Setup() {
-        PlayerStatusData data = PlayerStatusDataManager.instance.saveData;
-        SetStatusPoint(data.statusPoint);
-        SetAttackLv(data.attackLv);
-        SetIntervalLv(data.atkIntervalLv);
-        SetPercentageLv(data.atkPercentageLv);
-        SetLimitTimeLv(data.limitTimeLv);
+        playerData = PlayerStatusDataManager.instance.saveData;
+        SetStatusPoint(playerData.statusPoint);
     }
-
     public override async UniTask Open() {
         await base.Open();
+        Setup();
         await FadeManager.instance.FadeIn();
         isClose = false;
         while (!isClose) {
@@ -51,7 +53,6 @@ public class MenuStatusUpgrade : MenuBase {
         await FadeManager.instance.FadeOut();
         await Close();
     }
-
     public override async UniTask Close() {
         await base.Close();
         MenuManager.instance.Get<MenuTitle>().BackScreen();
@@ -64,8 +65,14 @@ public class MenuStatusUpgrade : MenuBase {
 
         attackLv++;
         ReduceStatusPoint(attackLv);
-        SetAttackStatusLv(attackLv);
-        attackLvText.text = "Lv : " + attackLv;
+        SetAttackLv(attackLv);
+    }
+    public void AttackLvDown() {
+        if(attackLv <= 0) return;
+
+        IncreaseStatusPoint(attackLv);
+        attackLv--;
+        SetAttackLv(attackLv); 
     }
     public void IntervalLvUp() {
         if(intervalLv >= 50) return;
@@ -73,8 +80,14 @@ public class MenuStatusUpgrade : MenuBase {
         if(statusPoint - (intervalLv + 1) < 0 ) return;
         intervalLv++;
         ReduceStatusPoint(intervalLv);
-        SetIntervalStatusLv(intervalLv);
-        intervalLvText.text = "Lv : " + intervalLv;
+        SetIntervalLv(intervalLv);
+    }
+    public void IntervalLvDown() {
+        if(intervalLv <= 0) return;
+
+        IncreaseStatusPoint(intervalLv);
+        intervalLv--;
+        SetIntervalLv(intervalLv);
     }
     public void PercentageLvUp() {
         if(percentageLv >= 50) return;
@@ -83,10 +96,15 @@ public class MenuStatusUpgrade : MenuBase {
 
         percentageLv++;
         ReduceStatusPoint(percentageLv);
-        SetPercentageStatusLv(percentageLv);
-        percentageLvText.text = "Lv : " + percentageLv;
+        SetPercentageLv(percentageLv);
     }
+    public void PercentageLvDown() {
+        if(percentageLv <= 0) return;
 
+        IncreaseStatusPoint(percentageLv);
+        percentageLv--;
+        SetPercentageLv(percentageLv);
+    }
     public void LimitTimeLvUp() {
         if(limitTimeLv >= 50) return;
 
@@ -94,10 +112,16 @@ public class MenuStatusUpgrade : MenuBase {
 
         limitTimeLv++;
         ReduceStatusPoint(limitTimeLv);
-        SetLimitTimeStatusLv(limitTimeLv);
-        limitTimeLvText.text = "Lv : " + limitTimeLv;
+        SetLimitTimeLv(limitTimeLv);
     }
-    public void ResetLevel() {
+    public void LimitTimeLvDown() {
+        if(limitTimeLv <= 0) return;
+
+        IncreaseStatusPoint(limitTimeLv);
+        limitTimeLv--;
+        SetLimitTimeLv(limitTimeLv);
+    }
+    public void ResetAllLevel() {
         SetAttackLv(0);
         SetIntervalLv(0);
         SetPercentageLv(0);
@@ -122,6 +146,7 @@ public class MenuStatusUpgrade : MenuBase {
     /// <param name="setValue"></param>
     private void SetAttackLv(int setValue) {
         attackLv = setValue;
+        SetAttackStatusLv(attackLv);
         attackLvText.text = "Lv : " + attackLv;
     }
     /// <summary>
@@ -130,6 +155,7 @@ public class MenuStatusUpgrade : MenuBase {
     /// <param name="setValue"></param>
     private void SetIntervalLv(int setValue) {
         intervalLv = setValue;
+        SetIntervalStatusLv(intervalLv);
         intervalLvText.text = "Lv : " + intervalLv;
     }
     /// <summary>
@@ -138,6 +164,7 @@ public class MenuStatusUpgrade : MenuBase {
     /// <param name="setValue"></param>
     private void SetPercentageLv(int setValue) {
         percentageLv = setValue;
+        SetPercentageStatusLv(percentageLv);
         percentageLvText.text = "Lv : " + percentageLv;
     }
     /// <summary>
@@ -146,6 +173,7 @@ public class MenuStatusUpgrade : MenuBase {
     /// <param name="setValue"></param>
     private void SetLimitTimeLv(int setValue) {
         limitTimeLv = setValue;
+        SetLimitTimeStatusLv(limitTimeLv);
         limitTimeLvText.text = "Lv : " + limitTimeLv;
     }
     /// <summary>
@@ -154,5 +182,12 @@ public class MenuStatusUpgrade : MenuBase {
     /// <param name="setValue"></param>
     private void ReduceStatusPoint(int setValue) {
         SetStatusPoint(statusPoint - setValue);
+    }
+    /// <summary>
+    /// ステータスポイント増加
+    /// </summary>
+    /// <param name="setValue"></param>
+    private void IncreaseStatusPoint(int setValue) {
+        SetStatusPoint(statusPoint + setValue);
     }
 }

@@ -11,11 +11,6 @@ public class PartTitle : PartBase {
         await MenuManager.instance.Get<MenuStatusUpgrade>("Prefabs/Menu/CanvasUpgrade").Initialize();
         await MenuManager.instance.Get<MenuTitle>("Prefabs/Menu/CanvasTitle").Initialize();
     }
-
-    public override async UniTask Setup() {
-        await base.Setup();
-        MenuManager.instance.Get<MenuStatusUpgrade>().Setup();
-    }
     public override async UniTask Execute() {
         //BGM‚ÌÄ¶
         AudioManager.instance.PlayBGM(0);

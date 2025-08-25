@@ -6,8 +6,6 @@ using UnityEngine;
 public class PartStanby : PartBase {
     public override async UniTask Initialize() {
         await base.Initialize();
-        //マスターデータの読み込み
-        MasterDataManager.LoadAllData();
         //セーブデータの読み込み
         //PlayerStatusDataManager.instance.LoadData();
         //PlayerStatusDataManager.instance.InitSaveStatus();

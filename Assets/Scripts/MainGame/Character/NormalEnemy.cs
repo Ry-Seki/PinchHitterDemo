@@ -6,6 +6,7 @@ using System.Threading;
 using Unity.VisualScripting.Antlr3.Runtime;
 using UnityEngine;
 
+using static PlayerStatusUtility;
 
 public class NormalEnemy : EnemyBase {
     //初期HP
@@ -61,21 +62,29 @@ public class NormalEnemy : EnemyBase {
         if(!isCameraHit || damageCoolTime) return;
 
         //ダメージを与える
-        UniTask task = Damage();
+        UniTask damageTask = Damage();
     }
     /// <summary>
     /// 死亡判定付きのダメージ付与
     /// </summary>
     protected override async UniTask Damage() {
+        if(isDead) return;
         //ヒットSEの再生
         UniTask task = AudioManager.instance.PlaySE(0);
+        //ダメージ効果
+        UniTask damageEffectTask = EnemyDamageEffect();
 
         await base.Damage();
         if (isMove) return;
 
         UniTask moveTask = EnemyMoveDirection();
     }
-    public override async UniTask EnemyMoveDirection() {
+    /// <summary>
+    /// 敵の移動
+    /// </summary>
+    /// <returns></returns>
+    protected override async UniTask EnemyMoveDirection() {
+        await base.EnemyMoveDirection();
         token = this.GetCancellationTokenOnDestroy();
         isMove = true;
         float elapseTime = 0.0f;
@@ -93,6 +102,24 @@ public class NormalEnemy : EnemyBase {
             await UniTask.DelayFrame(1, PlayerLoopTiming.Update, token);
         }
         isMove = false;
+        await UniTask.CompletedTask;
+    }
+    protected override async UniTask EnemyDamageEffect() {
+        await base.EnemyDamageEffect();
+        token = this.GetCancellationTokenOnDestroy();
+        enemySprite.color = Color.red;
+        Color damageColor = enemySprite.color;
+        float elapseTime = 0.0f;
+        float duration = GetRawInterval();
+
+        while (elapseTime < duration) {
+            elapseTime += Time.deltaTime;
+            float t = elapseTime / duration;
+            Color changeColor = Color.Lerp(Color.red, Color.white, t);
+            enemySprite.color = changeColor;
+            await UniTask.DelayFrame(1, PlayerLoopTiming.Update, token);
+        }
+        enemySprite.color = Color.white;
         await UniTask.CompletedTask;
     }
 }
