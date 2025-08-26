@@ -55,8 +55,6 @@ public class MenuStatusUpgrade : MenuBase {
     }
     public override async UniTask Close() {
         await base.Close();
-        MenuManager.instance.Get<MenuTitle>().BackScreen();
-        await FadeManager.instance.FadeIn();
     }
     public void AttackLvUp() {
         if(attackLv >= 50) return;

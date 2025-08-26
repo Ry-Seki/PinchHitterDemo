@@ -43,8 +43,6 @@ public class MenuSettings : MenuBase {
     }
     public override async UniTask Close() {
         await base.Close();
-        MenuManager.instance.Get<MenuTitle>().BackScreen();
-        await FadeManager.instance.FadeIn();
     }
     /// <summary>
     /// BGM‰¹—Êİ’è

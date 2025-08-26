@@ -11,7 +11,7 @@ using static PlayerStatusUtility;
 public class NormalEnemy : EnemyBase {
     //‰ŠúHP
     private const int RAW_ENEMY_HP = 100;
-    private const int ADD_PHASE_HP = 200;
+    private const int ADD_PHASE_HP = 100;
     //‰æ‘œ“Ç‚İ‚İ—p•Ï”
     private static readonly string ENEMY_SPRITE_PATH = "Design/Sprites/";
     private static readonly string[] ANIMATION_SPRITE_NAME =

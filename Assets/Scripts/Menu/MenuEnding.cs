@@ -36,6 +36,6 @@ public class MenuEnding : MenuBase {
     /// <param name="setScoreValue"></param>
     public void ShowResultScore(int setScoreValue) {
         resultScore = setScoreValue;
-        resultScoreText.text = "Score : " + resultScore;
+        resultScoreText.text = resultScore.ToString();
     }
 }
