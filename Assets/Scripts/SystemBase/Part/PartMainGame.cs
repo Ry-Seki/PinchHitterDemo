@@ -10,6 +10,8 @@ using static EnemyUtility;
 public class PartMainGame : PartBase {
     [SerializeField]
     private EnemyManager enemyManager = null;
+    [SerializeField]
+    private EnemyDeadEffectManager enemyEffectManager = null;
     public static bool isStart { get; private set; } = false;
     private CameraController mainCamera = null;
     private EndlessGame endless = null;
@@ -24,7 +26,10 @@ public class PartMainGame : PartBase {
         //カメラの拡縮率のテキストにセット
         mainCamera.SetPinchText(pinchText);
         await MenuManager.instance.Get<ScoreTextManager>("Prefabs/Menu/ScoreText").Initialize();
+        //敵マネージャーの初期化
         enemyManager?.Initialize();
+        //エフェクトマネージャーの初期化
+        enemyEffectManager?.Initialize();
         //タイムテキストの初期化
         TimeManager timer = MenuManager.instance.Get<TimeManager>("Prefabs/Menu/CanvasTimer");
         await timer.Initialize();

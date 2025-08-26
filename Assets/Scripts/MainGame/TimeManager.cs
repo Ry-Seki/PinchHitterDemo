@@ -9,7 +9,7 @@ using static PlayerStatusUtility;
 public class TimeManager : MenuBase{
     public static int limitTimerPer { get; private set; } = -1;
     private static int storeScore = -1;
-    private const int BORDER_SCORE = 200;
+    private const int BORDER_SCORE = 500;
     [SerializeField]
     private TextMeshProUGUI timeText = null;
 

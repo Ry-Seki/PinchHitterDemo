@@ -21,4 +21,7 @@ public class GameConst {
 
     //最大ステータスレベル
     public static readonly int MAX_STATUS_LEVEL = 50;
+
+    //10段階の音量設定
+    public static readonly int TEN_DEVIDE_VOLUME = 10;
 }

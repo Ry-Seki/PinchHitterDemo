@@ -6,6 +6,7 @@ using System.Threading;
 using UnityEngine;
 
 using static CommonModule;
+using static GameConst;
 
 public class AudioManager : SystemObject {
     public static AudioManager instance { get; private set; } = null;
@@ -42,8 +43,12 @@ public class AudioManager : SystemObject {
     /// BGMÇÃâπó í≤êÆ(10íiäKí≤êÆ)
     /// </summary>
     /// <param name="setValue"></param>
-    public void ChangeVolumeBGM(int setValue) {
-        bgmAudioSource.volume = setValue * 0.1f;
+    public void SetBGMVolume(float setValue) {
+        if (setValue <= 0) {
+            bgmAudioSource.volume = 0;
+        } else {
+            bgmAudioSource.volume = setValue / TEN_DEVIDE_VOLUME;
+        }
     }
     /// <summary>
     /// BGMí‚é~
@@ -74,11 +79,13 @@ public class AudioManager : SystemObject {
     /// SEÇÃâπó í≤êÆ(10íiäKí≤êÆ)
     /// </summary>
     /// <param name="setValue"></param>
-    public void ChangeVolumeSE(int setValue) {
-        for(int i = 0, max = seAudioSource.Length; i < max; i++) {
-            if (seAudioSource[i] == null || seAudioSource[i].isPlaying) continue;
-
-            seAudioSource[i].volume = setValue * 0.1f;
+    public void SetSEVolume(float setValue) {
+        for (int i = 0, max = seAudioSource.Length; i < max; i++) {
+            if (setValue <= 0) {
+                seAudioSource[i].volume = 0;
+            } else {
+                seAudioSource[i].volume = setValue / TEN_DEVIDE_VOLUME;
+            }
         }
     }
 }

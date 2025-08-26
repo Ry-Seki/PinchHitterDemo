@@ -11,7 +11,7 @@ using static PlayerStatusUtility;
 public class NormalEnemy : EnemyBase {
     //初期HP
     private const int RAW_ENEMY_HP = 100;
-    private const int ADD_PHASE_HP = 50;
+    private const int ADD_PHASE_HP = 200;
     //画像読み込み用変数
     private static readonly string ENEMY_SPRITE_PATH = "Design/Sprites/";
     private static readonly string[] ANIMATION_SPRITE_NAME =
@@ -73,8 +73,9 @@ public class NormalEnemy : EnemyBase {
         UniTask task = AudioManager.instance.PlaySE(0);
         //ダメージ効果
         UniTask damageEffectTask = EnemyDamageEffect();
-
+        //ダメージ処理
         await base.Damage();
+
         if (isMove) return;
 
         UniTask moveTask = EnemyMoveDirection();

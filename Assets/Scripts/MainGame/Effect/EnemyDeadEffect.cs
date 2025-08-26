@@ -5,6 +5,8 @@ using System.Text;
 using UnityEngine;
 
 using static CommonModule;
+using static EnemyDeadEffectUtility;
+
 public class EnemyDeadEffect : MonoBehaviour {
     //画像読み込み用変数
     private static StringBuilder spriteNameBuilder = new StringBuilder();
@@ -19,6 +21,9 @@ public class EnemyDeadEffect : MonoBehaviour {
     private Sprite[][] animationSpriteList = null;
     private int animIndex = -1;
 
+    /// <summary>
+    /// 使用前準備
+    /// </summary>
     public void Setup() {
         int animMax = ANIMATION_SPRITE_NAME.Length;
         animationSpriteList = new Sprite[1][];
@@ -29,12 +34,16 @@ public class EnemyDeadEffect : MonoBehaviour {
             animationSpriteList[0][i] = Resources.Load<Sprite>(spriteNameBuilder.ToString());
             spriteNameBuilder.Clear();
         }
+        animIndex = 0;
     }
-    //アニメーションの再生
-    public async UniTask PlayEffectAnimation() {
+    /// <summary>
+    /// アニメーションの再生
+    /// </summary>
+    /// <param name="targetEnemy"></param>
+    /// <returns></returns>
+    public async UniTask PlayEffectAnimation(EnemyBase targetEnemy) {
         int animMax = animationSpriteList.Length;
-        if (animIndex != 0) ResetAnimation();
-        gameObject.SetActive(true);
+        transform.position = targetEnemy.transform.position;
         Sprite[] currentAnimSpriteList = animationSpriteList[0];
         while (true) {
             if(!IsEnableIndex(currentAnimSpriteList, animIndex)) break;
@@ -43,9 +52,14 @@ public class EnemyDeadEffect : MonoBehaviour {
             await UniTask.Delay(ANIMATION_DELAY_MILLI_SEC);
             animIndex++;
         }
-        gameObject.SetActive(false);
+        UnuseEffect(this);
     }
-    public void ResetAnimation() {
+    /// <summary>
+    /// 片付け処理
+    /// </summary>
+    public void Teardown() {
         animIndex = 0;
+        transform.position = Vector3.zero;
+        gameObject.SetActive(false);
     }
 }

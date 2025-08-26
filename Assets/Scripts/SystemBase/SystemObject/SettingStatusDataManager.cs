@@ -16,16 +16,15 @@ public class SettingStatusDataManager : SystemObject {
     private const int INIT_SE_VOLUME = 10;
 
     public override async UniTask Initialize() {
-        await UniTask.CompletedTask;
         instance = this;
-        //セーブデータの宣言
-        saveData = new SettingStatusData();
         //StringBuilderの宣言
         StringBuilder fileNameBuilder = new StringBuilder();
         //StringBuilderを使った文字列連結
         fileNameBuilder.Append(Application.persistentDataPath);
         fileNameBuilder.Append(saveFileName);
         filePath = fileNameBuilder.ToString();
+        //セーブデータの宣言
+        LoadData();
         await UniTask.CompletedTask;
     }
     public void SaveData() {
@@ -56,18 +55,22 @@ public class SettingStatusDataManager : SystemObject {
     /// <returns></returns>
     private SettingStatusData LoadDataFromFile() {
         if (File.Exists(filePath)) {
-            //FileSteamの宣言
-            FileStream fileStream = new FileStream(filePath, FileMode.Open);
-            //BinaryFormatterの宣言
-            BinaryFormatter bf = new BinaryFormatter();
-            SettingStatusData data = (SettingStatusData)bf.Deserialize(fileStream);
-            fileStream.Close();
-            Debug.Log("Save data loaded from " + filePath);
-            return data;
+            FileInfo fileInfo = new FileInfo(filePath);
+            if(fileInfo.Length == 0) {
+                return new SettingStatusData();
+            }
+            try { 
+                //FileSteamの宣言
+                using (FileStream fileStream = new FileStream(filePath, FileMode.Open)) {
+                    //BinaryFormatterの宣言
+                    BinaryFormatter bf = new BinaryFormatter();
+                    return (SettingStatusData)bf.Deserialize(fileStream);
+                }
+            } catch {
+                return new SettingStatusData();
+            }
         } else {
-            Debug.Log("Save file not found.");
-            SettingStatusData data = new SettingStatusData();
-            return data;
+            return new SettingStatusData(); 
         }
     }
     /// <summary>

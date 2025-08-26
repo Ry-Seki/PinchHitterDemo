@@ -9,6 +9,7 @@ public class PartTitle : PartBase {
         await base.Initialize();
         //タイトルメニューの初期化
         await MenuManager.instance.Get<MenuStatusUpgrade>("Prefabs/Menu/CanvasUpgrade").Initialize();
+        await MenuManager.instance.Get<MenuSettings>("Prefabs/Menu/CanvasSettings").Initialize();
         await MenuManager.instance.Get<MenuTitle>("Prefabs/Menu/CanvasTitle").Initialize();
     }
     public override async UniTask Execute() {

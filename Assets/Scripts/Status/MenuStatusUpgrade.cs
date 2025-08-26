@@ -106,7 +106,7 @@ public class MenuStatusUpgrade : MenuBase {
         SetPercentageLv(percentageLv);
     }
     public void LimitTimeLvUp() {
-        if(limitTimeLv >= 50) return;
+        if(limitTimeLv >= 10) return;
 
         if (statusPoint - (limitTimeLv + 1) < 0) return;
 

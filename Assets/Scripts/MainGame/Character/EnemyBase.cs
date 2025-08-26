@@ -8,14 +8,13 @@ using UnityEngine.UI;
 using static CommonModule;
 using static EnemyUtility;
 using static PlayerStatusUtility;
+using static EnemyDeadEffectUtility;
 
 public abstract class EnemyBase : MonoBehaviour {
     protected static StringBuilder spriteNameBuilder = new StringBuilder();
 
     [SerializeField]
     protected SpriteRenderer enemySprite = null;
-    [SerializeField]
-    protected EnemyDeadEffect enemyEffect = null;
     protected Sprite[][] animSpriteList = null;
     protected int animIndex = -1;
     protected eEnemyAnimation currentAnim = eEnemyAnimation.Invalid;
@@ -45,7 +44,6 @@ public abstract class EnemyBase : MonoBehaviour {
         gameObject.SetActive(true);
         //HPゲージの初期化
         enemyHPSlider.value = 1.0f;
-        enemyEffect.Setup();
         isDead = false;
     }
     public virtual void Teardown() {
@@ -77,9 +75,9 @@ public abstract class EnemyBase : MonoBehaviour {
             isDead = true;
             enemyHPSlider.value = 0;
             enemySprite.sprite = null;
-            await enemyEffect.PlayEffectAnimation();
             MenuManager.instance.Get<ScoreTextManager>().AddScore(ADD_SCORE);
             TimeManager.AddLimitTime(ADD_SCORE);
+            UseEffect(this);
             //未使用状態にする
             UnuseEnemy(this);
             if(GetEnemyCount() <= 0) {

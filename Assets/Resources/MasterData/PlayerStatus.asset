@@ -19,7 +19,7 @@ MonoBehaviour:
       attackInterval: 1
       attackPinchPer: 90
       rawLimitTime: 20
-      AddAttackValue: 5
+      AddAttackValue: 2
       ShortenIntervalValue: 0.05
-      ExpansionAttackArea: 1.5
+      ExpansionAttackArea: 1.2
       ExtentedTime: 5
