@@ -84,6 +84,9 @@ public class PlayerStatusDataManager : SystemObject {
         //セーブ
         SaveData();
     }
+    public void SetHighScore(int setValue) {
+        saveData.highScore = setValue;
+    }
     /// <summary>
     /// 攻撃レベル設定
     /// </summary>
@@ -130,9 +133,7 @@ public class PlayerStatusDataManager : SystemObject {
     /// セーブデータの初期化
     /// </summary>
     public void InitSaveStatus() {
-        saveData.highScore = 0;
-        saveData.statusPoint = 0;
-        InitLevel();
+        saveData = new PlayerStatusData();
     }
     /// <summary>
     /// レベルデータの初期化

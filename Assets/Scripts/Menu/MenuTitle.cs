@@ -79,12 +79,15 @@ public class MenuTitle : MenuBase {
         await UniTask.CompletedTask;
     }
     public void StartInputGame() {
+        UniTask task = AudioManager.instance.PlaySE(5);
         titleMenu = eTitleMenu.StartGame;
     }
     public void EnhanceScreen() {
+        UniTask task = AudioManager.instance.PlaySE(4);
         titleMenu = eTitleMenu.Enhance;
     }
     public void SettingScreen() {
+        UniTask task = AudioManager.instance.PlaySE(4);
         titleMenu = eTitleMenu.Setting;
     }
     public void BackScreen() {

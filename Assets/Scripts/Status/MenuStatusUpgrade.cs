@@ -55,12 +55,14 @@ public class MenuStatusUpgrade : MenuBase {
     }
     public override async UniTask Close() {
         await base.Close();
+        PlayerStatusDataManager.instance.SaveData();
     }
     public void AttackLvUp() {
         if(attackLv >= 50) return;
 
         if(statusPoint - (attackLv + 1) < 0 ) return;
 
+        UniTask task = AudioManager.instance.PlaySE(2);
         attackLv++;
         ReduceStatusPoint(attackLv);
         SetAttackLv(attackLv);
@@ -68,6 +70,7 @@ public class MenuStatusUpgrade : MenuBase {
     public void AttackLvDown() {
         if(attackLv <= 0) return;
 
+        UniTask task = AudioManager.instance.PlaySE(2);
         IncreaseStatusPoint(attackLv);
         attackLv--;
         SetAttackLv(attackLv); 
@@ -76,6 +79,8 @@ public class MenuStatusUpgrade : MenuBase {
         if(intervalLv >= 50) return;
 
         if(statusPoint - (intervalLv + 1) < 0 ) return;
+
+        UniTask task = AudioManager.instance.PlaySE(2);
         intervalLv++;
         ReduceStatusPoint(intervalLv);
         SetIntervalLv(intervalLv);
@@ -83,6 +88,7 @@ public class MenuStatusUpgrade : MenuBase {
     public void IntervalLvDown() {
         if(intervalLv <= 0) return;
 
+        UniTask task = AudioManager.instance.PlaySE(2);
         IncreaseStatusPoint(intervalLv);
         intervalLv--;
         SetIntervalLv(intervalLv);
@@ -92,6 +98,7 @@ public class MenuStatusUpgrade : MenuBase {
 
         if(statusPoint - (percentageLv + 1) < 0 ) return;
 
+        UniTask task = AudioManager.instance.PlaySE(2);
         percentageLv++;
         ReduceStatusPoint(percentageLv);
         SetPercentageLv(percentageLv);
@@ -99,6 +106,7 @@ public class MenuStatusUpgrade : MenuBase {
     public void PercentageLvDown() {
         if(percentageLv <= 0) return;
 
+        UniTask task = AudioManager.instance.PlaySE(2);
         IncreaseStatusPoint(percentageLv);
         percentageLv--;
         SetPercentageLv(percentageLv);
@@ -108,6 +116,7 @@ public class MenuStatusUpgrade : MenuBase {
 
         if (statusPoint - (limitTimeLv + 1) < 0) return;
 
+        UniTask task = AudioManager.instance.PlaySE(2);
         limitTimeLv++;
         ReduceStatusPoint(limitTimeLv);
         SetLimitTimeLv(limitTimeLv);
@@ -115,6 +124,7 @@ public class MenuStatusUpgrade : MenuBase {
     public void LimitTimeLvDown() {
         if(limitTimeLv <= 0) return;
 
+        UniTask task = AudioManager.instance.PlaySE(2);
         IncreaseStatusPoint(limitTimeLv);
         limitTimeLv--;
         SetLimitTimeLv(limitTimeLv);
@@ -127,6 +137,7 @@ public class MenuStatusUpgrade : MenuBase {
         InitStatus();
     }
     public void CloseScreen() {
+        UniTask task = AudioManager.instance.PlaySE(3);
         isClose = true;
     }
     /// <summary>

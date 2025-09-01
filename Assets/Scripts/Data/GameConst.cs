@@ -8,7 +8,7 @@ public class GameConst {
     public static readonly float MIN_EXPANSION = 105.0f;
 
     //正規化の倍率
-    public static readonly float MAX_NORM = 0.5f;
+    public static readonly float MAX_NORM = 0.2f;
     public static readonly float MIN_NORM = 0.01f;
 
     //最大百分率
@@ -22,6 +22,6 @@ public class GameConst {
     //最大ステータスレベル
     public static readonly int MAX_STATUS_LEVEL = 50;
 
-    //10段階の音量設定
-    public static readonly int TEN_DEVIDE_VOLUME = 10;
+    //10段階分割用変数
+    public static readonly int TEN_DEVIDE_VALUE = 10;
 }

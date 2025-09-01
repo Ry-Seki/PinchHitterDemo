@@ -47,7 +47,7 @@ public class AudioManager : SystemObject {
         if (setValue <= 0) {
             bgmAudioSource.volume = 0;
         } else {
-            bgmAudioSource.volume = setValue / TEN_DEVIDE_VOLUME;
+            bgmAudioSource.volume = setValue / TEN_DEVIDE_VALUE;
         }
     }
     /// <summary>
@@ -84,7 +84,7 @@ public class AudioManager : SystemObject {
             if (setValue <= 0) {
                 seAudioSource[i].volume = 0;
             } else {
-                seAudioSource[i].volume = setValue / TEN_DEVIDE_VOLUME;
+                seAudioSource[i].volume = setValue / TEN_DEVIDE_VALUE;
             }
         }
     }

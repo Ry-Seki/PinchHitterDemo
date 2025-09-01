@@ -78,12 +78,14 @@ public abstract class EnemyBase : MonoBehaviour {
             MenuManager.instance.Get<ScoreTextManager>().AddScore(ADD_SCORE);
             TimeManager.AddLimitTime(ADD_SCORE);
             UseEffect(this);
+            UniTask task = AudioManager.instance.PlaySE(1);
             //未使用状態にする
-            UnuseEnemy(this);
+            DeathEnemy(this);
             if(GetEnemyCount() <= 0) {
                 EndlessGame.EnemyEmpty();
             }
         } else {
+            UniTask task = AudioManager.instance.PlaySE(0);
             //クールタイム発動
             await DamageCoolTime();
         }

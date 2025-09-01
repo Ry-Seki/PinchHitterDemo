@@ -7,11 +7,12 @@ using UnityEngine;
 using static PlayerStatusUtility;
 
 public class TimeManager : MenuBase{
+    [SerializeField]
+    private TextMeshProUGUI timeText = null;
     public static int limitTimerPer { get; private set; } = -1;
     private static int storeScore = -1;
     private const int BORDER_SCORE = 400;
-    [SerializeField]
-    private TextMeshProUGUI timeText = null;
+    private const int ALARMTIME = 3;
 
     public override async UniTask Initialize() {
         await base.Initialize();
@@ -27,17 +28,23 @@ public class TimeManager : MenuBase{
             if (delta > 1) {
                 delta = 0;
                 limitTimerPer--;
-                timeText.text = "Time : " + limitTimerPer;
+                timeText.text = limitTimerPer.ToString();
+                LimitTimeCounter();
             }
             await UniTask.DelayFrame(1);
         }
+    }
+    private void LimitTimeCounter() {
+        if(limitTimerPer > ALARMTIME) return;
+
+        UniTask task = AudioManager.instance.PlaySE(9);
     }
     /// <summary>
     /// §ŒÀŠÔ‚Ìİ’è
     /// </summary>
     public void SetLimitTimePer(int setTime) {
         limitTimerPer = setTime;
-        timeText.text = "Time : " + limitTimerPer;
+        timeText.text = limitTimerPer.ToString();
     }
     /// <summary>
     /// Šl“¾‚µ‚½ƒXƒRƒA‚É‰‚¶‚Ä§ŒÀŠÔ‚ğ‰„’·‚·‚é

@@ -33,12 +33,14 @@ public class EndlessGame {
             await AddPhase();
             await UniTask.DelayFrame(1);
         }
-        await timeManager.Close();
-        UnuseAllEnemy();
-        //スコアの処理
-        ScoreTextManager.SetHighScore();
-        EarnStatusPoint();
+        //フラグの変更
         isGameEnd = true;
+        //タイムマネージャを閉じる
+        await timeManager.Close();
+        //敵を非表示にする
+        UnuseAllEnemy();
+        //ステータスポイント処理
+        EarnStatusPoint();
         return isGameEnd;
     }
     /// <summary>

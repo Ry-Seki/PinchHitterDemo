@@ -57,6 +57,8 @@ public class PartMainGame : PartBase {
         isStart = true;
         //敵の生成
         bool limitTime = await endless.Execute();
+        //スコアテキストの表示
+        UniTask scoreEndTask = MenuManager.instance.Get<ScoreTextManager>().Close();
         //BGM停止
         AudioManager.instance.StopBGM();
         if (limitTime) {
@@ -68,9 +70,6 @@ public class PartMainGame : PartBase {
 
     public override async UniTask Teardown() {
         await base.Teardown();
-        //スタートフラグの変更
-        ScoreTextManager scoreText = MenuManager.instance.Get<ScoreTextManager>();
-        UniTask scoreTextTask = scoreText.Close();
         PinchExpansionText pinchText = MenuManager.instance.Get<PinchExpansionText>();
         UniTask pinchTextTask = pinchText.Close();
         mainCamera.Teardown();

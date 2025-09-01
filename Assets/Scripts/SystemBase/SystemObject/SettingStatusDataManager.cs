@@ -74,7 +74,25 @@ public class SettingStatusDataManager : SystemObject {
         }
     }
     /// <summary>
-    /// Unityが終了した時に呼び出される処理
+    /// Unityが終了した時に呼び出される処理(スマホ版)
+    /// </summary>
+    /// <param name="pauseStatus"></param>
+    private void OnApplicationPause(bool pauseStatus) {
+        if (pauseStatus) {
+            SaveData();
+        }
+    }
+    /// <summary>
+    /// Unityが終了した時に呼び出される処理(スマホ版)
+    /// </summary>
+    /// <param name="pauseStatus"></param>
+    private void OnApplicationFocus(bool hasFocus) {
+        if (!hasFocus) {
+            SaveData();
+        }
+    }
+    /// <summary>
+    /// Unityが終了した時に呼び出される処理(PC版)
     /// </summary>
     private void OnApplicationQuit() {
         //セーブ
@@ -85,6 +103,7 @@ public class SettingStatusDataManager : SystemObject {
     /// </summary>
     public void SetBGMVolume(int setValue) {
         saveData.bgmVolume = setValue;
+
     }
     /// <summary>
     /// SEの音量設定
@@ -92,5 +111,12 @@ public class SettingStatusDataManager : SystemObject {
     /// <param name="setValue"></param>
     public void SetSEVolume(int setValue) {
         saveData.seVolume = setValue;
+    }
+    /// <summary>
+    /// 感度設定
+    /// </summary>
+    /// <param name="setValue"></param>
+    public void SetMoveSensitivity(int setValue) {
+        saveData.moveSensitivity = setValue;
     }
 }

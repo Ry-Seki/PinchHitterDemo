@@ -15,7 +15,7 @@ public class NormalEnemy : EnemyBase {
     //画像読み込み用変数
     private static readonly string ENEMY_SPRITE_PATH = "Design/Sprites/";
     private static readonly string[] ANIMATION_SPRITE_NAME =
-        new string[] {"NPC"};
+        new string[] { "NPC" };
     private const float DEFAULT_MOVE_TIME = 10.0f;
     private bool isMove = false;
     //移動のタスクを中断するためのトークン
@@ -40,7 +40,8 @@ public class NormalEnemy : EnemyBase {
         //待機アニメーション設定
         SetAnimation(eEnemyAnimation.Wait);
         //アニメーション再生タスクを実行（すでに実行中ならしない）
-        if(animTask.Status.IsCompleted()) animTask = PlayAnimationTask();
+        if (animTask.Status.IsCompleted())
+            animTask = PlayAnimationTask();
     }
     public override void EnemyPhaseStatusUp(int setPhase) {
         base.EnemyPhaseStatusUp(setPhase);
@@ -59,7 +60,8 @@ public class NormalEnemy : EnemyBase {
     }
     protected override void OnWillRenderObject() {
         base.OnWillRenderObject();
-        if(!isCameraHit || damageCoolTime) return;
+        if (!isCameraHit || damageCoolTime)
+            return;
 
         //ダメージを与える
         UniTask damageTask = Damage();
@@ -68,9 +70,7 @@ public class NormalEnemy : EnemyBase {
     /// 死亡判定付きのダメージ付与
     /// </summary>
     protected override async UniTask Damage() {
-        if(isDead) return;
-        //ヒットSEの再生
-        UniTask task = AudioManager.instance.PlaySE(0);
+        if (isDead) return;
         //ダメージ効果
         UniTask damageEffectTask = EnemyDamageEffect();
         //ダメージ処理
@@ -79,6 +79,7 @@ public class NormalEnemy : EnemyBase {
         if (isMove) return;
 
         UniTask moveTask = EnemyMoveDirection();
+
     }
     /// <summary>
     /// 敵の移動
@@ -95,7 +96,8 @@ public class NormalEnemy : EnemyBase {
         Vector3 direction = (startPos - goalPos).normalized;
 
         while (elapseTime < duration) {
-            if (isDead) break;
+            if (isDead)
+                break;
             elapseTime += Time.deltaTime;
             float t = elapseTime / DEFAULT_MOVE_TIME;
             Vector3 setPos = Vector3.Lerp(startPos, goalPos, t);

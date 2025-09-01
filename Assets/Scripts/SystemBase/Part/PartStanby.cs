@@ -7,7 +7,6 @@ public class PartStanby : PartBase {
     public override async UniTask Initialize() {
         await base.Initialize();
         //セーブデータの読み込み
-        //PlayerStatusDataManager.instance.LoadData();
         //PlayerStatusDataManager.instance.InitSaveStatus();
     }
     public override async UniTask Execute() {

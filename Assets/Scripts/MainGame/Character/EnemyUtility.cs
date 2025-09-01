@@ -38,4 +38,9 @@ public class EnemyUtility : MonoBehaviour {
     public static int GetEnemyCount() { 
         return EnemyManager.instance.GetEnemyCount();
     }
+
+    public static void DeathEnemy(EnemyBase unuseEnemy) {
+        UnuseEnemy(unuseEnemy);
+        ScoreTextManager.instance.AddEnemyDeathValue();
+    }
 }

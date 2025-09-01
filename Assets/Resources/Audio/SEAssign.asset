@@ -14,4 +14,12 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   seArray:
   - {fileID: 8300000, guid: 0027b2cd78d86204c8260f288cc3a770, type: 3}
+  - {fileID: 8300000, guid: 9ea1409e5dd3b1f46bbb3d91c7d470ba, type: 3}
   - {fileID: 8300000, guid: 536e245dc5a7e694d8292e044bcecaa3, type: 3}
+  - {fileID: 8300000, guid: 05fea7058d2efb6479fd05715a37544a, type: 3}
+  - {fileID: 8300000, guid: 9af160febdabc3a46b12c692d6ea47dc, type: 3}
+  - {fileID: 8300000, guid: 35dd1f64372d9134dafb98c7ece59989, type: 3}
+  - {fileID: 8300000, guid: 7e8f16b204942114e8145338b8e5d521, type: 3}
+  - {fileID: 8300000, guid: 7d5b73bf6b6b6164eb1a78ee4627ace8, type: 3}
+  - {fileID: 8300000, guid: 1f729e1c4bffc504995989a2c1963fc1, type: 3}
+  - {fileID: 8300000, guid: 3ec4cd3adf47c8a44bfb89222abee271, type: 3}
