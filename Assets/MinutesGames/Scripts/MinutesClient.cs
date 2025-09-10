@@ -26,7 +26,9 @@ namespace MinutesGames
 
         private void Start()
         {
-            AlreadyMounted();
+            #if UNITY_WEBGL && !UNITY_EDITOR
+                AlreadyMounted();
+            #endif
         }
 
         public void PauseGame()
