@@ -16,6 +16,22 @@ public class CommonModule {
         return array == null || array.Length <= 0;
     }
     /// <summary>
+    /// 配列が空か判別 (二次元配列)
+    /// </summary>
+    /// <typeparam name="T"></typeparam>
+    /// <param name="array"></param>
+    /// <returns></returns>
+    public static bool IsEmpty<T>(T[][] array) {
+        if (array == null || array.Length == 0)
+            return true;
+
+        foreach (var inner in array) {
+            if (inner != null && inner.Length > 0)
+                return false;
+        }
+        return true;
+    }
+    /// <summary>
     /// リストが空か判定
     /// </summary>
     /// <typeparam name="T"></typeparam>

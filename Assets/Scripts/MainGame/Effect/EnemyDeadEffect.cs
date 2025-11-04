@@ -2,6 +2,7 @@ using Cysharp.Threading.Tasks;
 using System.Collections;
 using System.Collections.Generic;
 using System.Text;
+using System.Threading;
 using UnityEngine;
 
 using static CommonModule;
@@ -21,10 +22,9 @@ public class EnemyDeadEffect : MonoBehaviour {
     private Sprite[][] animationSpriteList = null;
     private int animIndex = -1;
 
-    /// <summary>
-    /// 使用前準備
-    /// </summary>
-    public void Setup() {
+    private CancellationToken token;    
+
+    public void LoadSprite() {
         int animMax = ANIMATION_SPRITE_NAME.Length;
         animationSpriteList = new Sprite[1][];
         animationSpriteList[0] = new Sprite[animMax];
@@ -34,6 +34,13 @@ public class EnemyDeadEffect : MonoBehaviour {
             animationSpriteList[0][i] = Resources.Load<Sprite>(spriteNameBuilder.ToString());
             spriteNameBuilder.Clear();
         }
+    }
+    /// <summary>
+    /// 使用前準備
+    /// </summary>
+    public void Setup() {
+        // エフェクトの読み込み (初回のみ)
+        if(IsEmpty(animationSpriteList)) LoadSprite();
         animIndex = 0;
     }
     /// <summary>
@@ -52,6 +59,7 @@ public class EnemyDeadEffect : MonoBehaviour {
             await UniTask.Delay(ANIMATION_DELAY_MILLI_SEC);
             animIndex++;
         }
+        // 未使用状態にする
         UnuseEffect(this);
     }
     /// <summary>

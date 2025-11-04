@@ -9,6 +9,7 @@ using static CommonModule;
 using static EnemyUtility;
 using static PlayerStatusUtility;
 using static EnemyDeadEffectUtility;
+using System.Threading;
 
 public abstract class EnemyBase : MonoBehaviour {
     protected static StringBuilder spriteNameBuilder = new StringBuilder();
@@ -34,20 +35,27 @@ public abstract class EnemyBase : MonoBehaviour {
     protected readonly int ADD_SCORE = 200;
     protected static CameraController mainCamera { get; private set; } = null;
 
+    private CancellationToken token;
     public static void Initialize() {
         if(mainCamera != null) return;
 
         //メインカメラの登録
         mainCamera = Camera.main.GetComponent<CameraController>();
     }
+    /// <summary>
+    /// モデルの読み込み
+    /// </summary>
+    public virtual void LoadModel() { }
+    /// <summary>
+    /// 使用前準備
+    /// </summary>
+    /// <param name="setPhase"></param>
     public virtual void Setup(int setPhase) {
-        gameObject.SetActive(true);
-        //HPゲージの初期化
-        enemyHPSlider.value = 1.0f;
         isDead = false;
+        gameObject.SetActive(true);
     }
     public virtual void Teardown() {
-        gameObject.SetActive(false);
+        animIndex = 0;
         isCameraHit = false;
         damageCoolTime = false;
     }
@@ -71,17 +79,23 @@ public abstract class EnemyBase : MonoBehaviour {
         float damage = GetRawAttack() * (float)DamageNormScaling(CameraController.pinchPercentage);
         HP -= (int)damage;
         enemyHPSlider.value = (float)HP / (float)maxHP;
+        // HPが0の時
         if (!isDead && enemyHPSlider.value <= 0) {
             isDead = true;
             enemyHPSlider.value = 0;
             enemySprite.sprite = null;
+            // スコアに反映
             MenuManager.instance.Get<ScoreTextManager>().AddScore(ADD_SCORE);
+            // タイムに反映
             TimeManager.AddLimitTime(ADD_SCORE);
+            // 死亡エフェクトの再生
             UseEffect(this);
+            // 死亡SEの再生
             UniTask task = AudioManager.instance.PlaySE(1);
             //未使用状態にする
             DeathEnemy(this);
-            if(GetEnemyCount() <= 0) {
+            // 数が0ならシーン上の敵がいないことを知らせる
+            if (GetEnemyCount() <= 0) {
                 EndlessGame.EnemyEmpty();
             }
         } else {
@@ -120,12 +134,13 @@ public abstract class EnemyBase : MonoBehaviour {
     /// </summary>
     /// <returns></returns>
     protected async UniTask PlayAnimationTask() {
-        while (true) {
+        token = this.GetCancellationTokenOnDestroy();
+        while (gameObject.activeSelf == true) {
             //現在のアニメーション取得
             int currentAnimIndex = (int)currentAnim;
             if (!IsEnableIndex(animSpriteList, currentAnimIndex)) {
                 //無効なアニメーションなら終了
-                await UniTask.DelayFrame(1);
+                await UniTask.DelayFrame(1, PlayerLoopTiming.Update, token);
                 return;
             }
             Sprite[] currentAnimSpriteList = animSpriteList[currentAnimIndex];

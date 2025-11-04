@@ -44,6 +44,7 @@ public class CameraController : MonoBehaviour {
         cameraInput.Camera.MouseWheel.canceled += EndMouseWheel;
         cameraInput.Camera.Touch_0.performed += OnTouch0;
         cameraInput.Camera.Touch_1.performed += OnTouch1;
+        if(!pinchText) return;
         pinchText.gameObject.SetActive(true);
         await UniTask.CompletedTask;
     }
@@ -184,19 +185,32 @@ public class CameraController : MonoBehaviour {
         return pinchPercentage >= GetRawPercentage();
     }
     /// <summary>
-    /// 拡縮率テキストの設定
+    /// 拡縮率テキストの設定(メインゲームの初期化時にセット)
     /// </summary>
     /// <param name="setPinchText"></param>
     public void SetPinchText(PinchExpansionText setPinchText) {
         pinchText = setPinchText;
     }
     public void Teardown() {
+        // 入力イベントの破棄処理
+        cameraInput.Camera.MouseWheel.performed -= OnMouseWheel;
+        cameraInput.Camera.MouseWheel.canceled -= EndMouseWheel;
+        cameraInput.Camera.Touch_0.performed -= OnTouch0;
+        cameraInput.Camera.Touch_1.performed -= OnTouch1;
         cameraInput.Disable();
+        // 位置の初期化
         mainCamera.transform.position = new Vector3(0, 0, -10);
+        // カメラの高さのリセット
         mainCamera.orthographicSize = MAX_EXPANSION;
+        // 拡縮率のリセット
         pinchPercentage = MAX_PERCENTAGE;
+        // 拡縮率テキストのリセット
         pinchText.VisiblePinchExpansion(pinchPercentage);
     }
+    /// <summary>
+    /// 感度の補正関数
+    /// </summary>
+    /// <param name="setValue"></param>
     public static void SetMoveSensitivity(float setValue) {
         moveSensitivity = setValue / TEN_DEVIDE_VALUE;
         if(moveSensitivity < 0) {

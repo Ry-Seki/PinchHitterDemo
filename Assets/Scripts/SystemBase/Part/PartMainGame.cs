@@ -42,6 +42,7 @@ public class PartMainGame : PartBase {
         await base.Setup();
         await mainCamera.Initialize();
     }
+
     public override async UniTask Execute() {
         //敵の生成(初回のみ)
         SpawnEnemy(INIT_FLOOR_ENEMY, 0);

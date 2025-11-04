@@ -60,6 +60,7 @@ public class EnemyDeadEffectManager : MonoBehaviour {
     public void UnuseEffect(EnemyDeadEffect unuseEffect) {
         if(unuseEffect == null) return;
 
+        unuseEffect.Teardown();
         unuseEffectList.Add(unuseEffect);
         useEffectList.Remove(unuseEffect);
         unuseEffect.transform.SetParent(unuseRoot);

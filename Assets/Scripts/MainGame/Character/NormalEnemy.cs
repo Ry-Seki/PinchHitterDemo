@@ -7,6 +7,7 @@ using Unity.VisualScripting.Antlr3.Runtime;
 using UnityEngine;
 
 using static PlayerStatusUtility;
+using static CommonModule;
 
 public class NormalEnemy : EnemyBase {
     //初期HP
@@ -21,9 +22,8 @@ public class NormalEnemy : EnemyBase {
     //移動のタスクを中断するためのトークン
     private CancellationToken token;
 
-    public override void Setup(int setPhase) {
-        base.Setup(setPhase);
-        isMove = false;
+    public override void LoadModel() {
+        base.LoadModel();
         //アニメーションスプライトの読み込み
         int animMax = (int)eEnemyAnimation.Max;
         animSpriteList = new Sprite[animMax][];
@@ -33,30 +33,48 @@ public class NormalEnemy : EnemyBase {
             animSpriteList[i] = Resources.LoadAll<Sprite>(spriteNameBuilder.ToString());
             spriteNameBuilder.Clear();
         }
-        //TODO:HPの設定
+    }
+
+    /// <summary>
+    /// 準備前処理
+    /// </summary>
+    /// <param name="setPhase"></param>
+    public override void Setup(int setPhase) {
+        base.Setup(setPhase);
+        isMove = false;
+        // モデルの読み込み (初回のみ)
+        if(IsEmpty(animSpriteList)) LoadModel();
+        //ステータスの設定
         EnemyPhaseStatusUp(setPhase);
         //座標の設定
         transform.position = new Vector2(Random.Range(-50, 51), Random.Range(-50, 51));
         //待機アニメーション設定
         SetAnimation(eEnemyAnimation.Wait);
         //アニメーション再生タスクを実行（すでに実行中ならしない）
-        if (animTask.Status.IsCompleted())
-            animTask = PlayAnimationTask();
+        animTask = PlayAnimationTask();
     }
+    /// <summary>
+    /// フェーズごとのステータスの設定
+    /// </summary>
+    /// <param name="setPhase"></param>
     public override void EnemyPhaseStatusUp(int setPhase) {
         base.EnemyPhaseStatusUp(setPhase);
-        //HPゲージの初期化
-        enemyHPSlider.value = 1.0f;
+        // HPの設定
         maxHP = RAW_ENEMY_HP + ADD_PHASE_HP * setPhase;
         HP = maxHP;
+        //HPゲージの初期化
+        enemyHPSlider.value = 1.0f;
     }
-
+    /// <summary>
+    /// 片付け処理
+    /// </summary>
     public override void Teardown() {
         base.Teardown();
-        transform.position = Vector3.zero;
-        enemyHPSlider.value = 0.0f;
         maxHP = 0;
         HP = 0;
+        enemyHPSlider.value = 0.0f;
+        transform.position = Vector3.zero;
+        gameObject.SetActive(false);
     }
     protected override void OnWillRenderObject() {
         base.OnWillRenderObject();
