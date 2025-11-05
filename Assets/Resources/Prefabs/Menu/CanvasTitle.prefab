@@ -192,7 +192,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 42ec6cf086361444b9139c62ba12ab94, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _menuRoot: {fileID: 642719814258221783}
+  menuRoot: {fileID: 642719814258221783}
   buttonRoot: {fileID: 8563646210272620313}
   titleImage: {fileID: 6829386538901060192}
 --- !u!1 &2659069109171354645

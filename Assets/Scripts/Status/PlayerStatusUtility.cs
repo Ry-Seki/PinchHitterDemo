@@ -2,8 +2,6 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-using static SaveDataUtility;
-
 public class PlayerStatusUtility : MonoBehaviour {
     /// <summary>
     /// 攻撃力取得
@@ -93,6 +91,9 @@ public class PlayerStatusUtility : MonoBehaviour {
         PlayerStatusDataManager.instance.SetLimitTimeLv(setLevel);
         PlayerStatusManager.instance.SetLimitTimeStatusLv(setLevel);
     }
+    /// <summary>
+    /// ステータスの初期化
+    /// </summary>
     public static void InitStatus() {
         PlayerStatusManager.instance.InitStatus();
         PlayerStatusDataManager.instance.InitLevel();

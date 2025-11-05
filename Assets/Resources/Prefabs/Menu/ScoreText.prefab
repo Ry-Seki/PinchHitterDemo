@@ -152,7 +152,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: eff8c0ac580c2a346ac54a00b58841e7, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _menuRoot: {fileID: 5366756405381386710}
+  menuRoot: {fileID: 5366756405381386710}
   deathValueText: {fileID: 4544900971780143551}
 --- !u!1 &6122690626559373872
 GameObject:

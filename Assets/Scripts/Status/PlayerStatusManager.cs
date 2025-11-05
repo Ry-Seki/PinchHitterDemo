@@ -10,26 +10,26 @@ public class PlayerStatusManager : SystemObject{
     public static PlayerStatusManager instance { get; private set; } = null;
 
     //強化項目
-    private int rawAttack = -1;
-    private float rawInterval = -1;
-    private float rawPercentage = -1;
-    private int rawLimitTime = -1;
+    private int _rawAttack = -1;
+    private float _rawInterval = -1;
+    private float _rawPercentage = -1;
+    private int _rawLimitTime = -1;
     //初期ステータス
-    private int initAttack = -1;
-    private float initInterval = -1;
-    private float initPercentage = -1;
-    private int initLimitTime = -1;
+    private int _initAttack = -1;
+    private float _initInterval = -1;
+    private float _initPercentage = -1;
+    private int _initLimitTime = -1;
     //レベルアップ時の上昇幅
-    private int addAttackNum = -1;
-    private float shortenInterval = -1;
-    private float expansionPercentage = -1;
-    private int extentedTime = -1;
+    private int _addAttackNum = -1;
+    private float _shortenInterval = -1;
+    private float _expansionPercentage = -1;
+    private int _extentedTime = -1;
 
     //定数
-    private const int MAX_RAW_ATTACK = 1000000;
-    private const float MIN_RAW_INTERVAL = 0.01f;
-    private const float MIN_RAW_PERCENTAGE = 10.0f;
-    private const int MAX_RAW_LIMIT_TIME = 1000000;
+    private const int _MAX_RAW_ATTACK = 1000000;
+    private const float _MIN_RAW_INTERVAL = 0.01f;
+    private const float _MIN_RAW_PERCENTAGE = 10.0f;
+    private const int _MAX_RAW_LIMIT_TIME = 1000000;
 
     public override async UniTask Initialize() {
         instance = this;
@@ -38,16 +38,19 @@ public class PlayerStatusManager : SystemObject{
         SetupData(data);
         await UniTask.CompletedTask;
     }
+    /// <summary>
+    /// マスターデータのセット
+    /// </summary>
     private void SetupMaster() {
         var playerMaster = GetPlayerMaster();
-        initAttack = playerMaster.rawAttack;
-        initInterval = playerMaster.attackInterval;
-        initPercentage = playerMaster.attackPinchPer;
-        initLimitTime = playerMaster.rawLimitTime;
-        addAttackNum = playerMaster.AddAttackValue;
-        shortenInterval = playerMaster.ShortenIntervalValue;
-        expansionPercentage = playerMaster.ExpansionAttackArea;
-        extentedTime = playerMaster.ExtentedTime;
+        _initAttack = playerMaster.rawAttack;
+        _initInterval = playerMaster.attackInterval;
+        _initPercentage = playerMaster.attackPinchPer;
+        _initLimitTime = playerMaster.rawLimitTime;
+        _addAttackNum = playerMaster.AddAttackValue;
+        _shortenInterval = playerMaster.ShortenIntervalValue;
+        _expansionPercentage = playerMaster.ExpansionAttackArea;
+        _extentedTime = playerMaster.ExtentedTime;
     }
     /// <summary>
     /// ステータスの準備
@@ -65,7 +68,7 @@ public class PlayerStatusManager : SystemObject{
     /// </summary>
     /// <returns></returns>
     public int GetRawAttack() {
-        return rawAttack;
+        return _rawAttack;
     }
     ///
     /// <summary>
@@ -73,84 +76,84 @@ public class PlayerStatusManager : SystemObject{
     /// </summary>
     /// <param name="setValue"></param>
     public void SetRawAttack(int setValue) {
-        rawAttack = Mathf.Clamp(setValue, 0, MAX_RAW_ATTACK);
+        _rawAttack = Mathf.Clamp(setValue, 0, _MAX_RAW_ATTACK);
     }
     /// <summary>
     /// レベル指定の攻撃力設定
     /// </summary>
     /// <param name="setLevel"></param>
     public void SetAttackStatusLv(int setLevel) {
-        SetRawAttack(initAttack + addAttackNum * setLevel);
+        SetRawAttack(_initAttack + _addAttackNum * setLevel);
     }
     /// <summary>
     /// 攻撃間隔取得
     /// </summary>
     /// <returns></returns>
     public float GetRawInterval() {
-        return rawInterval;
+        return _rawInterval;
     }
     /// <summary>
     /// 攻撃間隔設定
     /// </summary>
     /// <param name="setValue"></param>
     public void SetRawInterval(float setValue) {
-        rawInterval = Mathf.Clamp(setValue, MIN_RAW_INTERVAL, 1.0f);
+        _rawInterval = Mathf.Clamp(setValue, _MIN_RAW_INTERVAL, 1.0f);
     }
     /// <summary>
     /// レベル指定の攻撃間隔設定
     /// </summary>
     /// <param name="setLevel"></param>
     public void SetIntervalStatusLv(int setLevel) {
-        SetRawInterval(initInterval - shortenInterval * setLevel);
+        SetRawInterval(_initInterval - _shortenInterval * setLevel);
     }
     /// <summary>
     /// 攻撃可能拡縮率取得
     /// </summary>
     /// <returns></returns>
     public float GetRawPercentage() {
-        return rawPercentage;
+        return _rawPercentage;
     }
     /// <summary>
     /// 攻撃可能拡縮率設定
     /// </summary>
     /// <param name="setValue"></param>
     public void SetRawPercentage(float setValue) {
-        rawPercentage = Mathf.Clamp(setValue, MIN_RAW_PERCENTAGE, MAX_PERCENTAGE);
+        _rawPercentage = Mathf.Clamp(setValue, _MIN_RAW_PERCENTAGE, MAX_PERCENTAGE);
     }
     /// <summary>
     /// レベル指定の攻撃可能拡縮率の設定
     /// </summary>
     /// <param name="setLevel"></param>
     public void SetPercentageStatusLv(int setLevel) { 
-        SetRawPercentage(initPercentage - expansionPercentage  * setLevel);
+        SetRawPercentage(_initPercentage - _expansionPercentage  * setLevel);
     }
     /// <summary>
     /// 制限時間取得
     /// </summary>
     /// <returns></returns>
     public int GetRawLimitTime() {
-        return rawLimitTime;
+        return _rawLimitTime;
     }
     /// <summary>
     /// 制限時間設定
     /// </summary>
     /// <param name="setValue"></param>
     public void SetRawLimitTme(int setValue) {
-        rawLimitTime = Mathf.Clamp(setValue, 0, MAX_RAW_LIMIT_TIME);
+        _rawLimitTime = Mathf.Clamp(setValue, 0, _MAX_RAW_LIMIT_TIME);
     }
     /// <summary>
     /// レベル指定の制限時間の設定
     /// </summary>
     /// <param name="setLevel"></param>
     public void SetLimitTimeStatusLv(int setLevel) {
-        SetRawLimitTme(initLimitTime + extentedTime * setLevel);
+        SetRawLimitTme(_initLimitTime + _extentedTime * setLevel);
     }
     /// <summary>
     /// ステータスの初期化
     /// </summary>
     public void InitStatus() {
-        rawAttack = initAttack;
-        rawInterval = initInterval;
-        rawPercentage = initPercentage;
+        _rawAttack = _initAttack;
+        _rawInterval = _initInterval;
+        _rawPercentage = _initPercentage;
     }
 }

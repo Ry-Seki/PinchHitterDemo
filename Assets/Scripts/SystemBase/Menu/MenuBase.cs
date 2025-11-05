@@ -4,21 +4,32 @@ using System.Collections.Generic;
 using UnityEngine;
 
 public class MenuBase : MonoBehaviour {
+    // メニューオブジェクト
     [SerializeField]
-    protected GameObject _menuRoot = null;
+    protected GameObject menuRoot = null;
 
+    /// <summary>
+    /// 初期化処理
+    /// </summary>
+    /// <returns></returns>
     public virtual async UniTask Initialize() {
         await UniTask.CompletedTask;
     }
-    //開く
+    /// <summary>
+    /// 開く処理
+    /// </summary>
+    /// <returns></returns>
     public virtual async UniTask Open() {
         //メニューを表示する
-        _menuRoot?.SetActive(true);
+        menuRoot?.SetActive(true);
         await UniTask.CompletedTask;
     }
-
+    /// <summary>
+    /// 閉じる処理
+    /// </summary>
+    /// <returns></returns>
     public virtual async UniTask Close() {
-        _menuRoot?.SetActive(false);
+        menuRoot?.SetActive(false);
         await UniTask.CompletedTask;
     }
 }

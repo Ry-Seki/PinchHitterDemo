@@ -84,11 +84,18 @@ public class EnemyManager : MonoBehaviour {
             UseEnemy(setPhase);
         }
     }
+    /// <summary>
+    /// ‘S‚Ä‚Ì“G‚ğ–¢g—pó‘Ô‚É‚·‚é
+    /// </summary>
     public void UnuseAllEnemy() {
         for (int i = useEnemyList.Count - 1; i >= 0; i--) {
             UnuseEnemy(useEnemyList[i]);
         }
     }
+    /// <summary>
+    /// “G‚Ì”‚ğæ“¾
+    /// </summary>
+    /// <returns></returns>
     public int GetEnemyCount() {
         return useEnemyList.Count;
     }

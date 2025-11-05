@@ -2,52 +2,69 @@ using Cysharp.Threading.Tasks;
 using System.Collections;
 using System.Collections.Generic;
 using TMPro;
-using Unity.VisualScripting;
 using UnityEngine;
 
 using static PlayerStatusUtility;
 using static SaveDataUtility;
 
 public class MenuStatusUpgrade : MenuBase {
+    // ステータスポイントテキスト
     [SerializeField]
-    private TextMeshProUGUI statusPointText = null;
+    private TextMeshProUGUI _statusPointText = null;
+    // 攻撃レベルテキスト
     [SerializeField]
-    private TextMeshProUGUI attackLvText = null;
+    private TextMeshProUGUI _attackLvText = null;
+    // 攻撃間隔レベルテキスト
     [SerializeField]
-    private TextMeshProUGUI intervalLvText = null;
+    private TextMeshProUGUI _intervalLvText = null;
+    // 攻撃可能拡縮率レベルテキスト
     [SerializeField]
-    private TextMeshProUGUI percentageLvText = null;
+    private TextMeshProUGUI _percentageLvText = null;
+    // 制限時間レベルテキスト
     [SerializeField]
-    private TextMeshProUGUI limitTimeLvText = null;
-    private PlayerStatusData playerData = null;
-    private int statusPoint = -1;
-    private int attackLv = -1;
-    private int intervalLv = -1;
-    private int percentageLv = -1;
-    private int limitTimeLv = -1;
-    private bool isClose = false;
-    private const int MAX_POINT = 10000;
+    private TextMeshProUGUI _limitTimeLvText = null;
+    // プレイヤーのステータスデータ
+    private PlayerStatusData _playerData = null;
+
+    // ステータスポイント
+    private int _statusPoint = -1;
+    // 攻撃レベル
+    private int _attackLv = -1;
+    // 攻撃間隔レベル
+    private int _intervalLv = -1;
+    // 攻撃可能拡縮率レベル
+    private int _percentageLv = -1;
+    // 制限時間レベル
+    private int _limitTimeLv = -1;
+    // メニュー開閉フラグ
+    private bool _isClose = false;
+    // 最大ステータスポイント
+    private const int _MAX_POINT = 1000000;
 
     public override async UniTask Initialize() {
         await base.Initialize();
         gameObject.SetActive(false);
-        playerData = PlayerStatusDataManager.instance.saveData;
-        SetStatusPoint(playerData.statusPoint);
-        SetAttackLv(playerData.attackLv);
-        SetIntervalLv(playerData.atkIntervalLv);
-        SetPercentageLv(playerData.atkPercentageLv);
-        SetLimitTimeLv(playerData.limitTimeLv);
+        _playerData = PlayerStatusDataManager.instance.saveData;
+        SetStatusPoint(_playerData.statusPoint);
+        SetAttackLv(_playerData.attackLv);
+        SetIntervalLv(_playerData.atkIntervalLv);
+        SetPercentageLv(_playerData.atkPercentageLv);
+        SetLimitTimeLv(_playerData.limitTimeLv);
     }
+    /// <summary>
+    /// 準備前処理
+    /// </summary>
     public void Setup() {
-        playerData = PlayerStatusDataManager.instance.saveData;
-        SetStatusPoint(playerData.statusPoint);
+        _playerData = PlayerStatusDataManager.instance.saveData;
+        SetStatusPoint(_playerData.statusPoint);
     }
     public override async UniTask Open() {
         await base.Open();
         Setup();
         await FadeManager.instance.FadeIn();
-        isClose = false;
-        while (!isClose) {
+        _isClose = false;
+        while (!_isClose) {
+            // 1フレーム待つ
             await UniTask.DelayFrame(1);
         }
         await FadeManager.instance.FadeOut();
@@ -57,77 +74,84 @@ public class MenuStatusUpgrade : MenuBase {
         await base.Close();
         PlayerStatusDataManager.instance.SaveData();
     }
+    /// <summary>
+    /// 攻撃レベル上昇
+    /// </summary>
     public void AttackLvUp() {
-        if(attackLv >= 50) return;
+        if(_attackLv >= 50) return;
 
-        if(statusPoint - (attackLv + 1) < 0 ) return;
+        if(_statusPoint - (_attackLv + 1) < 0 ) return;
 
         UniTask task = AudioManager.instance.PlaySE(2);
-        attackLv++;
-        ReduceStatusPoint(attackLv);
-        SetAttackLv(attackLv);
+        _attackLv++;
+        ReduceStatusPoint(_attackLv);
+        SetAttackLv(_attackLv);
     }
+    /// <summary>
+    /// 攻撃レベル低下
+    /// </summary>
     public void AttackLvDown() {
-        if(attackLv <= 0) return;
+        if(_attackLv <= 0) return;
 
         UniTask task = AudioManager.instance.PlaySE(2);
-        IncreaseStatusPoint(attackLv);
-        attackLv--;
-        SetAttackLv(attackLv); 
+        IncreaseStatusPoint(_attackLv);
+        _attackLv--;
+        SetAttackLv(_attackLv); 
     }
-    public void IntervalLvUp() {
-        if(intervalLv >= 50) return;
 
-        if(statusPoint - (intervalLv + 1) < 0 ) return;
+    public void IntervalLvUp() {
+        if(_intervalLv >= 50) return;
+
+        if(_statusPoint - (_intervalLv + 1) < 0 ) return;
 
         UniTask task = AudioManager.instance.PlaySE(2);
-        intervalLv++;
-        ReduceStatusPoint(intervalLv);
-        SetIntervalLv(intervalLv);
+        _intervalLv++;
+        ReduceStatusPoint(_intervalLv);
+        SetIntervalLv(_intervalLv);
     }
     public void IntervalLvDown() {
-        if(intervalLv <= 0) return;
+        if(_intervalLv <= 0) return;
 
         UniTask task = AudioManager.instance.PlaySE(2);
-        IncreaseStatusPoint(intervalLv);
-        intervalLv--;
-        SetIntervalLv(intervalLv);
+        IncreaseStatusPoint(_intervalLv);
+        _intervalLv--;
+        SetIntervalLv(_intervalLv);
     }
     public void PercentageLvUp() {
-        if(percentageLv >= 50) return;
+        if(_percentageLv >= 50) return;
 
-        if(statusPoint - (percentageLv + 1) < 0 ) return;
+        if(_statusPoint - (_percentageLv + 1) < 0 ) return;
 
         UniTask task = AudioManager.instance.PlaySE(2);
-        percentageLv++;
-        ReduceStatusPoint(percentageLv);
-        SetPercentageLv(percentageLv);
+        _percentageLv++;
+        ReduceStatusPoint(_percentageLv);
+        SetPercentageLv(_percentageLv);
     }
     public void PercentageLvDown() {
-        if(percentageLv <= 0) return;
+        if(_percentageLv <= 0) return;
 
         UniTask task = AudioManager.instance.PlaySE(2);
-        IncreaseStatusPoint(percentageLv);
-        percentageLv--;
-        SetPercentageLv(percentageLv);
+        IncreaseStatusPoint(_percentageLv);
+        _percentageLv--;
+        SetPercentageLv(_percentageLv);
     }
     public void LimitTimeLvUp() {
-        if(limitTimeLv >= 10) return;
+        if(_limitTimeLv >= 10) return;
 
-        if (statusPoint - (limitTimeLv + 1) < 0) return;
+        if (_statusPoint - (_limitTimeLv + 1) < 0) return;
 
         UniTask task = AudioManager.instance.PlaySE(2);
-        limitTimeLv++;
-        ReduceStatusPoint(limitTimeLv);
-        SetLimitTimeLv(limitTimeLv);
+        _limitTimeLv++;
+        ReduceStatusPoint(_limitTimeLv);
+        SetLimitTimeLv(_limitTimeLv);
     }
     public void LimitTimeLvDown() {
-        if(limitTimeLv <= 0) return;
+        if(_limitTimeLv <= 0) return;
 
         UniTask task = AudioManager.instance.PlaySE(2);
-        IncreaseStatusPoint(limitTimeLv);
-        limitTimeLv--;
-        SetLimitTimeLv(limitTimeLv);
+        IncreaseStatusPoint(_limitTimeLv);
+        _limitTimeLv--;
+        SetLimitTimeLv(_limitTimeLv);
     }
     public void ResetAllLevel() {
         SetAttackLv(0);
@@ -138,65 +162,65 @@ public class MenuStatusUpgrade : MenuBase {
     }
     public void CloseScreen() {
         UniTask task = AudioManager.instance.PlaySE(3);
-        isClose = true;
+        _isClose = true;
     }
     /// <summary>
     /// ステータスポイントの設定
     /// </summary>
     /// <param name="setValue"></param>
     private void SetStatusPoint(int setValue) {
-        statusPoint = Mathf.Clamp(setValue, 0, MAX_POINT);
-        SetStatusPointData(statusPoint);
-        statusPointText.text = "statusPoint : " + statusPoint;
+        _statusPoint = Mathf.Clamp(setValue, 0, _MAX_POINT);
+        SetStatusPointData(_statusPoint);
+        _statusPointText.text = "statusPoint : " + _statusPoint;
     }
     /// <summary>
     /// 攻撃レベルの設定
     /// </summary>
     /// <param name="setValue"></param>
     private void SetAttackLv(int setValue) {
-        attackLv = setValue;
-        SetAttackStatusLv(attackLv);
-        attackLvText.text = "Lv : " + attackLv;
+        _attackLv = setValue;
+        SetAttackStatusLv(_attackLv);
+        _attackLvText.text = "Lv : " + _attackLv;
     }
     /// <summary>
     /// 間隔レベルの設定
     /// </summary>
     /// <param name="setValue"></param>
     private void SetIntervalLv(int setValue) {
-        intervalLv = setValue;
-        SetIntervalStatusLv(intervalLv);
-        intervalLvText.text = "Lv : " + intervalLv;
+        _intervalLv = setValue;
+        SetIntervalStatusLv(_intervalLv);
+        _intervalLvText.text = "Lv : " + _intervalLv;
     }
     /// <summary>
     /// 拡縮率レベルの設定
     /// </summary>
     /// <param name="setValue"></param>
     private void SetPercentageLv(int setValue) {
-        percentageLv = setValue;
-        SetPercentageStatusLv(percentageLv);
-        percentageLvText.text = "Lv : " + percentageLv;
+        _percentageLv = setValue;
+        SetPercentageStatusLv(_percentageLv);
+        _percentageLvText.text = "Lv : " + _percentageLv;
     }
     /// <summary>
     /// 制限時間レベルの設定
     /// </summary>
     /// <param name="setValue"></param>
     private void SetLimitTimeLv(int setValue) {
-        limitTimeLv = setValue;
-        SetLimitTimeStatusLv(limitTimeLv);
-        limitTimeLvText.text = "Lv : " + limitTimeLv;
+        _limitTimeLv = setValue;
+        SetLimitTimeStatusLv(_limitTimeLv);
+        _limitTimeLvText.text = "Lv : " + _limitTimeLv;
     }
     /// <summary>
     /// ステータスポイント減少
     /// </summary>
     /// <param name="setValue"></param>
     private void ReduceStatusPoint(int setValue) {
-        SetStatusPoint(statusPoint - setValue);
+        SetStatusPoint(_statusPoint - setValue);
     }
     /// <summary>
     /// ステータスポイント増加
     /// </summary>
     /// <param name="setValue"></param>
     private void IncreaseStatusPoint(int setValue) {
-        SetStatusPoint(statusPoint + setValue);
+        SetStatusPoint(_statusPoint + setValue);
     }
 }

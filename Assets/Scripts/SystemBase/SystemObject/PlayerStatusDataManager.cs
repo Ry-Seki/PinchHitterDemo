@@ -11,8 +11,12 @@ using UnityEngine;
 
 public class PlayerStatusDataManager : SystemObject {
     public static PlayerStatusDataManager instance { get; private set; } = null;
+    // セーブデータ
     public PlayerStatusData saveData { get; private set; } = null;
+
+    // セーブデータ拡張子
     private string saveFileName = "/Data.S";
+    // ファイルパス
     private string filePath = null;
 
     public override async UniTask Initialize() {
@@ -28,11 +32,15 @@ public class PlayerStatusDataManager : SystemObject {
         LoadData();
         await UniTask.CompletedTask;
     }
-
+    /// <summary>
+    /// データのセーブ
+    /// </summary>
     public void SaveData() {
         SaveDataToFile(saveData);
     }
-
+    /// <summary>
+    /// データのロード
+    /// </summary>
     public void LoadData() {
         saveData = LoadDataFromFile();
         //マスターデータの読み込み
@@ -53,27 +61,30 @@ public class PlayerStatusDataManager : SystemObject {
         fileStream.Close();
     }
     /// <summary>
-    /// ファイルの中身をセーブデータに渡す
+    /// ファイルの中身をセーブデータに変換して返す
     /// </summary>
     /// <returns></returns>
     private PlayerStatusData LoadDataFromFile() {
+        // ファイルの存在確認
         if (File.Exists(filePath)) {
             FileInfo fileInfo = new FileInfo(filePath);
+            // 中身が空なら新たに生成
             if (fileInfo.Length == 0) {
-                Debug.LogWarning("ファイルは存在しますが中身が空です。");
-                return new PlayerStatusData(); // デフォルトデータを返す
+                return new PlayerStatusData();
             }
             try {
+                //FileSteamの宣言
                 using (FileStream fileStream = new FileStream(filePath, FileMode.Open)) {
+                    //BinaryFormatterの宣言
                     BinaryFormatter bf = new BinaryFormatter();
                     return (PlayerStatusData)bf.Deserialize(fileStream);
                 }
-            } catch (Exception exeption) {
-                Debug.LogError("デシリアライズ中に例外が発生しました: " + exeption.Message);
-                return new PlayerStatusData(); // デフォルトデータでリカバリ
+            } catch {
+                // エラーがある場合、新たに生成
+                return new PlayerStatusData();
             }
         } else {
-            Debug.Log("セーブデータが見つからないので、新規作成します。");
+            // 新たに生成
             return new PlayerStatusData();
         }
     }
@@ -84,6 +95,10 @@ public class PlayerStatusDataManager : SystemObject {
         //セーブ
         SaveData();
     }
+    /// <summary>
+    /// ハイスコア設定
+    /// </summary>
+    /// <param name="setValue"></param>
     public void SetHighScore(int setValue) {
         saveData.highScore = setValue;
     }

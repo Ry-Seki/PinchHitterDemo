@@ -7,19 +7,19 @@ public class PartTitle : PartBase {
 
     public override async UniTask Initialize() {
         await base.Initialize();
-        //タイトルメニューの初期化
+        // タイトルメニューの初期化
         await MenuManager.instance.Get<MenuStatusUpgrade>("Prefabs/Menu/CanvasUpgrade").Initialize();
         await MenuManager.instance.Get<MenuSettings>("Prefabs/Menu/CanvasSettings").Initialize();
         await MenuManager.instance.Get<MenuTitle>("Prefabs/Menu/CanvasTitle").Initialize();
     }
     public override async UniTask Execute() {
-        //BGMの再生
+        // BGMの再生
         AudioManager.instance.PlayBGM(0);
-        //タイトルメニューの表示
+        // タイトルメニューの表示
         await MenuManager.instance.Get<MenuTitle>().Open();
-        //メインパートへ遷移
+        // メインパートへ遷移
         UniTask task = PartManager.instance.TransitionPart(eGamePart.MainGame);
-        //BGMの停止
+        // BGMの停止
         AudioManager.instance.StopBGM();
     }
 }

@@ -115,7 +115,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4466da1211dd64341884a3ab17937651, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _menuRoot: {fileID: 2285154273871647976}
+  menuRoot: {fileID: 2285154273871647976}
   timeText: {fileID: 4770901247040071840}
 --- !u!1 &3257743720295411687
 GameObject:

@@ -7,16 +7,21 @@ using UnityEngine;
 using static PlayerStatusUtility;
 
 public class TimeManager : MenuBase{
+    // タイムテキスト
     [SerializeField]
     private TextMeshProUGUI timeText = null;
+    // 制限時間
     public static int limitTimerPer { get; private set; } = -1;
+    // 総合スコア
     private static int storeScore = -1;
+    // 敵を倒したときにもらえるスコア値
     private const int BORDER_SCORE = 400;
+    // 制限時間手前の警告を流す残り時間
     private const int ALARMTIME = 3;
 
     public override async UniTask Initialize() {
         await base.Initialize();
-        _menuRoot?.SetActive(false);
+        menuRoot?.SetActive(false);
     }
     public override async UniTask Open() {
         await base.Open();

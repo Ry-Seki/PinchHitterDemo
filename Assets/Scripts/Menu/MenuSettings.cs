@@ -66,6 +66,10 @@ public class MenuSettings : MenuBase {
         seVolume = Mathf.Clamp(setValue, 0, TEN_DEVIDE_VALUE);
         seVolumeText.text = seVolume.ToString();
     }
+    /// <summary>
+    /// ä¥ìxÇÃê›íË
+    /// </summary>
+    /// <param name="setValue"></param>
     private void SetSensitivity(int setValue) {
         moveSensitivity = Mathf.Clamp(setValue, 1, TEN_DEVIDE_VALUE);
         sensitivityText.text = moveSensitivity.ToString();

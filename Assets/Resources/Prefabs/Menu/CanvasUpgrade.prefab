@@ -1298,12 +1298,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0d6c88068a1019843904c60647a69d0e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _menuRoot: {fileID: 2974064175644712395}
-  statusPointText: {fileID: 8474519107542706547}
-  attackLvText: {fileID: 8678508284616310780}
-  intervalLvText: {fileID: 8439776402736165970}
-  percentageLvText: {fileID: 5127659478263161143}
-  limitTimeLvText: {fileID: 8444186064378219578}
+  menuRoot: {fileID: 2974064175644712395}
+  _statusPointText: {fileID: 8474519107542706547}
+  _attackLvText: {fileID: 3679356227298576275}
+  _intervalLvText: {fileID: 8083507500615325862}
+  _percentageLvText: {fileID: 3495570518992723956}
+  _limitTimeLvText: {fileID: 6111791964318516582}
 --- !u!1 &3113032496059716516
 GameObject:
   m_ObjectHideFlags: 0

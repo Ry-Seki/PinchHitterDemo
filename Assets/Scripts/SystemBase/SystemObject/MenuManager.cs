@@ -6,10 +6,12 @@ using UnityEngine;
 
 public class MenuManager : SystemObject {
     public static MenuManager instance { get; private set; } = null;
+    // メニュー配列
     private List<MenuBase> _menuList = null;
 
     public override async UniTask Initialize() {
         instance = this;
+        // メニューリストの要素数の確保
         _menuList = new List<MenuBase>(256);
         await UniTask.CompletedTask;
     }
@@ -20,14 +22,14 @@ public class MenuManager : SystemObject {
     /// <param name="name">Prefabのパスと名前</param>
     /// <returns></returns>
     public T Get<T>(string name = null) where T : MenuBase {
-        //キャッシュしたメニューオブジェクトから探す
+        // キャッシュしたメニューオブジェクトから探す
         for (int i = 0, max = _menuList.Count; i < max; i++) {
             T menu = _menuList[i] as T;
             if (menu == null) continue;
 
             return menu;
         }
-        //見つからなければ生成する
+        // 見つからなければ生成する
         return Load<T>(name);
     }
     /// <summary>
@@ -37,10 +39,10 @@ public class MenuManager : SystemObject {
     /// <param name="name">Prefabのパスと名前</param>
     /// <returns></returns>
     private T Load<T>(string name) where T : MenuBase {
-        //メニューの読み込み
+        // メニューの読み込み
         T menu = Resources.Load<T>(name);
         if (menu == null) return null;
-        //メニューの生成
+        // メニューの生成
         T createMenu = Instantiate(menu, transform);
         if (createMenu == null) return null;
 

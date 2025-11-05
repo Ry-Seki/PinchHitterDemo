@@ -38,7 +38,10 @@ public class EnemyUtility : MonoBehaviour {
     public static int GetEnemyCount() { 
         return EnemyManager.instance.GetEnemyCount();
     }
-
+    /// <summary>
+    /// “G‚Ì€–Sˆ—
+    /// </summary>
+    /// <param name="unuseEnemy"></param>
     public static void DeathEnemy(EnemyBase unuseEnemy) {
         UnuseEnemy(unuseEnemy);
         ScoreTextManager.instance.AddEnemyDeathValue();

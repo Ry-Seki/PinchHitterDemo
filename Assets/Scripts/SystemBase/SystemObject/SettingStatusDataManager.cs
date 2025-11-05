@@ -8,30 +8,38 @@ using UnityEngine;
 
 public class SettingStatusDataManager : SystemObject {
     public static SettingStatusDataManager instance { get; private set; } = null;
+    // セーブデータ
     public SettingStatusData saveData { get; private set; } = null;
-    private string saveFileName = "/Data.P";
-    private string filePath = null;
-    //定数
-    private const int INIT_BGM_VOLUME = 10;
-    private const int INIT_SE_VOLUME = 10;
+    // セーブデータの拡張子
+    private string _saveFileName = "/Data.P";
+    // ファイルパス
+    private string _filePath = null;
+    // 定数
+    private const int _INIT_BGM_VOLUME = 10;
+    private const int _INIT_SE_VOLUME = 10;
 
     public override async UniTask Initialize() {
         instance = this;
-        //StringBuilderの宣言
+        // StringBuilderの宣言
         StringBuilder fileNameBuilder = new StringBuilder();
-        //StringBuilderを使った文字列連結
+        // StringBuilderを使った文字列連結
         fileNameBuilder.Append(Application.persistentDataPath);
-        fileNameBuilder.Append(saveFileName);
-        filePath = fileNameBuilder.ToString();
-        //セーブデータの宣言
+        fileNameBuilder.Append(_saveFileName);
+        _filePath = fileNameBuilder.ToString();
+        // セーブデータの宣言
         LoadData();
         await UniTask.CompletedTask;
     }
+    /// <summary>
+    /// データのセーブ
+    /// </summary>
     public void SaveData() {
         Debug.Log("Save");
         SaveDataToFile(saveData);
     }
-
+    /// <summary>
+    /// データのロード
+    /// </summary>
     public void LoadData() {
         saveData = LoadDataFromFile();
     }
@@ -41,35 +49,39 @@ public class SettingStatusDataManager : SystemObject {
     /// <param name="setData"></param>
     /// <param name="fileName"></param>
     private void SaveDataToFile(SettingStatusData setData) {
-        //FileSteamの宣言
-        FileStream fileStream = new FileStream(filePath, FileMode.Create);
-        //BinaryFormatterの宣言
+        // FileSteamの宣言
+        FileStream fileStream = new FileStream(_filePath, FileMode.Create);
+        // BinaryFormatterの宣言
         BinaryFormatter bf = new BinaryFormatter();
         bf.Serialize(fileStream, setData);
-        //ファイルを閉じる
+        // ファイルを閉じる
         fileStream.Close();
     }
     /// <summary>
-    /// ファイルの中身をセーブデータに渡す
+    /// ファイルの中身をセーブデータに変換して返す
     /// </summary>
     /// <returns></returns>
     private SettingStatusData LoadDataFromFile() {
-        if (File.Exists(filePath)) {
-            FileInfo fileInfo = new FileInfo(filePath);
+        // ファイルの存在確認
+        if (File.Exists(_filePath)) {
+            FileInfo fileInfo = new FileInfo(_filePath);
+            // 空なら新たに生成
             if(fileInfo.Length == 0) {
                 return new SettingStatusData();
             }
             try { 
                 //FileSteamの宣言
-                using (FileStream fileStream = new FileStream(filePath, FileMode.Open)) {
+                using (FileStream fileStream = new FileStream(_filePath, FileMode.Open)) {
                     //BinaryFormatterの宣言
                     BinaryFormatter bf = new BinaryFormatter();
                     return (SettingStatusData)bf.Deserialize(fileStream);
                 }
             } catch {
+                // エラーがある場合、新たに生成
                 return new SettingStatusData();
             }
         } else {
+            // 新たに生成
             return new SettingStatusData(); 
         }
     }

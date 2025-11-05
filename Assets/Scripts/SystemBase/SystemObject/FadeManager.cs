@@ -1,17 +1,20 @@
 using Cysharp.Threading.Tasks;
 using System.Collections;
 using System.Collections.Generic;
+using System.Threading;
 using UnityEngine;
 using UnityEngine.UI;
 
 public class FadeManager : SystemObject {
+    public static FadeManager instance { get; private set; } = null;
     //フェード用画像
     [SerializeField]
     private Image fadeImage = null;
-
-    public static FadeManager instance { get; private set; } = null;
-
+    
+    // デフォルトのフェード時間
     private const float DEFAULT_FADE_TIME = 1.0f;
+
+    private CancellationToken token;
 
     public override async UniTask Initialize() {
         instance = this;
@@ -40,21 +43,23 @@ public class FadeManager : SystemObject {
     /// <param name="duration"></param>
     /// <returns></returns>
     private async UniTask FadeTargetAlfha(eFadeState fadeState, float duration) {
-        fadeImage.gameObject.SetActive(true);
+        token = this.GetCancellationTokenOnDestroy();
         float elapseTime = 0.0f;
         float startAlpha = fadeImage.color.a;
         float targetAlpha = (float)fadeState;
         Color targetColor = fadeImage.color;
+        fadeImage.gameObject.SetActive(true);
         
         while(elapseTime < duration) {
             elapseTime += Time.deltaTime;
-            //補完した府透明度をフェード画像に設定
+            // 補完した不透明度をフェード画像に設定
             float t = elapseTime / duration;
             targetColor.a = Mathf.Lerp(startAlpha, targetAlpha, t);
             fadeImage.color = targetColor;
-            //1フレーム待つ
-            await UniTask.DelayFrame(1);
+            // 1フレーム待つ
+            await UniTask.DelayFrame(1, PlayerLoopTiming.Update, token);
         }
+        // 透明度を反映
         targetColor.a = targetAlpha;
         fadeImage.color = targetColor;
         fadeImage.gameObject.SetActive(false);

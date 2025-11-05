@@ -23,7 +23,6 @@ public class CameraController : MonoBehaviour {
     //操作感度
     private static float moveSensitivity = -1;
     private float mousePinchExpansion = -1;
-    private float touchPinchExpansion = -1;
     //初期ピンチ倍率
     private const float TOUCH_PINCH_SENSITIVITY = 0.01f;
     private const float MIN_SENSITIVITY = 0.1f;
@@ -32,7 +31,7 @@ public class CameraController : MonoBehaviour {
     private TouchState _touchState0;
     private TouchState _touchState1;
 
-    public async UniTask Initialize() {
+    public async UniTask Setup() {
         //カメラのキャスト
         mainCamera = Camera.main;
         mainCamera.orthographicSize = MAX_EXPANSION;
@@ -48,7 +47,7 @@ public class CameraController : MonoBehaviour {
         pinchText.gameObject.SetActive(true);
         await UniTask.CompletedTask;
     }
-    public async UniTask Setup(float duration) {
+    public async UniTask StartGameCamera(float duration) {
         mousePinchExpansion = 5.0f;
         pinchPercentage = MAX_PERCENTAGE;
         float elapsedTime = 0.0f;
@@ -185,7 +184,7 @@ public class CameraController : MonoBehaviour {
         return pinchPercentage >= GetRawPercentage();
     }
     /// <summary>
-    /// 拡縮率テキストの設定(メインゲームの初期化時にセット)
+    /// 拡縮率テキストの設定(パートメインゲームの初期化時にセット)
     /// </summary>
     /// <param name="setPinchText"></param>
     public void SetPinchText(PinchExpansionText setPinchText) {

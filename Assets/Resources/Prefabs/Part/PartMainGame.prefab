@@ -47,8 +47,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b0a45cf2c3a2130449f7972165c693c6, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  enemyManager: {fileID: 5273962097393138128}
-  enemyEffectManager: {fileID: 1620022832743443508}
+  _enemyManager: {fileID: 5273962097393138128}
+  _enemyEffectManager: {fileID: 1620022832743443508}
 --- !u!1 &1695389544455437867
 GameObject:
   m_ObjectHideFlags: 0
