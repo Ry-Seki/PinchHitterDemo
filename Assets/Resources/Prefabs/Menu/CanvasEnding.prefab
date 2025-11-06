@@ -119,9 +119,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   menuRoot: {fileID: 2145846093830540564}
-  resultScoreText: {fileID: 3293459974859706003}
-  moveScoreRoot: {fileID: 4625532232005604037}
-  highScoreImage: {fileID: 8869577553663923094}
+  _resultScoreText: {fileID: 3293459974859706003}
+  _moveScoreRoot: {fileID: 4625532232005604037}
+  _highScoreImage: {fileID: 8869577553663923094}
 --- !u!1 &2157845297998706474
 GameObject:
   m_ObjectHideFlags: 0

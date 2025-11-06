@@ -4,16 +4,18 @@ using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
 
+using static GameConst;
+
 public class ScoreTextManager : MenuBase {
     public static ScoreTextManager instance { get; private set; } = null;
+
     [SerializeField]
-    private TextMeshProUGUI deathValueText = null;
+    private TextMeshProUGUI _deathValueText = null;
+
     public static int score { get; private set; } = -1;
     public static int highScore { get; private set; } = -1;
     public static int enemyDeathValue { get; private set; } = -1;
     public static bool IsHighScore { get { return score > highScore; } }
-
-    private const int MAX_SCORE_NUM = 1000000;
 
     public override async UniTask Initialize() {
         await base.Initialize();
@@ -21,14 +23,12 @@ public class ScoreTextManager : MenuBase {
         gameObject.SetActive(false);
         highScore = PlayerStatusDataManager.instance.saveData.highScore;
     }
-
     public override async UniTask Open() {
         await base.Open();
         score = 0;
         enemyDeathValue = 0;
         ShowScoreText();
     }
-
     public override async UniTask Close() {
         await base.Close();
     }
@@ -36,7 +36,7 @@ public class ScoreTextManager : MenuBase {
     /// テキストの表示
     /// </summary>
     private void ShowScoreText() {
-        deathValueText.text = enemyDeathValue.ToString();
+        _deathValueText.text = enemyDeathValue.ToString();
     }
     /// <summary>
     /// スコア値設定
@@ -60,14 +60,18 @@ public class ScoreTextManager : MenuBase {
     public void RemoveScore(int setValue) {
         SetScore(score - setValue);
     }
-
+    /// <summary>
+    /// ハイスコアの設定
+    /// </summary>
     public static void SetHighScore() {
         if(!IsHighScore) return;
 
         highScore = score;
         PlayerStatusDataManager.instance.SetHighScore(highScore);
     }
-
+    /// <summary>
+    /// 敵死亡数の増加
+    /// </summary>
     public void AddEnemyDeathValue() {
         enemyDeathValue++;
         ShowScoreText();

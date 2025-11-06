@@ -900,9 +900,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   menuRoot: {fileID: 4589406701603834123}
-  bgmVolumeText: {fileID: 7883422499340562122}
-  seVolumeText: {fileID: 2823388456294041276}
-  sensitivityText: {fileID: 253484173090464150}
+  _bgmVolumeText: {fileID: 7883422499340562122}
+  _seVolumeText: {fileID: 2823388456294041276}
+  _sensitivityText: {fileID: 253484173090464150}
 --- !u!1 &6572734561983159519
 GameObject:
   m_ObjectHideFlags: 0

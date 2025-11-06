@@ -8,22 +8,25 @@ using static GameConst;
 
 public class MenuSettings : MenuBase {
     [SerializeField]
-    private TextMeshProUGUI bgmVolumeText = null;
+    private TextMeshProUGUI _bgmVolumeText = null;
     [SerializeField]
-    private TextMeshProUGUI seVolumeText = null;
+    private TextMeshProUGUI _seVolumeText = null;
     [SerializeField]
-    private TextMeshProUGUI sensitivityText = null;
+    private TextMeshProUGUI _sensitivityText = null;
 
-    private bool isClose = false;
-    private int bgmVolume = -1;
-    private int seVolume = -1;
-    private int moveSensitivity = -1;
+    private bool _isClose = false;
+    private int _bgmVolume = -1;
+    private int _seVolume = -1;
+    private int _moveSensitivity = -1;
 
     public override async UniTask Initialize() {
         await base.Initialize();
         SetupData();
         gameObject.SetActive(false);
     }
+    /// <summary>
+    /// セーブデータから取得した値の設定
+    /// </summary>
     private void SetupData() {
         SettingStatusData data = SettingStatusDataManager.instance.saveData;
         if(data == null) return;
@@ -32,17 +35,17 @@ public class MenuSettings : MenuBase {
         SetBGMVolume(data.bgmVolume);
         SetSEVolume(data.seVolume);
         SetSensitivity(data.moveSensitivity);
-        SetBGMVolumeData(bgmVolume);
-        SetSEVolumeData(seVolume);
-        SetSensitivityData(moveSensitivity);
+        SetBGMVolumeData(_bgmVolume);
+        SetSEVolumeData(_seVolume);
+        SetSensitivityData(_moveSensitivity);
     }
     public override async UniTask Open() {
         await base.Open();
         await FadeManager.instance.FadeIn();
-        while (!isClose) {
+        while (!_isClose) {
             await UniTask.DelayFrame(1);
         }
-        isClose = false;
+        _isClose = false;
         await FadeManager.instance.FadeOut();
         await Close();
     }
@@ -55,85 +58,85 @@ public class MenuSettings : MenuBase {
     /// </summary>
     /// <param name="setValue"></param>
     private void SetBGMVolume(int setValue) {
-        bgmVolume = Mathf.Clamp(setValue, 0, TEN_DEVIDE_VALUE);
-        bgmVolumeText.text = bgmVolume.ToString();
+        _bgmVolume = Mathf.Clamp(setValue, 0, TEN_DEVIDE_VALUE);
+        _bgmVolumeText.text = _bgmVolume.ToString();
     }
     /// <summary>
     /// SE音量設定
     /// </summary>
     /// <param name="setValue"></param>
     private void SetSEVolume(int setValue) {
-        seVolume = Mathf.Clamp(setValue, 0, TEN_DEVIDE_VALUE);
-        seVolumeText.text = seVolume.ToString();
+        _seVolume = Mathf.Clamp(setValue, 0, TEN_DEVIDE_VALUE);
+        _seVolumeText.text = _seVolume.ToString();
     }
     /// <summary>
     /// 感度の設定
     /// </summary>
     /// <param name="setValue"></param>
     private void SetSensitivity(int setValue) {
-        moveSensitivity = Mathf.Clamp(setValue, 1, TEN_DEVIDE_VALUE);
-        sensitivityText.text = moveSensitivity.ToString();
+        _moveSensitivity = Mathf.Clamp(setValue, 1, TEN_DEVIDE_VALUE);
+        _sensitivityText.text = _moveSensitivity.ToString();
     }
     /// <summary>
     /// メニュー開閉フラグの変更
     /// </summary>
     public void MenuClose() {
         UniTask task = AudioManager.instance.PlaySE(3);
-        isClose = true;
+        _isClose = true;
     }
     /// <summary>
     /// BGM音量を上げる
     /// </summary>
     public void AddBGMVolume() {
         UniTask task = AudioManager.instance.PlaySE(2);
-        bgmVolume++;
-        SetBGMVolume(bgmVolume);
-        SetBGMVolumeData(bgmVolume);
+        _bgmVolume++;
+        SetBGMVolume(_bgmVolume);
+        SetBGMVolumeData(_bgmVolume);
     }
     /// <summary>
     /// BGM音量を下げる
     /// </summary>
     public void SubBGMVolume() {
         UniTask task = AudioManager.instance.PlaySE(2);
-        bgmVolume--;
-        SetBGMVolume(bgmVolume);
-        SetBGMVolumeData(bgmVolume);
+        _bgmVolume--;
+        SetBGMVolume(_bgmVolume);
+        SetBGMVolumeData(_bgmVolume);
     }
     /// <summary>
     /// SE音量を上げる
     /// </summary>
     public void AddSEVolume() {
         UniTask task = AudioManager.instance.PlaySE(2);
-        seVolume++;
-        SetSEVolume(seVolume);
-        SetSEVolumeData(seVolume);
+        _seVolume++;
+        SetSEVolume(_seVolume);
+        SetSEVolumeData(_seVolume);
     }
     /// <summary>
     /// SE音量を下げる
     /// </summary>
     public void SubSEVolume() {
         UniTask task = AudioManager.instance.PlaySE(2);
-        seVolume--;
-        SetSEVolume(seVolume);
-        SetSEVolumeData(seVolume);
+        _seVolume--;
+        SetSEVolume(_seVolume);
+        SetSEVolumeData(_seVolume);
     }
     /// <summary>
     /// 感度を上げる
     /// </summary>
     public void AddMoveSensitivity() {
         UniTask task = AudioManager.instance.PlaySE(2);
-        moveSensitivity++;
-        SetSensitivity(moveSensitivity);
-        SetSensitivityData(moveSensitivity);
+        _moveSensitivity++;
+        SetSensitivity(_moveSensitivity);
+        SetSensitivityData(_moveSensitivity);
     }
     /// <summary>
     /// 感度を下げる
     /// </summary>
     public void SubMoveSensitivity() {
         UniTask task = AudioManager.instance.PlaySE(2);
-        moveSensitivity--;
-        SetSensitivity(moveSensitivity);
-        SetSensitivityData(moveSensitivity);
+        _moveSensitivity--;
+        SetSensitivity(_moveSensitivity);
+        SetSensitivityData(_moveSensitivity);
     }
     /// <summary>
     /// BGM音量データの設定

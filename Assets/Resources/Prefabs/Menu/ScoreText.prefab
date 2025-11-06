@@ -153,7 +153,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   menuRoot: {fileID: 5366756405381386710}
-  deathValueText: {fileID: 4544900971780143551}
+  _deathValueText: {fileID: 4544900971780143551}
 --- !u!1 &6122690626559373872
 GameObject:
   m_ObjectHideFlags: 0

@@ -13,29 +13,50 @@ using System.Threading;
 
 public abstract class EnemyBase : MonoBehaviour {
     protected static StringBuilder spriteNameBuilder = new StringBuilder();
-
-    [SerializeField]
-    protected SpriteRenderer enemySprite = null;
-    protected Sprite[][] animSpriteList = null;
-    protected int animIndex = -1;
-    protected eEnemyAnimation currentAnim = eEnemyAnimation.Invalid;
-    protected UniTask animTask;
-    private static readonly int _ANIMATION_DELAY_MILLI_SEC = 150;
-
+    // カメラ制御クラス
+    protected static CameraController mainCamera { get; private set; } = null;
+    // 敵のHPゲージ
     [SerializeField]
     protected Slider enemyHPSlider = null;
-    public int maxHP { get; protected set; } = -1;
-    public int HP { get; protected set; } = -1;
-    protected bool isDead = false;
-    protected bool isCameraHit = false;
-    protected bool damageCoolTime = false;
-    protected const float MIN_DAMAGE_NORM = 1.0f;
-    protected const float MAX_DAMAGE_NORM = 2.0f;
-    protected const float MAX_DAMAGE_PERCENTAGE = 100.0f;
-    protected readonly int ADD_SCORE = 200;
-    protected static CameraController mainCamera { get; private set; } = null;
+    // 敵のスプライトコンポーネント
+    [SerializeField]
+    protected SpriteRenderer enemySprite = null;
+    // 敵のアニメーションスプライトリスト
+    protected Sprite[][] animSpriteList = null;
+    // 敵のアニメーション列挙体
+    protected eEnemyAnimation currentAnim = eEnemyAnimation.Invalid;
+    // アニメーションタスク
+    protected UniTask animTask;
+    // アニメーション番号
+    protected int animIndex = -1;
 
-    private CancellationToken token;
+    // アニメーション待機時間
+    private static readonly int _ANIMATION_DELAY_MILLI_SEC = 150;
+
+    // 最大HP
+    public int maxHP { get; protected set; } = -1;
+    // HP
+    public int HP { get; protected set; } = -1;
+    // 死亡フラグ
+    protected bool isDead = false;
+    // カメラ内か判別フラグ
+    protected bool isCameraHit = false;
+    // ダメージクールタイムフラグ
+    protected bool damageCoolTime = false;
+    // ダメージ最小倍率補正
+    protected const float MIN_DAMAGE_NORM = 1.0f;
+    // ダメージ最大倍率補正
+    protected const float MAX_DAMAGE_NORM = 2.0f;
+    // 最大ダメージ倍率
+    protected const float MAX_DAMAGE_PERCENTAGE = 100.0f;
+    // 死亡時に加算されるスコア
+    protected readonly int ADD_SCORE = 200;
+
+    private CancellationToken _token;
+
+    /// <summary>
+    /// 初期化処理
+    /// </summary>
     public static void Initialize() {
         if(mainCamera != null) return;
 
@@ -54,11 +75,17 @@ public abstract class EnemyBase : MonoBehaviour {
         isDead = false;
         gameObject.SetActive(true);
     }
+    /// <summary>
+    /// 片付け処理
+    /// </summary>
     public virtual void Teardown() {
         animIndex = 0;
         isCameraHit = false;
         damageCoolTime = false;
     }
+    /// <summary>
+    /// カメラ内にいるか計算
+    /// </summary>
     protected virtual void OnWillRenderObject() {
 #if UNITY_EDITOR
 
@@ -134,13 +161,13 @@ public abstract class EnemyBase : MonoBehaviour {
     /// </summary>
     /// <returns></returns>
     protected async UniTask PlayAnimationTask() {
-        token = this.GetCancellationTokenOnDestroy();
+        _token = this.GetCancellationTokenOnDestroy();
         while (gameObject.activeSelf == true) {
             //現在のアニメーション取得
             int currentAnimIndex = (int)currentAnim;
             if (!IsEnableIndex(animSpriteList, currentAnimIndex)) {
                 //無効なアニメーションなら終了
-                await UniTask.DelayFrame(1, PlayerLoopTiming.Update, token);
+                await UniTask.DelayFrame(1, PlayerLoopTiming.Update, _token);
                 return;
             }
             Sprite[] currentAnimSpriteList = animSpriteList[currentAnimIndex];
@@ -173,6 +200,10 @@ public abstract class EnemyBase : MonoBehaviour {
         currentAnim = setAnim;
         animIndex = 0;
     }
+    /// <summary>
+    /// 敵の移動処理
+    /// </summary>
+    /// <returns></returns>
 
     protected virtual async UniTask EnemyMoveDirection() {
         await UniTask.CompletedTask;
@@ -184,7 +215,10 @@ public abstract class EnemyBase : MonoBehaviour {
     public virtual void EnemyPhaseStatusUp(int setPhase) {
 
     }
-
+    /// <summary>
+    /// 敵のダメージ演出
+    /// </summary>
+    /// <returns></returns>
     protected virtual async UniTask EnemyDamageEffect() {
         await UniTask.CompletedTask;
     }

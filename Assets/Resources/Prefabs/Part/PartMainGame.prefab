@@ -156,9 +156,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 789a1885c048d5045b790ae796dc98ad, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  useRoot: {fileID: 2583574455737416606}
-  unuseRoot: {fileID: 3227605571871198155}
-  originDeadEffect: {fileID: 4960593110653264282, guid: c457972e70683014399e795dacf5e09b, type: 3}
+  _useRoot: {fileID: 2583574455737416606}
+  _unuseRoot: {fileID: 3227605571871198155}
+  _originDeadEffect: {fileID: 4960593110653264282, guid: c457972e70683014399e795dacf5e09b, type: 3}
 --- !u!1 &7113742262309987662
 GameObject:
   m_ObjectHideFlags: 0
@@ -288,8 +288,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1dfeb47c1ecda3345b38d8229d2e3914, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  useObjectRoot: {fileID: 4049972312568375434}
-  unuseObjectRoot: {fileID: 5269764264494671136}
-  originEnemy: {fileID: 4388157650029897181, guid: 47ecf23de27346646a2e39bef481fa9d, type: 3}
-  useEnemyList: []
-  unuseEnemyList: []
+  _useObjectRoot: {fileID: 4049972312568375434}
+  _unuseObjectRoot: {fileID: 5269764264494671136}
+  _originEnemy: {fileID: 4388157650029897181, guid: 47ecf23de27346646a2e39bef481fa9d, type: 3}
+  _useEnemyList: []
+  _unuseEnemyList: []

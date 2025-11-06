@@ -193,8 +193,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   menuRoot: {fileID: 642719814258221783}
-  buttonRoot: {fileID: 8563646210272620313}
-  titleImage: {fileID: 6829386538901060192}
+  _buttonRoot: {fileID: 8563646210272620313}
+  _titleImage: {fileID: 6829386538901060192}
 --- !u!1 &2659069109171354645
 GameObject:
   m_ObjectHideFlags: 0

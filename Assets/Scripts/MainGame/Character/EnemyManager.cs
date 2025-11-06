@@ -6,35 +6,35 @@ using static GameConst;
 using static CommonModule;
 
 public class EnemyManager : MonoBehaviour {
-    //自身のインスタンス
+    // 自身のインスタンス
     public static EnemyManager instance { get; private set; } = null;
-    //使用中キャラクターオブジェクトの親オブジェクト
+    // 使用中キャラクターオブジェクトの親オブジェクト
     [SerializeField]
-    private Transform useObjectRoot = null;
-    //未使用中キャラクターオブジェクトの親オブジェクト
+    private Transform _useObjectRoot = null;
+    // 未使用中キャラクターオブジェクトの親オブジェクト
     [SerializeField]
-    private Transform unuseObjectRoot = null;
+    private Transform _unuseObjectRoot = null;
     [SerializeField]
-    private EnemyBase originEnemy = null;
+    private EnemyBase _originEnemy = null;
 
-    //使用中の敵のリスト
+    // 使用中の敵のリスト
     [SerializeField]
-    private List<EnemyBase> useEnemyList = null;
-    //未使用中の敵のリスト
+    private List<EnemyBase> _useEnemyList = null;
+    // 未使用中の敵のリスト
     [SerializeField]
-    private List<EnemyBase> unuseEnemyList = null;
+    private List<EnemyBase> _unuseEnemyList = null;
 
     public void Initialize() {
         instance = this;
         //敵のカメラ情報の初期化
         EnemyBase.Initialize();
         //リストの初期化
-        useEnemyList = new List<EnemyBase>(INIT_FLOOR_ENEMY);
-        unuseEnemyList = new List<EnemyBase>(INIT_FLOOR_ENEMY);
+        _useEnemyList = new List<EnemyBase>(INIT_FLOOR_ENEMY);
+        _unuseEnemyList = new List<EnemyBase>(INIT_FLOOR_ENEMY);
         //敵を必要数生成して未使用状態にする
         for (int i = 0; i < INIT_FLOOR_ENEMY; i++) {
-            EnemyBase enemy = Instantiate(originEnemy, unuseObjectRoot);
-            unuseEnemyList.Add(enemy);
+            EnemyBase enemy = Instantiate(_originEnemy, _unuseObjectRoot);
+            _unuseEnemyList.Add(enemy);
         }
     }
     /// <summary>
@@ -44,16 +44,16 @@ public class EnemyManager : MonoBehaviour {
     public void UseEnemy(int setPhase) {
         EnemyBase enemy;
         //未使用リストが空なら新たに生成
-        if(IsEmpty(unuseEnemyList)) {
-            enemy = Instantiate(originEnemy, useObjectRoot);
+        if(IsEmpty(_unuseEnemyList)) {
+            enemy = Instantiate(_originEnemy, _useObjectRoot);
         } else {
             //未使用リストから使う
-            enemy = unuseEnemyList[0];
-            unuseEnemyList.RemoveAt(0);
-            enemy.transform.SetParent(useObjectRoot);
+            enemy = _unuseEnemyList[0];
+            _unuseEnemyList.RemoveAt(0);
+            enemy.transform.SetParent(_useObjectRoot);
         }
         //敵の準備
-        useEnemyList.Add(enemy);
+        _useEnemyList.Add(enemy);
         enemy.Setup(setPhase);
     }
     /// <summary>
@@ -63,13 +63,13 @@ public class EnemyManager : MonoBehaviour {
         if(unuseEnemy == null) return;
 
         //未使用リストに加える
-        unuseEnemyList.Add(unuseEnemy);
+        _unuseEnemyList.Add(unuseEnemy);
         //片付け処理を呼ぶ
         unuseEnemy.Teardown();
         //使用リストから削除する
-        useEnemyList.Remove(unuseEnemy);
+        _useEnemyList.Remove(unuseEnemy);
         //親オブジェクトの移動
-        unuseEnemy.transform.SetParent(unuseObjectRoot);
+        unuseEnemy.transform.SetParent(_unuseObjectRoot);
     }
     /// <summary>
     /// 敵の生成処理
@@ -88,8 +88,8 @@ public class EnemyManager : MonoBehaviour {
     /// 全ての敵を未使用状態にする
     /// </summary>
     public void UnuseAllEnemy() {
-        for (int i = useEnemyList.Count - 1; i >= 0; i--) {
-            UnuseEnemy(useEnemyList[i]);
+        for (int i = _useEnemyList.Count - 1; i >= 0; i--) {
+            UnuseEnemy(_useEnemyList[i]);
         }
     }
     /// <summary>
@@ -97,6 +97,6 @@ public class EnemyManager : MonoBehaviour {
     /// </summary>
     /// <returns></returns>
     public int GetEnemyCount() {
-        return useEnemyList.Count;
+        return _useEnemyList.Count;
     }
 }

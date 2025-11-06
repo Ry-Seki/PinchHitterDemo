@@ -97,4 +97,4 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e5c7fb9a5a6bed9419fcea6170146ebb, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  effectSprite: {fileID: 6177291316429824386}
+  _effectSprite: {fileID: 6177291316429824386}

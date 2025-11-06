@@ -16,7 +16,7 @@ public enum eGamePart {
 public enum eTitleMenu {
     Invalid = -1,
     StartGame,
-    Enhance,
+    Upgrade,
     Setting,
     
     Max

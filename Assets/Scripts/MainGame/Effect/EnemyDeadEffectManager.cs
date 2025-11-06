@@ -10,30 +10,30 @@ public class EnemyDeadEffectManager : MonoBehaviour {
     public static EnemyDeadEffectManager instance { get; private set; } = null;
     //使用中の親オブジェクト
     [SerializeField]
-    private Transform useRoot = null;
+    private Transform _useRoot = null;
     //未使用時の親オブジェクト
     [SerializeField]
-    private Transform unuseRoot = null;
+    private Transform _unuseRoot = null;
     //敵死亡時エフェクトの素
     [SerializeField]
-    private EnemyDeadEffect originDeadEffect = null;
+    private EnemyDeadEffect _originDeadEffect = null;
     //使用中のエフェクトリスト
-    private List<EnemyDeadEffect> useEffectList = null;
+    private List<EnemyDeadEffect> _useEffectList = null;
     //未使用時のエフェクトリスト
-    private List<EnemyDeadEffect> unuseEffectList = null;
+    private List<EnemyDeadEffect> _unuseEffectList = null;
     //初期化時に生成しておくエフェクトの数
-    private const int INIT_DEAD_EFFECT_COUNT = 16;
+    private const int _INIT_DEAD_EFFECT_COUNT = 16;
 
     /// <summary>
     /// 初期化処理
     /// </summary>
     public void Initialize() {
         instance = this;
-        unuseEffectList = new List<EnemyDeadEffect>(INIT_DEAD_EFFECT_COUNT);
-        useEffectList = new List<EnemyDeadEffect>(INIT_DEAD_EFFECT_COUNT);
-        for (int i = 0; i < INIT_DEAD_EFFECT_COUNT; i++) {
-            EnemyDeadEffect createObject = Instantiate(originDeadEffect, unuseRoot);
-            unuseEffectList.Add(createObject);
+        _unuseEffectList = new List<EnemyDeadEffect>(_INIT_DEAD_EFFECT_COUNT);
+        _useEffectList = new List<EnemyDeadEffect>(_INIT_DEAD_EFFECT_COUNT);
+        for (int i = 0; i < _INIT_DEAD_EFFECT_COUNT; i++) {
+            EnemyDeadEffect createObject = Instantiate(_originDeadEffect, _unuseRoot);
+            _unuseEffectList.Add(createObject);
         }
     }
     /// <summary>
@@ -42,14 +42,14 @@ public class EnemyDeadEffectManager : MonoBehaviour {
     public void UseEffect(EnemyBase targetEneny) {
         EnemyDeadEffect effect;
         //未使用リストにあるなら未使用リストから使う
-        if (IsEmpty(unuseEffectList)) {
-            effect = Instantiate(originDeadEffect, useRoot);
+        if (IsEmpty(_unuseEffectList)) {
+            effect = Instantiate(_originDeadEffect, _useRoot);
         } else {
-            effect = unuseEffectList[0];
-            unuseEffectList.RemoveAt(0);
-            effect.transform.SetParent(useRoot);
+            effect = _unuseEffectList[0];
+            _unuseEffectList.RemoveAt(0);
+            effect.transform.SetParent(_useRoot);
         }
-        useEffectList.Add(effect);
+        _useEffectList.Add(effect);
         effect.Setup();
         UniTask effectTask = effect.PlayEffectAnimation(targetEneny);
     }
@@ -61,8 +61,8 @@ public class EnemyDeadEffectManager : MonoBehaviour {
         if(unuseEffect == null) return;
 
         unuseEffect.Teardown();
-        unuseEffectList.Add(unuseEffect);
-        useEffectList.Remove(unuseEffect);
-        unuseEffect.transform.SetParent(unuseRoot);
+        _unuseEffectList.Add(unuseEffect);
+        _useEffectList.Remove(unuseEffect);
+        unuseEffect.transform.SetParent(_unuseRoot);
     }
 }

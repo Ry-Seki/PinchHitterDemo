@@ -250,4 +250,4 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   menuRoot: {fileID: 7311225833812621839}
-  pinchText: {fileID: 1409507451535523094}
+  _pinchText: {fileID: 1409507451535523094}

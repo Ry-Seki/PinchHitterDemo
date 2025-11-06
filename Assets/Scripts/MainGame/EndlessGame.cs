@@ -11,23 +11,25 @@ using static SaveDataUtility;
 public class EndlessGame {
     public int phaseNum { get; private set; } = -1;
     public static bool isGameEnd { get; private set; } = false;
-    private TimeManager timeManager = null;
-    private const int ADD_ENEMY_NUM = 3;
-    private const int BORDER_SCORE = 200;
-    private static bool isEmptyEnemy = false;
+
+    private static bool _isEmptyEnemy = false;
+
+    private TimeManager _timeManager = null;
+
+    private const int _ADD_ENEMY_NUM = 3;
+    private const int _BORDER_SCORE = 200;
 
     public async UniTask Initialize(TimeManager setTimeManager) {
-        timeManager = setTimeManager;
+        _timeManager = setTimeManager;
         await UniTask.CompletedTask;
     }
-
     public async UniTask<bool> Execute() {
         //ゲームモードの初期化
         isGameEnd = false;
         //フェーズの初期化
         phaseNum = 0;
         //制限時間の管理
-        UniTask task = timeManager.Open();
+        UniTask task = _timeManager.Open();
         //フェーズ処理
         while (limitTimerPer > 0) {
             await AddPhase();
@@ -36,7 +38,7 @@ public class EndlessGame {
         //フラグの変更
         isGameEnd = true;
         //タイムマネージャを閉じる
-        await timeManager.Close();
+        await _timeManager.Close();
         //敵を非表示にする
         UnuseAllEnemy();
         //ステータスポイント処理
@@ -48,13 +50,13 @@ public class EndlessGame {
     /// </summary>
     /// <returns></returns>
     private async UniTask AddPhase() {
-        if (!isEmptyEnemy)  return;
+        if (!_isEmptyEnemy)  return;
         //敵の片付け処理の時間を確保するために遅延を少し入れる
         await UniTask.Delay(1000);
         //フェーズの更新
         phaseNum++;
         SpawnEnemy(SetEnemySpawnCount(phaseNum), phaseNum);
-        isEmptyEnemy = false;
+        _isEmptyEnemy = false;
     }
     /// <summary>
     /// フェーズごとに生成される敵の数
@@ -62,7 +64,7 @@ public class EndlessGame {
     /// <param name="phaseNum"></param>
     /// <returns></returns>
     private int SetEnemySpawnCount(int phaseNum) {
-        int spawnCount = INIT_FLOOR_ENEMY + ADD_ENEMY_NUM * phaseNum;
+        int spawnCount = INIT_FLOOR_ENEMY + _ADD_ENEMY_NUM * phaseNum;
 
         return Mathf.Clamp(spawnCount, INIT_FLOOR_ENEMY, MAX_FLOOR_ENEMY);
     }
@@ -74,9 +76,9 @@ public class EndlessGame {
         int highScore = ScoreTextManager.highScore;
         if(score < 0) return;
 
-        int point = score / BORDER_SCORE;
+        int point = score / _BORDER_SCORE;
         //前回のハイスコアを上回った場合ボーナスポイント獲得
-        if(score > highScore) point += (score - highScore) / BORDER_SCORE;
+        if(score > highScore) point += (score - highScore) / _BORDER_SCORE;
         //セーブデータに設定する
         AddStatusPointData(point);
     }
@@ -84,6 +86,6 @@ public class EndlessGame {
     /// シーン上の敵がいないことを知らせるフラグの変更
     /// </summary>
     public static void EnemyEmpty() {
-        isEmptyEnemy = true;
+        _isEmptyEnemy = true;
     }
 }

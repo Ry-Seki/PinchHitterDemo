@@ -98,7 +98,9 @@ public class MenuStatusUpgrade : MenuBase {
         _attackLv--;
         SetAttackLv(_attackLv); 
     }
-
+    /// <summary>
+    /// 攻撃間隔レベル上昇
+    /// </summary>
     public void IntervalLvUp() {
         if(_intervalLv >= 50) return;
 
@@ -109,6 +111,9 @@ public class MenuStatusUpgrade : MenuBase {
         ReduceStatusPoint(_intervalLv);
         SetIntervalLv(_intervalLv);
     }
+    /// <summary>
+    /// 攻撃間隔レベル低下
+    /// </summary>
     public void IntervalLvDown() {
         if(_intervalLv <= 0) return;
 
@@ -117,6 +122,9 @@ public class MenuStatusUpgrade : MenuBase {
         _intervalLv--;
         SetIntervalLv(_intervalLv);
     }
+    /// <summary>
+    /// 攻撃拡縮率レベル上昇
+    /// </summary>
     public void PercentageLvUp() {
         if(_percentageLv >= 50) return;
 
@@ -127,6 +135,9 @@ public class MenuStatusUpgrade : MenuBase {
         ReduceStatusPoint(_percentageLv);
         SetPercentageLv(_percentageLv);
     }
+    /// <summary>
+    /// 攻撃拡縮率レベル低下
+    /// </summary>
     public void PercentageLvDown() {
         if(_percentageLv <= 0) return;
 
@@ -135,6 +146,9 @@ public class MenuStatusUpgrade : MenuBase {
         _percentageLv--;
         SetPercentageLv(_percentageLv);
     }
+    /// <summary>
+    /// 制限時間レベル上昇
+    /// </summary>
     public void LimitTimeLvUp() {
         if(_limitTimeLv >= 10) return;
 
@@ -145,6 +159,9 @@ public class MenuStatusUpgrade : MenuBase {
         ReduceStatusPoint(_limitTimeLv);
         SetLimitTimeLv(_limitTimeLv);
     }
+    /// <summary>
+    /// 制限時間レベル低下
+    /// </summary>
     public void LimitTimeLvDown() {
         if(_limitTimeLv <= 0) return;
 
@@ -153,6 +170,9 @@ public class MenuStatusUpgrade : MenuBase {
         _limitTimeLv--;
         SetLimitTimeLv(_limitTimeLv);
     }
+    /// <summary>
+    /// 全てのレベルをリセット
+    /// </summary>
     public void ResetAllLevel() {
         SetAttackLv(0);
         SetIntervalLv(0);
@@ -160,6 +180,9 @@ public class MenuStatusUpgrade : MenuBase {
         SetLimitTimeLv(0);
         InitStatus();
     }
+    /// <summary>
+    /// メニューを閉じるフラグの変更
+    /// </summary>
     public void CloseScreen() {
         UniTask task = AudioManager.instance.PlaySE(3);
         _isClose = true;
