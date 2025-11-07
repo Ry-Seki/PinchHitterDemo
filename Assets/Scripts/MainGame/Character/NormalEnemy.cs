@@ -81,7 +81,6 @@ public class NormalEnemy : EnemyBase {
         HP = 0;
         enemyHPSlider.value = 0.0f;
         transform.position = Vector3.zero;
-        gameObject.SetActive(false);
     }
     protected override void OnWillRenderObject() {
         base.OnWillRenderObject();

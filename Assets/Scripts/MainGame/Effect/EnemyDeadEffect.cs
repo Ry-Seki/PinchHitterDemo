@@ -76,6 +76,5 @@ public class EnemyDeadEffect : MonoBehaviour {
     public void Teardown() {
         _animIndex = 0;
         transform.position = Vector3.zero;
-        gameObject.SetActive(false);
     }
 }
