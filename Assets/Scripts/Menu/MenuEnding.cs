@@ -9,18 +9,26 @@ using UnityEngine.UI;
 using static GameConst;
 
 public class MenuEnding : MenuBase {
+    // 結果スコアテキスト
     [SerializeField]
     private TextMeshProUGUI _resultScoreText = null;
+    // スコア移動用親オブジェクト
     [SerializeField]
     private Transform _moveScoreRoot = null;
+    // ハイスコア用画像
     [SerializeField]
     private Image _highScoreImage = null;
 
+    // 結果スコア
     private int _resultScore = -1;
+    // 移動前位置
     private Vector3 _startPos = Vector3.zero;
+    // 移動後処理
     private Vector3 _goalPos = Vector3.zero;
 
+    // 待機フレーム数
     private const int _WAIT_FRAME = 60;
+    // 開始地点のY座標
     private const int _START_POS_Y = 200;
 
     private CancellationToken _token;

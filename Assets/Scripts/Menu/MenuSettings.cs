@@ -7,16 +7,23 @@ using UnityEngine;
 using static GameConst;
 
 public class MenuSettings : MenuBase {
+    // BGM音量テキスト
     [SerializeField]
     private TextMeshProUGUI _bgmVolumeText = null;
+    // SE音量テキスト
     [SerializeField]
     private TextMeshProUGUI _seVolumeText = null;
+    // 感度テキスト
     [SerializeField]
     private TextMeshProUGUI _sensitivityText = null;
 
+    // メニュー開閉フラグ
     private bool _isClose = false;
+    // BGM音量
     private int _bgmVolume = -1;
+    // SE音量
     private int _seVolume = -1;
+    // 感度
     private int _moveSensitivity = -1;
 
     public override async UniTask Initialize() {
