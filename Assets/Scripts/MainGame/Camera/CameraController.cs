@@ -11,44 +11,57 @@ using static PlayerStatusUtility;
 
 public class CameraController : MonoBehaviour {
     public static float pinchPercentage { get; private set; } = -1;
-    //攻撃フラグ
+    // 攻撃フラグ
     public bool isEnableAttack { get; private set; } = false;
 
-    //拡縮率を表すテキスト
-    private PinchExpansionText pinchText = null;
+    // 拡縮率を表すテキスト
+    private PinchExpansionText _pinchText = null;
     //カメラ
-    private Camera mainCamera = null;
+    private Camera _mainCamera = null;
     //InputAction
-    private PinchHitterDemo cameraInput = null;
-    //操作感度
-    private static float moveSensitivity = -1;
-    private float mousePinchExpansion = -1;
-    //初期ピンチ倍率
-    private const float TOUCH_PINCH_SENSITIVITY = 0.01f;
-    private const float MIN_SENSITIVITY = 0.1f;
-    private const float MAX_SENSITIVITY = 1.0f;
+    private PinchHitterDemo _cameraInput = null;
     // ２本指のタッチ情報
     private TouchState _touchState0;
     private TouchState _touchState1;
 
+    //操作感度
+    private static float _moveSensitivity = -1;
+    private float _mousePinchExpansion = -1;
+
+    //初期ピンチ倍率
+    private const float _TOUCH_PINCH_SENSITIVITY = 0.01f;
+    // 最小感度
+    private const float MIN_SENSITIVITY = 0.1f;
+    // 最大感度
+    private const float MAX_SENSITIVITY = 1.0f;
+
+    /// <summary>
+    /// 準備前処理
+    /// </summary>
+    /// <returns></returns>
     public async UniTask Setup() {
         //カメラのキャスト
-        mainCamera = Camera.main;
-        mainCamera.orthographicSize = MAX_EXPANSION;
+        _mainCamera = Camera.main;
+        _mainCamera.orthographicSize = MAX_EXPANSION;
         pinchPercentage = MAX_PERCENTAGE;
         //InputActionを取得
-        cameraInput = InputSystemManager.instance.input;
+        _cameraInput = InputSystemManager.instance.input;
         //CameraInputActionの登録
-        cameraInput.Camera.MouseWheel.performed += OnMouseWheel;
-        cameraInput.Camera.MouseWheel.canceled += EndMouseWheel;
-        cameraInput.Camera.Touch_0.performed += OnTouch0;
-        cameraInput.Camera.Touch_1.performed += OnTouch1;
-        if(!pinchText) return;
-        pinchText.gameObject.SetActive(true);
+        _cameraInput.Camera.MouseWheel.performed += OnMouseWheel;
+        _cameraInput.Camera.MouseWheel.canceled += EndMouseWheel;
+        _cameraInput.Camera.Touch_0.performed += OnTouch0;
+        _cameraInput.Camera.Touch_1.performed += OnTouch1;
+        if(!_pinchText) return;
+        _pinchText.gameObject.SetActive(true);
         await UniTask.CompletedTask;
     }
+    /// <summary>
+    /// ゲーム開始時の演出
+    /// </summary>
+    /// <param name="duration"></param>
+    /// <returns></returns>
     public async UniTask StartGameCamera(float duration) {
-        mousePinchExpansion = 5.0f;
+        _mousePinchExpansion = 5.0f;
         pinchPercentage = MAX_PERCENTAGE;
         float elapsedTime = 0.0f;
         //カメラの演出
@@ -56,25 +69,32 @@ public class CameraController : MonoBehaviour {
             elapsedTime += Time.deltaTime;
             float t = elapsedTime / duration;
             float animationTime = Mathf.Lerp(MAX_EXPANSION, MIN_EXPANSION, t);
-            mainCamera.orthographicSize = animationTime;
+            _mainCamera.orthographicSize = animationTime;
             pinchPercentage = Mathf.Lerp(MAX_PERCENTAGE, 0, t);
-            pinchText.VisiblePinchExpansion(pinchPercentage);
+            _pinchText.VisiblePinchExpansion(pinchPercentage);
             await UniTask.DelayFrame(1);
         }
-        await pinchText.PinchTextFade();
+        await _pinchText.PinchTextFade();
         //攻撃フラグOn
         isEnableAttack = true;
         //InputActionの有効化
-        cameraInput.Enable();
+        _cameraInput.Enable();
     }
+    /// <summary>
+    /// パソコン用更新処理
+    /// </summary>
     private void Update() {
         if(!PartMainGame.isStart || !Input.GetMouseButton(0)) return;
 
         //マウスドラッグでのカメラ移動
         float cameraX = Input.GetAxis("Mouse X") * ReverseNormScaling(pinchPercentage, 100, 0);
         float cameraY = Input.GetAxis("Mouse Y") * ReverseNormScaling(pinchPercentage, 100, 0);
-        mainCamera.transform.position -= new Vector3(cameraX, cameraY, 0.0f);
+        _mainCamera.transform.position -= new Vector3(cameraX, cameraY, 0.0f);
     }
+    /// <summary>
+    /// タッチ操作1
+    /// </summary>
+    /// <param name="context"></param>
     public void OnTouch0(InputAction.CallbackContext context) {
         _touchState0 = context.ReadValue<TouchState>();
 
@@ -86,6 +106,10 @@ public class CameraController : MonoBehaviour {
         //ピンチイン、アウトの実行
         OnPinch();
     }
+    /// <summary>
+    /// タッチ操作2
+    /// </summary>
+    /// <param name="context"></param>
     public void OnTouch1(InputAction.CallbackContext context) {
         _touchState1 = context.ReadValue<TouchState>();
 
@@ -101,10 +125,10 @@ public class CameraController : MonoBehaviour {
     /// カメラ視点移動
     /// </summary>
     public void SwipeCameraMove(TouchState setTouch) {
-        UniTask task = pinchText.PinchTextFade();
+        UniTask task = _pinchText.PinchTextFade();
         //移動量
-        Vector3 delta = setTouch.delta * ReverseNormScaling(pinchPercentage, MAX_PERCENTAGE, 0.0f) * moveSensitivity;
-        mainCamera.transform.position -= new Vector3(delta.x, delta.y, 0.0f);
+        Vector3 delta = setTouch.delta * ReverseNormScaling(pinchPercentage, MAX_PERCENTAGE, 0.0f) * _moveSensitivity;
+        _mainCamera.transform.position -= new Vector3(delta.x, delta.y, 0.0f);
         Vector3 goalPos = transform.position - delta;
         goalPos.z = -10.0f;
     }
@@ -128,12 +152,12 @@ public class CameraController : MonoBehaviour {
         float pinchDelta = Vector3.Distance(currentPos0, currentPos1) - Vector3.Distance(prevPos0, prevPos1);
 
         //カメラの拡縮に反映
-        SetCameraGraphicSize(-pinchDelta * TOUCH_PINCH_SENSITIVITY);
+        SetCameraGraphicSize(-pinchDelta * _TOUCH_PINCH_SENSITIVITY);
 
         //一定の操作量の時フェード実行
         if( pinchDelta < 0.1f) return;
 
-        UniTask task = pinchText.PinchTextFade();
+        UniTask task = _pinchText.PinchTextFade();
     }
     /// <summary>
     /// ホイール操作
@@ -141,12 +165,16 @@ public class CameraController : MonoBehaviour {
     /// <param name="context"></param>
     public void OnMouseWheel(InputAction.CallbackContext context) {
         //ホイールを取得して、代入
-        float scroll = Input.mouseScrollDelta.y * mousePinchExpansion;
+        float scroll = Input.mouseScrollDelta.y * _mousePinchExpansion;
         //カメラの拡縮に反映
         SetCameraGraphicSize(scroll);
     }
+    /// <summary>
+    /// ホイール操作終了
+    /// </summary>
+    /// <param name="context"></param>
     public void EndMouseWheel(InputAction.CallbackContext context) {
-        UniTask task = pinchText.PinchTextFade();
+        UniTask task = _pinchText.PinchTextFade();
     }
     /// <summary>
     /// カメラの拡縮率の変更
@@ -154,7 +182,7 @@ public class CameraController : MonoBehaviour {
     /// <param name="setSize"></param>
     private void SetCameraGraphicSize(float setSize) {
         //カメラの拡縮を取得
-        float cameraScale = mainCamera.orthographicSize;
+        float cameraScale = _mainCamera.orthographicSize;
         float scroll = setSize;
         //最大拡大率の判定
         if (cameraScale + scroll <= MAX_EXPANSION) {
@@ -172,9 +200,9 @@ public class CameraController : MonoBehaviour {
             pinchPercentage = ReversePercentageScaling(cameraScale, MIN_EXPANSION, MAX_EXPANSION);
         }
         //カメラに拡縮を反映
-        mainCamera.orthographicSize = cameraScale;
+        _mainCamera.orthographicSize = cameraScale;
         //テキストスクリプトに値を渡す
-        pinchText.VisiblePinchExpansion(pinchPercentage);
+        _pinchText.VisiblePinchExpansion(pinchPercentage);
     }
     /// <summary>
     /// 特定の拡縮率かの判定
@@ -188,34 +216,37 @@ public class CameraController : MonoBehaviour {
     /// </summary>
     /// <param name="setPinchText"></param>
     public void SetPinchText(PinchExpansionText setPinchText) {
-        pinchText = setPinchText;
+        _pinchText = setPinchText;
     }
+    /// <summary>
+    /// 片付け処理
+    /// </summary>
     public void Teardown() {
         // 入力イベントの破棄処理
-        cameraInput.Camera.MouseWheel.performed -= OnMouseWheel;
-        cameraInput.Camera.MouseWheel.canceled -= EndMouseWheel;
-        cameraInput.Camera.Touch_0.performed -= OnTouch0;
-        cameraInput.Camera.Touch_1.performed -= OnTouch1;
-        cameraInput.Disable();
+        _cameraInput.Camera.MouseWheel.performed -= OnMouseWheel;
+        _cameraInput.Camera.MouseWheel.canceled -= EndMouseWheel;
+        _cameraInput.Camera.Touch_0.performed -= OnTouch0;
+        _cameraInput.Camera.Touch_1.performed -= OnTouch1;
+        _cameraInput.Disable();
         // 位置の初期化
-        mainCamera.transform.position = new Vector3(0, 0, -10);
+        _mainCamera.transform.position = new Vector3(0, 0, -10);
         // カメラの高さのリセット
-        mainCamera.orthographicSize = MAX_EXPANSION;
+        _mainCamera.orthographicSize = MAX_EXPANSION;
         // 拡縮率のリセット
         pinchPercentage = MAX_PERCENTAGE;
         // 拡縮率テキストのリセット
-        pinchText.VisiblePinchExpansion(pinchPercentage);
+        _pinchText.VisiblePinchExpansion(pinchPercentage);
     }
     /// <summary>
     /// 感度の補正関数
     /// </summary>
     /// <param name="setValue"></param>
     public static void SetMoveSensitivity(float setValue) {
-        moveSensitivity = setValue / TEN_DEVIDE_VALUE;
-        if(moveSensitivity < 0) {
-            moveSensitivity = MIN_SENSITIVITY;
-        }else if(moveSensitivity > 1) {
-            moveSensitivity = MAX_SENSITIVITY;
+        _moveSensitivity = setValue / TEN_DEVIDE_VALUE;
+        if(_moveSensitivity < 0) {
+            _moveSensitivity = MIN_SENSITIVITY;
+        }else if(_moveSensitivity > 1) {
+            _moveSensitivity = MAX_SENSITIVITY;
         }
     }
 }
