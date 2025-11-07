@@ -6,7 +6,6 @@ using static GameConst;
 using static CommonModule;
 
 public class EnemyManager : MonoBehaviour {
-    // 自身のインスタンス
     public static EnemyManager instance { get; private set; } = null;
     // 使用中キャラクターオブジェクトの親オブジェクト
     [SerializeField]
