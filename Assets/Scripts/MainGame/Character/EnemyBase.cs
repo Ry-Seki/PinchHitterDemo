@@ -160,9 +160,8 @@ public abstract class EnemyBase : MonoBehaviour {
     /// アニメーション用の画像切り替えタスク
     /// </summary>
     /// <returns></returns>
-    protected async UniTask PlayAnimationTask() {
-        _token = this.GetCancellationTokenOnDestroy();
-        while (gameObject.activeSelf == true) {
+    protected async UniTask PlayAnimationTask(CancellationToken token) {
+        while (!token.IsCancellationRequested && gameObject.activeSelf) {
             //現在のアニメーション取得
             int currentAnimIndex = (int)currentAnim;
             if (!IsEnableIndex(animSpriteList, currentAnimIndex)) {
@@ -177,7 +176,7 @@ public abstract class EnemyBase : MonoBehaviour {
             //画像の設定
             enemySprite.sprite = currentAnimSpriteList[animIndex];
             //規定ミリ秒待ち、インデックス増加
-            await UniTask.Delay(_ANIMATION_DELAY_MILLI_SEC);
+            await UniTask.Delay(_ANIMATION_DELAY_MILLI_SEC, cancellationToken: token);
             animIndex++;
         }
     }
@@ -197,8 +196,8 @@ public abstract class EnemyBase : MonoBehaviour {
         //現在と同じアニメーションなら処理しない
         if (currentAnim == setAnim) return;
 
-        currentAnim = setAnim;
         animIndex = 0;
+        currentAnim = setAnim;
     }
     /// <summary>
     /// 敵の移動処理

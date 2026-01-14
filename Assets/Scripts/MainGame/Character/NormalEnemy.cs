@@ -26,6 +26,7 @@ public class NormalEnemy : EnemyBase {
     private const int _ADD_PHASE_HP = 100;
 
     private CancellationToken _token;
+    private CancellationTokenSource _animToken;
 
     /// <summary>
     /// モデルの読み込み (初回のみ)
@@ -55,10 +56,13 @@ public class NormalEnemy : EnemyBase {
         EnemyPhaseStatusUp(setPhase);
         //座標の設定
         transform.position = new Vector2(Random.Range(-50, 51), Random.Range(-50, 51));
+
+        _animToken?.Cancel();
+        _animToken = new CancellationTokenSource();
         //待機アニメーション設定
         SetAnimation(eEnemyAnimation.Wait);
-        //アニメーション再生タスクを実行（すでに実行中ならしない）
-        animTask = PlayAnimationTask();
+        //アニメーション再生タスクを実行
+        PlayAnimationTask(_animToken.Token).Forget();
     }
     /// <summary>
     /// フェーズごとのステータスの設定
